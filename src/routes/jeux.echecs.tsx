@@ -162,7 +162,13 @@ function Echecs() {
                       } ${selectionnee ? "ring-2 ring-inset ring-primary" : ""}`}
                       aria-label={case_}
                     >
-                      <span className={piece?.color === "w" ? "text-vellum" : "text-ink"}>
+                      <span
+                        className={
+                          piece?.color === "w"
+                            ? "text-vellum drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
+                            : "text-brass drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
+                        }
+                      >
                         {piece ? glyphes[`${piece.color}${piece.type}`] : ""}
                       </span>
                       {cible && (
