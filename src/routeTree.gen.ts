@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChoixpeauRouteImport } from './routes/choixpeau'
 import { Route as JeuxRouteImport } from './routes/jeux'
+import { Route as JeuxIndexRouteImport } from './routes/jeux.index'
+import { Route as JeuxMemoryRouteImport } from './routes/jeux.memory'
+import { Route as JeuxQuizRouteImport } from './routes/jeux.quiz'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +31,66 @@ const JeuxRoute = JeuxRouteImport.update({
   path: '/jeux',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JeuxIndexRoute = JeuxIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => JeuxRoute,
+} as any)
+const JeuxMemoryRoute = JeuxMemoryRouteImport.update({
+  id: '/memory',
+  path: '/memory',
+  getParentRoute: () => JeuxRoute,
+} as any)
+const JeuxQuizRoute = JeuxQuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => JeuxRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
-  '/jeux': typeof JeuxRoute
+  '/jeux': typeof JeuxRouteWithChildren
+  '/jeux/memory': typeof JeuxMemoryRoute
+  '/jeux/quiz': typeof JeuxQuizRoute
+  '/jeux/': typeof JeuxIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
-  '/jeux': typeof JeuxRoute
+  '/jeux/memory': typeof JeuxMemoryRoute
+  '/jeux/quiz': typeof JeuxQuizRoute
+  '/jeux': typeof JeuxIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
-  '/jeux': typeof JeuxRoute
+  '/jeux': typeof JeuxRouteWithChildren
+  '/jeux/memory': typeof JeuxMemoryRoute
+  '/jeux/quiz': typeof JeuxQuizRoute
+  '/jeux/': typeof JeuxIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/choixpeau' | '/jeux'
+  fullPaths:
+    '/' | '/choixpeau' | '/jeux' | '/jeux/memory' | '/jeux/quiz' | '/jeux/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/choixpeau' | '/jeux'
-  id: '__root__' | '/' | '/choixpeau' | '/jeux'
+  to: '/' | '/choixpeau' | '/jeux/memory' | '/jeux/quiz' | '/jeux'
+  id:
+    | '__root__'
+    | '/'
+    | '/choixpeau'
+    | '/jeux'
+    | '/jeux/memory'
+    | '/jeux/quiz'
+    | '/jeux/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChoixpeauRoute: typeof ChoixpeauRoute
-  JeuxRoute: typeof JeuxRoute
+  JeuxRoute: typeof JeuxRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -82,13 +116,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JeuxRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jeux/': {
+      id: '/jeux/'
+      path: '/'
+      fullPath: '/jeux/'
+      preLoaderRoute: typeof JeuxIndexRouteImport
+      parentRoute: typeof JeuxRoute
+    }
+    '/jeux/memory': {
+      id: '/jeux/memory'
+      path: '/memory'
+      fullPath: '/jeux/memory'
+      preLoaderRoute: typeof JeuxMemoryRouteImport
+      parentRoute: typeof JeuxRoute
+    }
+    '/jeux/quiz': {
+      id: '/jeux/quiz'
+      path: '/quiz'
+      fullPath: '/jeux/quiz'
+      preLoaderRoute: typeof JeuxQuizRouteImport
+      parentRoute: typeof JeuxRoute
+    }
   }
 }
+
+interface JeuxRouteChildren {
+  JeuxMemoryRoute: typeof JeuxMemoryRoute
+  JeuxQuizRoute: typeof JeuxQuizRoute
+  JeuxIndexRoute: typeof JeuxIndexRoute
+}
+
+const JeuxRouteChildren: JeuxRouteChildren = {
+  JeuxMemoryRoute: JeuxMemoryRoute,
+  JeuxQuizRoute: JeuxQuizRoute,
+  JeuxIndexRoute: JeuxIndexRoute,
+}
+
+const JeuxRouteWithChildren = JeuxRoute._addFileChildren(JeuxRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChoixpeauRoute: ChoixpeauRoute,
-  JeuxRoute: JeuxRoute,
+  JeuxRoute: JeuxRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
