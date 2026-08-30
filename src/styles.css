@@ -109,5 +109,20 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
   }
 }
+
+@utility panel {
+  background-color: color-mix(in oklab, var(--vellum) 5%, transparent);
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--vellum) 10%, transparent);
+  backdrop-filter: blur(12px);
+}
+
