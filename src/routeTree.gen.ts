@@ -10,33 +10,109 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChoixpeauRouteImport } from './routes/choixpeau'
+import { Route as JeuxRouteImport } from './routes/jeux'
+import { Route as JeuxIndexRouteImport } from './routes/jeux.index'
+import { Route as JeuxEchecsRouteImport } from './routes/jeux.echecs'
+import { Route as JeuxMemoryRouteImport } from './routes/jeux.memory'
+import { Route as JeuxQuizRouteImport } from './routes/jeux.quiz'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChoixpeauRoute = ChoixpeauRouteImport.update({
+  id: '/choixpeau',
+  path: '/choixpeau',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JeuxRoute = JeuxRouteImport.update({
+  id: '/jeux',
+  path: '/jeux',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JeuxIndexRoute = JeuxIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => JeuxRoute,
+} as any)
+const JeuxEchecsRoute = JeuxEchecsRouteImport.update({
+  id: '/echecs',
+  path: '/echecs',
+  getParentRoute: () => JeuxRoute,
+} as any)
+const JeuxMemoryRoute = JeuxMemoryRouteImport.update({
+  id: '/memory',
+  path: '/memory',
+  getParentRoute: () => JeuxRoute,
+} as any)
+const JeuxQuizRoute = JeuxQuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => JeuxRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/choixpeau': typeof ChoixpeauRoute
+  '/jeux': typeof JeuxRouteWithChildren
+  '/jeux/echecs': typeof JeuxEchecsRoute
+  '/jeux/memory': typeof JeuxMemoryRoute
+  '/jeux/quiz': typeof JeuxQuizRoute
+  '/jeux/': typeof JeuxIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/choixpeau': typeof ChoixpeauRoute
+  '/jeux/echecs': typeof JeuxEchecsRoute
+  '/jeux/memory': typeof JeuxMemoryRoute
+  '/jeux/quiz': typeof JeuxQuizRoute
+  '/jeux': typeof JeuxIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/choixpeau': typeof ChoixpeauRoute
+  '/jeux': typeof JeuxRouteWithChildren
+  '/jeux/echecs': typeof JeuxEchecsRoute
+  '/jeux/memory': typeof JeuxMemoryRoute
+  '/jeux/quiz': typeof JeuxQuizRoute
+  '/jeux/': typeof JeuxIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/choixpeau'
+    | '/jeux'
+    | '/jeux/echecs'
+    | '/jeux/memory'
+    | '/jeux/quiz'
+    | '/jeux/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/choixpeau'
+    | '/jeux/echecs'
+    | '/jeux/memory'
+    | '/jeux/quiz'
+    | '/jeux'
+  id:
+    | '__root__'
+    | '/'
+    | '/choixpeau'
+    | '/jeux'
+    | '/jeux/echecs'
+    | '/jeux/memory'
+    | '/jeux/quiz'
+    | '/jeux/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChoixpeauRoute: typeof ChoixpeauRoute
+  JeuxRoute: typeof JeuxRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +124,71 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/choixpeau': {
+      id: '/choixpeau'
+      path: '/choixpeau'
+      fullPath: '/choixpeau'
+      preLoaderRoute: typeof ChoixpeauRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jeux': {
+      id: '/jeux'
+      path: '/jeux'
+      fullPath: '/jeux'
+      preLoaderRoute: typeof JeuxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jeux/': {
+      id: '/jeux/'
+      path: '/'
+      fullPath: '/jeux/'
+      preLoaderRoute: typeof JeuxIndexRouteImport
+      parentRoute: typeof JeuxRoute
+    }
+    '/jeux/echecs': {
+      id: '/jeux/echecs'
+      path: '/echecs'
+      fullPath: '/jeux/echecs'
+      preLoaderRoute: typeof JeuxEchecsRouteImport
+      parentRoute: typeof JeuxRoute
+    }
+    '/jeux/memory': {
+      id: '/jeux/memory'
+      path: '/memory'
+      fullPath: '/jeux/memory'
+      preLoaderRoute: typeof JeuxMemoryRouteImport
+      parentRoute: typeof JeuxRoute
+    }
+    '/jeux/quiz': {
+      id: '/jeux/quiz'
+      path: '/quiz'
+      fullPath: '/jeux/quiz'
+      preLoaderRoute: typeof JeuxQuizRouteImport
+      parentRoute: typeof JeuxRoute
+    }
   }
 }
 
+interface JeuxRouteChildren {
+  JeuxEchecsRoute: typeof JeuxEchecsRoute
+  JeuxMemoryRoute: typeof JeuxMemoryRoute
+  JeuxQuizRoute: typeof JeuxQuizRoute
+  JeuxIndexRoute: typeof JeuxIndexRoute
+}
+
+const JeuxRouteChildren: JeuxRouteChildren = {
+  JeuxEchecsRoute: JeuxEchecsRoute,
+  JeuxMemoryRoute: JeuxMemoryRoute,
+  JeuxQuizRoute: JeuxQuizRoute,
+  JeuxIndexRoute: JeuxIndexRoute,
+}
+
+const JeuxRouteWithChildren = JeuxRoute._addFileChildren(JeuxRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChoixpeauRoute: ChoixpeauRoute,
+  JeuxRoute: JeuxRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
