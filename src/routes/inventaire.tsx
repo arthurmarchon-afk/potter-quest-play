@@ -29,35 +29,35 @@ function Inventaire() {
   return (
     <section>
       <div className="mx-auto max-w-4xl px-6 py-14 lg:py-20">
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+        <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
           Sacoche en peau de dragon
         </p>
-        <h1 className="font-display text-3xl font-semibold">🎒 Inventaire</h1>
-        <p className="mt-4 max-w-[62ch] text-muted-foreground">
+        <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">🎒 Inventaire</h1>
+        <p className="mt-4 max-w-[62ch] text-parchemin/60">
           Les objets s'obtiennent en accomplissant des quêtes et en débloquant des succès.
           Certains se consomment pour un gain immédiat, d'autres sont de pures reliques.
         </p>
 
         {!pret ? (
-          <p className="mt-10 text-sm text-muted-foreground">Ouverture de la sacoche…</p>
+          <p className="mt-10 text-sm text-parchemin/60">Ouverture de la sacoche…</p>
         ) : !joueur ? (
           <div className="panel mt-8 p-6">
-            <p className="text-muted-foreground">Créez votre sorcier pour obtenir une sacoche.</p>
+            <p className="text-parchemin/60">Créez votre sorcier pour obtenir une sacoche.</p>
             <Link
               to="/sorcier"
-              className="mt-4 inline-flex items-center rounded-[10px] bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5"
+              className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-4"
             >
               🪄 Créer mon sorcier
             </Link>
           </div>
         ) : possedes.length === 0 ? (
           <div className="panel mt-8 p-6">
-            <p className="text-muted-foreground">
+            <p className="text-parchemin/60">
               Sacoche vide. Accomplissez une quête du jour pour recevoir votre premier objet.
             </p>
             <Link
               to="/quetes"
-              className="mt-4 inline-flex items-center rounded-[10px] bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5"
+              className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-4"
             >
               📜 Voir les quêtes
             </Link>
@@ -74,15 +74,15 @@ function Inventaire() {
                     <div className="min-w-0 flex-1">
                       <h2 className="font-display text-lg">
                         {o.nom}
-                        <span className="ml-2 text-sm text-brass-2">×{n}</span>
+                        <span className="ml-2 text-sm text-or">×{n}</span>
                       </h2>
-                      <p className="mt-1 text-sm text-muted-foreground">{o.description}</p>
+                      <p className="mt-1 text-sm text-parchemin/60">{o.description}</p>
                     </div>
                   </div>
                   {o.effet ? (
                     <button
                       onClick={() => utiliserObjet(id)}
-                      className="mt-4 inline-flex items-center justify-center rounded-[10px] bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5"
+                      className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-4 justify-center"
                     >
                       Utiliser (
                       {[
@@ -95,7 +95,7 @@ function Inventaire() {
                       )
                     </button>
                   ) : (
-                    <p className="mt-4 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                    <p className="mt-4 text-xs uppercase tracking-[0.2em] text-parchemin/60">
                       Relique de collection
                     </p>
                   )}

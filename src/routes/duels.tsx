@@ -173,13 +173,13 @@ function Duels() {
   return (
     <section>
       <div className="mx-auto max-w-4xl px-6 py-12 lg:py-20">
-        <p className="text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+        <p className="font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
           Club de duel
         </p>
-        <h1 className="mt-3 font-display text-2xl font-semibold sm:text-3xl">
+        <h1 className="mt-3 titre-cinema text-2xl text-parchemin sm:text-4xl">
           Baguettes levées, saluez votre adversaire
         </h1>
-        <p className="mt-2 max-w-[60ch] text-sm text-muted-foreground">
+        <p className="mt-2 max-w-[60ch] text-sm text-parchemin/60">
           Chaque sortilège coûte de l'énergie magique. Vos statistiques amplifient les dégâts, la
           précision et les soins.
         </p>
@@ -187,7 +187,7 @@ function Duels() {
         {!joueur && (
           <p className="panel mt-6 p-4 text-sm">
             Créez d'abord votre sorcier sur la page{" "}
-            <Link to="/sorcier" className="text-brass-2 hover:underline">
+            <Link to="/sorcier" className="text-or hover:underline">
               Mon Sorcier
             </Link>
             .
@@ -204,17 +204,17 @@ function Duels() {
                     <span className="font-display text-lg">
                       {a.icone} {a.nom}
                     </span>
-                    <span className="text-sm text-muted-foreground">Niv. {a.niveau}+</span>
+                    <span className="text-sm text-parchemin/60">Niv. {a.niveau}+</span>
                   </div>
-                  <p className="mt-2 text-sm text-muted-foreground">{a.description}</p>
-                  <p className="mt-2 text-sm text-brass-2">
+                  <p className="mt-2 text-sm text-parchemin/60">{a.description}</p>
+                  <p className="mt-2 text-sm text-or">
                     ❤️ {a.pv} PV · ✨ {a.recompense.xp} XP · 🪙 {a.recompense.gallions} ·
                     🏆 {a.recompense.points}
                   </p>
                   <button
                     onClick={() => lancerDuel(a)}
                     disabled={verrouille}
-                    className="mt-4 w-full rounded-[10px] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-40"
+                    className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-4 w-full disabled:opacity-40"
                   >
                     {verrouille ? `🔒 Niveau ${a.niveau} requis` : "Défier"}
                   </button>
@@ -230,27 +230,27 @@ function Duels() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <p className="font-display">🧙 {joueur.nom}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-sm text-parchemin/60">
                     ❤️ {pv}/{pvMax}
                   </p>
                   {barre(pv, pvMax, "bg-emeraude")}
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="mt-2 text-sm text-parchemin/60">
                     ✨ Énergie {energie}/{energieMax}
                   </p>
                   {barre(energie, energieMax, "bg-primary")}
                   {bouclier > 0 && (
-                    <p className="mt-2 text-sm text-brass-2">🛡️ Bouclier {bouclier}</p>
+                    <p className="mt-2 text-sm text-or">🛡️ Bouclier {bouclier}</p>
                   )}
                 </div>
                 <div>
                   <p className="font-display">
                     {adv.icone} {adv.nom}
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-sm text-parchemin/60">
                     ❤️ {pvAdv}/{adv.pv}
                   </p>
                   {barre(pvAdv, adv.pv, "bg-destructive")}
-                  <p className="mt-2 text-sm text-muted-foreground">Tour {tour}</p>
+                  <p className="mt-2 text-sm text-parchemin/60">Tour {tour}</p>
                 </div>
               </div>
 
@@ -266,7 +266,7 @@ function Duels() {
                       <span className="font-medium">
                         {s.icone} {s.nom}
                       </span>
-                      <span className="mt-1 block text-xs text-muted-foreground">
+                      <span className="mt-1 block text-xs text-parchemin/60">
                         {s.description} — coût {s.cout}
                       </span>
                     </button>
@@ -282,7 +282,7 @@ function Duels() {
                   <div className="mt-4 flex flex-wrap justify-center gap-2">
                     <button
                       onClick={() => lancerDuel(adv)}
-                      className="rounded-[10px] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                      className="bouton-magique px-5 py-2.5 text-[0.6rem]"
                     >
                       Revanche
                     </button>
@@ -298,8 +298,8 @@ function Duels() {
             </div>
 
             <div className="panel p-5">
-              <p className="text-xs uppercase tracking-[0.3em] text-brass-2">Registre du duel</p>
-              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <p className="text-xs uppercase tracking-[0.3em] text-or">Registre du duel</p>
+              <ul className="mt-3 space-y-2 text-sm text-parchemin/60">
                 {journal.map((l, i) => (
                   <li key={`${l}-${i}`} className={i === 0 ? "text-foreground" : undefined}>
                     {l}

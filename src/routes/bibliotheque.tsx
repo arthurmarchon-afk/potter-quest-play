@@ -50,11 +50,11 @@ function BibliothequePage() {
   return (
     <section>
       <div className="mx-auto max-w-5xl px-6 py-14 lg:py-20">
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+        <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
           Rayon des connaissances
         </p>
-        <h1 className="font-display text-3xl font-semibold">📚 Bibliothèque</h1>
-        <p className="mt-4 max-w-[62ch] text-muted-foreground">
+        <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">📚 Bibliothèque</h1>
+        <p className="mt-4 max-w-[62ch] text-parchemin/60">
           {lues.length} / {articles.length} pages découvertes. Chaque première lecture rapporte
           de l'XP — certaines pages ne s'ouvrent qu'à partir d'un certain niveau.
         </p>
@@ -67,7 +67,7 @@ function BibliothequePage() {
               className={`rounded-[10px] px-3 py-2 text-sm font-medium transition-transform hover:-translate-y-0.5 ${
                 filtre === f
                   ? "bg-primary/15 text-primary ring-1 ring-primary/40"
-                  : "text-muted-foreground ring-1 ring-border"
+                  : "text-parchemin/60 ring-1 ring-border"
               }`}
             >
               {f === "tout" ? "📖 Tout" : `${categoriesMeta[f].icone} ${categoriesMeta[f].nom}`}
@@ -92,10 +92,10 @@ function BibliothequePage() {
                   <span className="text-2xl">{verrouille ? "🔒" : a.icone}</span>
                   <div className="min-w-0">
                     <h2 className="font-display text-lg">{a.titre}</h2>
-                    <p className="mt-0.5 text-xs uppercase tracking-[0.2em] text-brass-2">
+                    <p className="mt-0.5 text-xs uppercase tracking-[0.2em] text-or">
                       {categoriesMeta[a.categorie].nom}
                     </p>
-                    <p className="mt-2 text-sm text-muted-foreground">
+                    <p className="mt-2 text-sm text-parchemin/60">
                       {verrouille ? `Réservé aux sorciers de niveau ${a.niveau}.` : a.resume}
                     </p>
                     {actif && !verrouille && (
@@ -104,7 +104,7 @@ function BibliothequePage() {
                       </p>
                     )}
                     {!verrouille && (
-                      <p className="mt-2 text-xs text-brass-2">
+                      <p className="mt-2 text-xs text-or">
                         {lu
                           ? "✓ Page découverte"
                           : `Première lecture : ✨ ${a.recompense.xp ?? 0} XP${
@@ -122,7 +122,7 @@ function BibliothequePage() {
         {pret && !joueur && (
           <Link
             to="/sorcier"
-            className="mt-8 inline-flex items-center rounded-[10px] bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5"
+            className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-8"
           >
             🪄 Créer mon sorcier pour gagner de l'XP
           </Link>

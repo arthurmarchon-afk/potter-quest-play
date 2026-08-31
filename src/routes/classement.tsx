@@ -34,19 +34,19 @@ function Classement() {
   return (
     <section>
       <div className="mx-auto max-w-5xl px-6 py-12 lg:py-20">
-        <p className="text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+        <p className="font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
           Saison {saison.numero}
         </p>
-        <h1 className="mt-3 font-display text-2xl font-semibold sm:text-3xl">{saison.nom}</h1>
-        <p className="mt-2 max-w-[60ch] text-sm text-muted-foreground">
+        <h1 className="mt-3 titre-cinema text-2xl text-parchemin sm:text-4xl">{saison.nom}</h1>
+        <p className="mt-2 max-w-[60ch] text-sm text-parchemin/60">
           La saison se clôt dans {saison.joursRestants} jour(s). Le palmarès est figé à la fin du
           trimestre : XP totale pour les élèves, points de maison pour la Coupe.
         </p>
 
         <div className="panel mt-5 p-5">
           <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-            <span className="text-muted-foreground">Progression de la saison</span>
-            <span className="text-brass-2">{saison.progression}%</span>
+            <span className="text-parchemin/60">Progression de la saison</span>
+            <span className="text-or">{saison.progression}%</span>
           </div>
           <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-border">
             <div className="h-full bg-primary" style={{ width: `${saison.progression}%` }} />
@@ -56,7 +56,7 @@ function Classement() {
         {!joueur && (
           <p className="panel mt-5 p-4 text-sm">
             Créez votre sorcier sur la page{" "}
-            <Link to="/sorcier" className="text-brass-2 hover:underline">
+            <Link to="/sorcier" className="text-or hover:underline">
               Mon Sorcier
             </Link>{" "}
             pour entrer au classement.
@@ -75,11 +75,11 @@ function Classement() {
                   }`}
                 >
                   <span className="flex items-center gap-3">
-                    <span className="w-6 text-brass-2">{i + 1}</span>
+                    <span className="w-6 text-or">{i + 1}</span>
                     <span>{emblemes[e.maison]}</span>
                     <span className={e.joueur ? "font-medium text-foreground" : ""}>{e.nom}</span>
                   </span>
-                  <span className="text-muted-foreground">
+                  <span className="text-parchemin/60">
                     Niv. {e.niveau} · {e.xp} XP
                   </span>
                 </li>
@@ -94,11 +94,11 @@ function Classement() {
                 {maisons.map((m, i) => (
                   <li key={m.maison} className="text-sm">
                     <div className="flex items-center justify-between gap-2">
-                      <span className={m.vous ? "text-foreground" : "text-muted-foreground"}>
+                      <span className={m.vous ? "text-foreground" : "text-parchemin/60"}>
                         {i + 1}. {m.embleme} {m.maison.charAt(0).toUpperCase() + m.maison.slice(1)}
-                        {m.vous && <span className="ml-2 text-brass-2">(vous)</span>}
+                        {m.vous && <span className="ml-2 text-or">(vous)</span>}
                       </span>
-                      <span className="text-brass-2">{m.points}</span>
+                      <span className="text-or">{m.points}</span>
                     </div>
                     <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-border">
                       <div
@@ -111,7 +111,7 @@ function Classement() {
                   </li>
                 ))}
               </ul>
-              <Link to="/coupe" className="mt-4 inline-block text-sm text-brass-2 hover:underline">
+              <Link to="/coupe" className="mt-4 inline-block text-sm text-or hover:underline">
                 Voir la Coupe des Maisons →
               </Link>
             </div>
@@ -119,14 +119,14 @@ function Classement() {
             {joueur && (
               <div className="panel p-5">
                 <h2 className="font-display text-lg">Votre fin de saison</h2>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Rang actuel : <span className="text-brass-2">#{rang}</span> sur {eleves.length}.
+                <p className="mt-2 text-sm text-parchemin/60">
+                  Rang actuel : <span className="text-or">#{rang}</span> sur {eleves.length}.
                 </p>
                 <p className="mt-2 text-sm">
-                  Récompense estimée — <span className="text-brass-2">{recompense.titre}</span> :
+                  Récompense estimée — <span className="text-or">{recompense.titre}</span> :
                   ✨ {recompense.xp} XP et 🪙 {recompense.gallions} Gallions.
                 </p>
-                <p className="mt-2 text-sm italic text-muted-foreground">
+                <p className="mt-2 text-sm italic text-parchemin/60">
                   Gagnez de l'XP dans les mini-jeux, les duels et l'exploration pour grimper avant
                   la clôture.
                 </p>

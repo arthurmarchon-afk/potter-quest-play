@@ -225,13 +225,13 @@ function DevinePersonnage() {
   return (
     <section>
       <div className="mx-auto max-w-3xl px-6 py-12 lg:py-20">
-        <Link to="/jeux" className="text-sm text-brass-2 hover:underline">
+        <Link to="/jeux" className="text-sm text-or hover:underline">
           ← Salle des mini-jeux
         </Link>
-        <h1 className="mt-4 font-display text-2xl font-semibold sm:text-3xl">
+        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
           Devine le Personnage
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-parchemin/60">
           {cfg.texte} Moins vous demandez d'indices, plus vous marquez de points.
         </p>
 
@@ -243,7 +243,7 @@ function DevinePersonnage() {
               className={`rounded-[10px] px-3 py-2 text-sm font-medium ring-1 transition-colors ${
                 n === niveau
                   ? "bg-primary/15 text-primary ring-primary/40"
-                  : "text-muted-foreground ring-border hover:text-foreground"
+                  : "text-parchemin/60 ring-border hover:text-foreground"
               }`}
             >
               {niveaux[n].label}
@@ -255,10 +255,10 @@ function DevinePersonnage() {
           {!fini && manche ? (
             <>
               <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-                <span className="text-muted-foreground">
+                <span className="text-parchemin/60">
                   Énigme {index + 1} / {manches.length}
                 </span>
-                <span className="text-brass-2">
+                <span className="text-or">
                   {trouves} trouvé(s) · {points} pts
                 </span>
               </div>
@@ -266,7 +266,7 @@ function DevinePersonnage() {
               <ul className="mt-4 space-y-2">
                 {manche.perso.indices.slice(0, indices).map((ind, i) => (
                   <li key={ind} className="rounded-[12px] bg-primary/10 px-4 py-3 text-sm">
-                    <span className="mr-2 text-brass-2">Indice {i + 1}</span>
+                    <span className="mr-2 text-or">Indice {i + 1}</span>
                     {ind}
                   </li>
                 ))}
@@ -275,7 +275,7 @@ function DevinePersonnage() {
               {indices < 3 && !reponse && (
                 <button
                   onClick={() => setIndices((i) => i + 1)}
-                  className="mt-3 rounded-[10px] px-3 py-2 text-sm text-brass-2 ring-1 ring-border hover:text-foreground"
+                  className="mt-3 rounded-[10px] px-3 py-2 text-sm text-or ring-1 ring-border hover:text-foreground"
                 >
                   Demander un indice de plus (−1 pt)
                 </button>
@@ -312,12 +312,12 @@ function DevinePersonnage() {
                   ? "Aucune identité ne vous échappe !"
                   : "Le grimoire garde encore quelques secrets."}
               </p>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-sm text-parchemin/60">
                 {trouves} / {manches.length} personnages trouvés — {points} points d'énigme
               </p>
               <button
                 onClick={() => rejouer(niveau)}
-                className="mt-5 rounded-[10px] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-5"
               >
                 Rejouer
               </button>

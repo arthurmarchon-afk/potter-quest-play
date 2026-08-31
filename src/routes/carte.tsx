@@ -43,11 +43,11 @@ function CartePage() {
   return (
     <section>
       <div className="mx-auto max-w-5xl px-6 py-14 lg:py-20">
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+        <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
           Méfait accompli
         </p>
-        <h1 className="font-display text-3xl font-semibold">🗺️ Carte de Poudlard</h1>
-        <p className="mt-4 max-w-[62ch] text-muted-foreground">
+        <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">🗺️ Carte de Poudlard</h1>
+        <p className="mt-4 max-w-[62ch] text-parchemin/60">
           {visites.length} / {lieux.length} lieux explorés. La première visite d'un lieu rapporte
           une grosse récompense ; les suivantes réservent de petites trouvailles.
         </p>
@@ -55,7 +55,7 @@ function CartePage() {
         {pret && !joueur && (
           <Link
             to="/sorcier"
-            className="mt-8 inline-flex items-center rounded-[10px] bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5"
+            className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-8"
           >
             🪄 Créer mon sorcier pour explorer
           </Link>
@@ -76,8 +76,8 @@ function CartePage() {
                   <span className="text-2xl">{verrouille ? "🔒" : l.icone}</span>
                   <div className="min-w-0">
                     <h2 className="font-display text-lg">{l.nom}</h2>
-                    <p className="mt-1 text-sm text-muted-foreground">{l.description}</p>
-                    <p className="mt-2 text-xs text-brass-2">
+                    <p className="mt-1 text-sm text-parchemin/60">{l.description}</p>
+                    <p className="mt-2 text-xs text-or">
                       {verrouille
                         ? `Accessible au niveau ${l.niveau}`
                         : vu
@@ -98,7 +98,7 @@ function CartePage() {
                 <button
                   disabled={verrouille || !joueur}
                   onClick={() => visiter(l.id)}
-                  className="mt-4 self-start rounded-[10px] bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-4 disabled:opacity-50"
                 >
                   {vu ? "🔎 Explorer encore" : "🚶 Explorer"}
                 </button>

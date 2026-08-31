@@ -28,11 +28,11 @@ function SuccesPage() {
   return (
     <section>
       <div className="mx-auto max-w-5xl px-6 py-14 lg:py-20">
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+        <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
           Salle des trophées
         </p>
-        <h1 className="font-display text-3xl font-semibold">🏅 Succès</h1>
-        <p className="mt-4 max-w-[62ch] text-muted-foreground">
+        <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">🏅 Succès</h1>
+        <p className="mt-4 max-w-[62ch] text-parchemin/60">
           {pret && joueur
             ? `${debloques.length} / ${succesListe.length} trophées obtenus. Ils se débloquent tout seuls dès que la condition est remplie.`
             : "Les trophées se débloquent au fil de votre progression."}
@@ -42,13 +42,13 @@ function SuccesPage() {
           {succesListe.map((s) => {
             const ok = debloques.includes(s.id);
             return (
-              <div key={s.id} className={`panel p-5 ${ok ? "ring-1 ring-brass/60" : "opacity-70"}`}>
+              <div key={s.id} className={`panel p-5 ${ok ? "ring-1 ring-or/60" : "opacity-70"}`}>
                 <div className="flex items-start gap-4">
                   <span className={`text-2xl ${ok ? "" : "grayscale"}`}>{ok ? s.icone : "🔒"}</span>
                   <div className="min-w-0">
                     <h2 className="font-display text-lg">{s.titre}</h2>
-                    <p className="mt-1 text-sm text-muted-foreground">{s.description}</p>
-                    <p className="mt-2 text-xs text-brass-2">
+                    <p className="mt-1 text-sm text-parchemin/60">{s.description}</p>
+                    <p className="mt-2 text-xs text-or">
                       {[
                         s.recompense.xp ? `✨ ${s.recompense.xp} XP` : null,
                         s.recompense.gallions ? `🪙 ${s.recompense.gallions}` : null,
@@ -68,7 +68,7 @@ function SuccesPage() {
         {!joueur && pret && (
           <Link
             to="/sorcier"
-            className="mt-8 inline-flex items-center rounded-[10px] bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5"
+            className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-8"
           >
             🪄 Créer mon sorcier
           </Link>

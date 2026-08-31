@@ -196,11 +196,11 @@ function MaitreDesSorts() {
   return (
     <section>
       <div className="mx-auto max-w-3xl px-6 py-12 lg:py-20">
-        <Link to="/jeux" className="text-sm text-brass-2 hover:underline">
+        <Link to="/jeux" className="text-sm text-or hover:underline">
           ← Salle des mini-jeux
         </Link>
-        <h1 className="mt-4 font-display text-2xl font-semibold sm:text-3xl">Maître des Sorts</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{cfg.texte}</p>
+        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">Maître des Sorts</h1>
+        <p className="mt-2 text-sm text-parchemin/60">{cfg.texte}</p>
 
         <div className="mt-5 flex flex-wrap gap-2">
           {(Object.keys(niveaux) as Niveau[]).map((n) => (
@@ -210,7 +210,7 @@ function MaitreDesSorts() {
               className={`rounded-[10px] px-3 py-2 text-sm font-medium ring-1 transition-colors ${
                 n === niveau
                   ? "bg-primary/15 text-primary ring-primary/40"
-                  : "text-muted-foreground ring-border hover:text-foreground"
+                  : "text-parchemin/60 ring-border hover:text-foreground"
               }`}
             >
               {niveaux[n].label}
@@ -219,9 +219,9 @@ function MaitreDesSorts() {
         </div>
 
         {!joueur && (
-          <p className="mt-4 text-sm italic text-muted-foreground">
+          <p className="mt-4 text-sm italic text-parchemin/60">
             Créez votre sorcier sur la page{" "}
-            <Link to="/sorcier" className="text-brass-2 hover:underline">
+            <Link to="/sorcier" className="text-or hover:underline">
               Mon Sorcier
             </Link>{" "}
             pour gagner de l'XP.
@@ -230,12 +230,12 @@ function MaitreDesSorts() {
 
         <div className="panel mt-6 p-5">
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-            <span className="text-muted-foreground">
+            <span className="text-parchemin/60">
               Manche {Math.min(index + 1, manches.length)} / {manches.length}
             </span>
-            <span className="text-brass-2">Score {score}</span>
-            <span className="text-muted-foreground">🔥 Série {serie}</span>
-            {!fini && <span className="text-muted-foreground">⏳ {reste}s</span>}
+            <span className="text-or">Score {score}</span>
+            <span className="text-parchemin/60">🔥 Série {serie}</span>
+            {!fini && <span className="text-parchemin/60">⏳ {reste}s</span>}
           </div>
           <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-border">
             <div
@@ -246,7 +246,7 @@ function MaitreDesSorts() {
 
           {!fini && manche ? (
             <div className="mt-6">
-              <p className="text-xs uppercase tracking-[0.3em] text-brass-2">Effet observé</p>
+              <p className="text-xs uppercase tracking-[0.3em] text-or">Effet observé</p>
               <p className="mt-2 font-display text-lg">{manche.sort.effet}</p>
               <div className="mt-5 grid gap-2 sm:grid-cols-2">
                 {manche.options.map((o) => {
@@ -282,12 +282,12 @@ function MaitreDesSorts() {
                     ? "Belle maîtrise des incantations."
                     : "Encore quelques révisions au grimoire…"}
               </p>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-sm text-parchemin/60">
                 {score} bonnes réponses sur {manches.length} — meilleure série : {meilleureSerie}
               </p>
               <button
                 onClick={() => rejouer(niveau)}
-                className="mt-5 rounded-[10px] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-5"
               >
                 Rejouer
               </button>

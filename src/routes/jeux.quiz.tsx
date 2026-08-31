@@ -152,15 +152,15 @@ function Quiz() {
   return (
     <section>
       <div className="mx-auto max-w-3xl px-6 py-16">
-        <Link to="/jeux" className="text-sm text-muted-foreground hover:text-foreground">
+        <Link to="/jeux" className="text-sm text-parchemin/60 hover:text-foreground">
           ← Salle des mini-jeux
         </Link>
-        <h1 className="mt-4 font-display text-2xl font-semibold sm:text-3xl">
+        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
           Le Quiz du Professeur
         </h1>
 
         <div className="panel mt-6 p-5">
-          <p className="text-xs uppercase tracking-[0.25em] text-brass-2">Niveau</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-or">Niveau</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {(Object.keys(niveaux) as Niveau[]).map((n) => (
               <button
@@ -168,7 +168,7 @@ function Quiz() {
                 onClick={() => setNiveau(n)}
                 className={`rounded-[10px] px-4 py-2 text-sm font-medium ring-1 transition-transform hover:-translate-y-0.5 ${
                   niveau === n
-                    ? "bg-primary/20 text-brass-2 ring-primary/50"
+                    ? "bg-primary/20 text-or ring-primary/50"
                     : "bg-foreground/5 text-foreground/70 ring-border"
                 }`}
               >
@@ -176,20 +176,20 @@ function Quiz() {
               </button>
             ))}
           </div>
-          <p className="mt-3 text-sm italic text-muted-foreground">{conf.texte}</p>
+          <p className="mt-3 text-sm italic text-parchemin/60">{conf.texte}</p>
         </div>
 
         <div className="panel mt-6 p-6 sm:p-8">
           {fini || !question ? (
             <div className="text-center">
-              <p className="text-xs uppercase tracking-[0.3em] text-brass-2">Copie corrigée</p>
+              <p className="text-xs uppercase tracking-[0.3em] text-or">Copie corrigée</p>
               <p className="mt-4 font-display text-4xl font-semibold">
                 {score} / {liste.length}
               </p>
-              <p className="mt-3 text-muted-foreground">{mention}</p>
+              <p className="mt-3 text-parchemin/60">{mention}</p>
               <button
                 onClick={recommencer}
-                className="mt-6 rounded-[10px] bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2"
+                className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-6"
               >
                 Repasser l'examen
               </button>
@@ -197,10 +197,10 @@ function Quiz() {
           ) : (
             <>
               <div className="mb-4 flex items-center justify-between text-xs">
-                <span className="uppercase tracking-[0.25em] text-brass-2">
+                <span className="uppercase tracking-[0.25em] text-or">
                   Question {index + 1} / {liste.length}
                 </span>
-                <span className="italic text-muted-foreground">Score : {score}</span>
+                <span className="italic text-parchemin/60">Score : {score}</span>
               </div>
               <div className="mb-6 h-1.5 overflow-hidden rounded-full bg-foreground/10">
                 <div
@@ -238,7 +238,7 @@ function Quiz() {
                 })}
               </div>
               {conf.chrono !== null && (
-                <p className="mt-4 text-xs italic text-muted-foreground">
+                <p className="mt-4 text-xs italic text-parchemin/60">
                   Temps restant : {temps} s
                 </p>
               )}

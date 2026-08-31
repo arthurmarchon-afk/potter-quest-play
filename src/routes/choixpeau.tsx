@@ -79,7 +79,7 @@ function Choixpeau() {
     <section>
       <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20">
         <div className="mb-8 max-w-[40ch]">
-          <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+          <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
             Cérémonie de répartition
           </p>
           <h1 className="text-balance font-display text-2xl font-semibold leading-tight sm:text-3xl">
@@ -92,11 +92,11 @@ function Choixpeau() {
             {!termine && question ? (
               <>
                 <div className="mb-4 flex items-center justify-between">
-                  <span className="text-xs font-medium uppercase tracking-[0.25em] text-brass-2">
+                  <span className="text-xs font-medium uppercase tracking-[0.25em] text-or">
                     Question {String(index + 1).padStart(2, "0")} /{" "}
                     {String(questionsChoixpeau.length).padStart(2, "0")}
                   </span>
-                  <span className="text-xs italic text-muted-foreground">
+                  <span className="text-xs italic text-parchemin/60">
                     Répondez avec honnêteté
                   </span>
                 </div>
@@ -144,7 +144,7 @@ function Choixpeau() {
                 <h2 className="font-display text-xl font-medium sm:text-2xl">
                   {revele ? "Le Choixpeau a tranché." : "Le Choixpeau réfléchit…"}
                 </h2>
-                <div className="mt-4 space-y-2 text-muted-foreground">
+                <div className="mt-4 space-y-2 text-parchemin/60">
                   {murmures.slice(0, Math.max(0, etapeReveal + 1)).map((m) => (
                     <p key={m} className="animate-fade-in italic">
                       « {m} »
@@ -179,14 +179,14 @@ function Choixpeau() {
                           <button
                             type="submit"
                             disabled={!nom.trim()}
-                            className="rounded-[10px] bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 disabled:opacity-40"
+                            className="bouton-magique px-5 py-2.5 text-[0.6rem] disabled:opacity-40"
                           >
                             Sceller
                           </button>
                         </div>
                       </form>
                     ) : (
-                      <p className="text-sm text-brass-2">
+                      <p className="text-sm text-or">
                         ✦ Maison enregistrée dans le profil de {joueur.nom}.
                       </p>
                     )}
@@ -194,7 +194,7 @@ function Choixpeau() {
                     <div className="flex flex-wrap gap-3">
                       <Link
                         to="/sorcier"
-                        className="inline-flex items-center rounded-[10px] bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5"
+                        className="bouton-magique px-5 py-2.5 text-[0.6rem]"
                       >
                         🧙 Voir mon sorcier
                       </Link>
@@ -206,7 +206,7 @@ function Choixpeau() {
                       </Link>
                       <button
                         onClick={recommencer}
-                        className="inline-flex items-center rounded-[10px] px-4 py-2 text-sm font-medium text-muted-foreground ring-1 ring-border transition-transform hover:-translate-y-0.5"
+                        className="inline-flex items-center rounded-[10px] px-4 py-2 text-sm font-medium text-parchemin/60 ring-1 ring-border transition-transform hover:-translate-y-0.5"
                       >
                         Repasser l'épreuve
                       </button>
@@ -218,7 +218,7 @@ function Choixpeau() {
           </div>
 
           <div className="panel p-6 sm:p-8">
-            <p className="text-xs font-medium uppercase tracking-[0.25em] text-brass-2">
+            <p className="text-xs font-medium uppercase tracking-[0.25em] text-or">
               Votre verdict
             </p>
             <h2 className="mt-3 font-display text-2xl font-semibold leading-tight">
@@ -240,11 +240,11 @@ function Choixpeau() {
             </div>
             {revele && maison && maisonCle ? (
               <>
-                <p className="mb-3 italic text-muted-foreground">{maison.devise}</p>
-                <ul className="space-y-2 text-pretty text-sm text-muted-foreground">
+                <p className="mb-3 italic text-parchemin/60">{maison.devise}</p>
+                <ul className="space-y-2 text-pretty text-sm text-parchemin/60">
                   {maison.traits.map((t) => (
                     <li key={t} className="flex items-start gap-2">
-                      <span className="text-brass-2">✦</span>
+                      <span className="text-or">✦</span>
                       {t}
                     </li>
                   ))}
@@ -257,7 +257,7 @@ function Choixpeau() {
                 </div>
               </>
             ) : (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-parchemin/60">
                 Répondez aux {questionsChoixpeau.length} questions pour que le Choixpeau tranche.
               </p>
             )}

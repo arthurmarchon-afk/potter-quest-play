@@ -29,7 +29,7 @@ function MonSorcier() {
 
   if (!pret) {
     return (
-      <div className="mx-auto max-w-6xl px-6 py-20 text-sm text-muted-foreground">
+      <div className="mx-auto max-w-6xl px-6 py-20 text-sm text-parchemin/60">
         Ouverture du registre…
       </div>
     );
@@ -39,11 +39,11 @@ function MonSorcier() {
     return (
       <section>
         <div className="mx-auto max-w-2xl px-6 py-16 lg:py-24">
-          <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+          <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
             Registre de Poudlard
           </p>
-          <h1 className="font-display text-3xl font-semibold">Créer mon sorcier</h1>
-          <p className="mt-4 text-muted-foreground">
+          <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">Créer mon sorcier</h1>
+          <p className="mt-4 text-parchemin/60">
             Inscrivez votre nom sur le registre. Votre progression — niveau, XP, Gallions et
             points de maison — sera conservée sur cet appareil.
           </p>
@@ -68,7 +68,7 @@ function MonSorcier() {
             <button
               type="submit"
               disabled={!nom.trim()}
-              className="inline-flex items-center justify-center rounded-[10px] bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5 disabled:opacity-40"
+              className="bouton-magique px-5 py-2.5 text-[0.6rem] justify-center disabled:opacity-40"
             >
               🪄 Entrer à Poudlard
             </button>
@@ -83,10 +83,10 @@ function MonSorcier() {
   return (
     <section>
       <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20">
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+        <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
           Mon Sorcier
         </p>
-        <h1 className="font-display text-3xl font-semibold">Parchemin personnel</h1>
+        <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">Parchemin personnel</h1>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
           <PlayerSummary joueur={joueur} />
@@ -98,7 +98,7 @@ function MonSorcier() {
                 <StatLine key={s} cle={s} valeur={joueur.stats[s]} />
               ))}
             </div>
-            <p className="mt-5 text-xs italic text-muted-foreground">
+            <p className="mt-5 text-xs italic text-parchemin/60">
               Quiz → Intelligence · Duels → Magie · Quêtes → Courage · Énigmes → Sagesse ·
               Mini-jeux rapides → Agilité
             </p>
@@ -109,7 +109,7 @@ function MonSorcier() {
           {!joueur.maison && (
             <Link
               to="/choixpeau"
-              className="inline-flex items-center rounded-[10px] bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5"
+              className="bouton-magique px-5 py-2.5 text-[0.6rem]"
             >
               🎩 Passer le Choixpeau
             </Link>
@@ -126,7 +126,7 @@ function MonSorcier() {
                 reinitialiser();
               }
             }}
-            className="inline-flex items-center rounded-[10px] px-5 py-3 text-sm font-medium text-muted-foreground ring-1 ring-border transition-transform hover:-translate-y-0.5"
+            className="inline-flex items-center rounded-[10px] px-5 py-3 text-sm font-medium text-parchemin/60 ring-1 ring-border transition-transform hover:-translate-y-0.5"
           >
             Recommencer à zéro
           </button>

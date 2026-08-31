@@ -202,13 +202,13 @@ function Potions() {
   return (
     <section>
       <div className="mx-auto max-w-3xl px-6 py-12 lg:py-20">
-        <Link to="/jeux" className="text-sm text-brass-2 hover:underline">
+        <Link to="/jeux" className="text-sm text-or hover:underline">
           ← Salle des mini-jeux
         </Link>
-        <h1 className="mt-4 font-display text-2xl font-semibold sm:text-3xl">
+        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
           Laboratoire de Potions
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">{cfg.texte}</p>
+        <p className="mt-2 text-sm text-parchemin/60">{cfg.texte}</p>
 
         <div className="mt-5 flex flex-wrap gap-2">
           {(Object.keys(niveaux) as Niveau[]).map((n) => (
@@ -218,7 +218,7 @@ function Potions() {
               className={`rounded-[10px] px-3 py-2 text-sm font-medium ring-1 transition-colors ${
                 n === niveau
                   ? "bg-primary/15 text-primary ring-primary/40"
-                  : "text-muted-foreground ring-border hover:text-foreground"
+                  : "text-parchemin/60 ring-border hover:text-foreground"
               }`}
             >
               {niveaux[n].label}
@@ -233,21 +233,21 @@ function Potions() {
                 <span className="font-display text-lg">
                   {recette.icone} {recette.nom}
                 </span>
-                <span className="text-muted-foreground">
+                <span className="text-parchemin/60">
                   Potion {index + 1} / {liste.length}
                 </span>
               </div>
-              <p className="mt-1 text-sm italic text-muted-foreground">{recette.effet}</p>
+              <p className="mt-1 text-sm italic text-parchemin/60">{recette.effet}</p>
 
               {phase === "memo" && (
                 <div className="mt-5">
-                  <p className="text-xs uppercase tracking-[0.3em] text-brass-2">
+                  <p className="text-xs uppercase tracking-[0.3em] text-or">
                     Mémorisez la recette
                   </p>
                   <ol className="mt-3 space-y-2">
                     {recette.etapes.map((e, i) => (
                       <li key={e} className="rounded-[10px] bg-primary/10 px-4 py-2 text-sm">
-                        <span className="mr-2 text-brass-2">{i + 1}.</span>
+                        <span className="mr-2 text-or">{i + 1}.</span>
                         {e}
                       </li>
                     ))}
@@ -257,7 +257,7 @@ function Potions() {
 
               {phase === "jeu" && (
                 <div className="mt-5">
-                  <p className="text-xs uppercase tracking-[0.3em] text-brass-2">
+                  <p className="text-xs uppercase tracking-[0.3em] text-or">
                     Ajoutez dans l'ordre
                   </p>
                   <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -274,13 +274,13 @@ function Potions() {
                               : "ring-border hover:-translate-y-0.5 hover:text-foreground"
                           }`}
                         >
-                          {place >= 0 && <span className="mr-2 text-brass-2">{place + 1}.</span>}
+                          {place >= 0 && <span className="mr-2 text-or">{place + 1}.</span>}
                           {ing}
                         </button>
                       );
                     })}
                   </div>
-                  <p className="mt-3 text-sm text-muted-foreground">
+                  <p className="mt-3 text-sm text-parchemin/60">
                     Chaudron : {ajoutes.length} / {recette.etapes.length} ingrédients
                   </p>
                 </div>
@@ -302,12 +302,12 @@ function Potions() {
                     ? "Quelques fioles utilisables, mais peut mieux faire."
                     : "Le laboratoire sent le brûlé…"}
               </p>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-sm text-parchemin/60">
                 {reussies} potion(s) réussie(s) sur {liste.length} — {erreurs} erreur(s)
               </p>
               <button
                 onClick={() => demarrer(niveau)}
-                className="mt-5 rounded-[10px] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-5"
               >
                 Nouvelle séance
               </button>

@@ -76,14 +76,14 @@ function Jeux() {
       <div className="mx-auto max-w-6xl px-6 py-16 lg:py-24">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-[40ch]">
-            <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+            <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
               Salle des mini-jeux
             </p>
             <h1 className="text-balance font-display text-2xl font-semibold leading-tight sm:text-3xl">
               Tentez vos sorts
             </h1>
           </div>
-          <p className="text-sm italic text-muted-foreground">
+          <p className="text-sm italic text-parchemin/60">
             Trois épreuves, aucune boutique, aucun compte.
           </p>
         </div>
@@ -109,8 +109,8 @@ function Jeux() {
                 </div>
               )}
               <h2 className="mt-4 font-display text-lg font-medium">{j.titre}</h2>
-              <p className="mt-2 text-pretty text-sm text-muted-foreground">{j.texte}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brass-2 transition-transform group-hover:translate-x-1">
+              <p className="mt-2 text-pretty text-sm text-parchemin/60">{j.texte}</p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-or transition-transform group-hover:translate-x-1">
                 Jouer <span>→</span>
               </span>
             </Link>
