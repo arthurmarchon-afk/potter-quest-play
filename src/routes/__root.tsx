@@ -120,15 +120,18 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-const navLinks = [
-  { to: "/", label: "🏰 Hub" },
-  { to: "/sorcier", label: "🧙 Mon Sorcier" },
+const liensPrincipaux = [
+  { to: "/", label: "Accueil" },
+  { to: "/sorcier", label: "Mon Sorcier" },
+  { to: "/jeux", label: "Jeux" },
+  { to: "/quetes", label: "Quêtes" },
+  { to: "/bibliotheque", label: "Encyclopédie" },
+] as const;
+
+const liensSecondaires = [
   { to: "/choixpeau", label: "🎩 Choixpeau" },
-  { to: "/jeux", label: "🎮 Mini-jeux" },
   { to: "/duels", label: "⚔️ Duels" },
   { to: "/carte", label: "🗺️ Carte" },
-  { to: "/bibliotheque", label: "📚 Bibliothèque" },
-  { to: "/quetes", label: "📜 Quêtes" },
   { to: "/succes", label: "🏅 Succès" },
   { to: "/inventaire", label: "🎒 Sacoche" },
   { to: "/coupe", label: "🏆 Coupe" },
@@ -140,11 +143,13 @@ function BandeauJoueur() {
   if (!joueur) return null;
   return (
     <div className="mx-auto mt-3 max-w-6xl px-6">
-      <div className="panel flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2.5 text-sm">
-        <span className="font-display text-foreground">{joueur.nom}</span>
-        <span className="text-brass-2">Niv. {joueur.niveau}</span>
-        <span className="text-muted-foreground">🪙 {joueur.gallions}</span>
-        <span className="text-muted-foreground">🏆 {joueur.pointsMaison}</span>
+      <div className="plaque flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2.5 text-sm">
+        <span className="font-display uppercase tracking-[0.14em] text-parchemin">
+          {joueur.nom}
+        </span>
+        <span className="text-or">Niv. {joueur.niveau}</span>
+        <span className="text-parchemin/55">🪙 {joueur.gallions}</span>
+        <span className="text-parchemin/55">🏆 {joueur.pointsMaison}</span>
         <div className="min-w-[120px] flex-1">
           <XPBar niveau={joueur.niveau} xp={joueur.xp} compact />
         </div>
@@ -154,35 +159,77 @@ function BandeauJoueur() {
 }
 
 function SiteNav() {
+  const [defile, setDefile] = useState(false);
+  const [ouvert, setOuvert] = useState(false);
+
+  useEffect(() => {
+    const surScroll = () => setDefile(window.scrollY > 40);
+    surScroll();
+    window.addEventListener("scroll", surScroll, { passive: true });
+    return () => window.removeEventListener("scroll", surScroll);
+  }, []);
+
   return (
-    <header className="relative z-10">
-      <div className="mx-auto max-w-6xl px-6 pt-6">
-        <nav className="panel flex flex-wrap items-center justify-between gap-3 py-3 pl-4 pr-3">
-          <Link to="/" className="flex items-baseline gap-2">
-            <span className="font-display text-lg font-semibold tracking-[0.25em] text-foreground sm:text-xl">
-              POTTER QUEST
-            </span>
-            <span className="hidden text-sm italic text-muted-foreground sm:inline">
-              Parcours du sorcier
+    <header className="sticky top-0 z-40">
+      <div
+        className={`transition-all duration-700 ${
+          defile
+            ? "border-b border-or/15 bg-[oklch(0.09_0.02_265/_78%)] backdrop-blur-md"
+            : "border-b border-transparent bg-transparent"
+        }`}
+      >
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-y-2 px-6 py-3">
+          <Link to="/" className="flex items-baseline gap-3">
+            <span className="font-display text-sm font-semibold uppercase tracking-[0.4em] text-parchemin">
+              Potter Quest
             </span>
           </Link>
-          <div className="flex flex-wrap items-center gap-0.5">
-            {navLinks.map((l) => (
+
+          <nav className="flex flex-wrap items-center gap-x-1 gap-y-1">
+            {liensPrincipaux.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
                 activeOptions={{ exact: l.to === "/" }}
-                className="rounded-[10px] px-3 py-2 text-sm font-medium text-muted-foreground transition-transform hover:-translate-y-0.5"
+                className="px-2.5 py-1.5 font-display text-[0.62rem] uppercase tracking-[0.26em] text-parchemin/55 transition-colors hover:text-or"
                 activeProps={{
                   className:
-                    "rounded-[10px] bg-primary/15 px-3 py-2 text-sm font-medium text-primary ring-1 ring-primary/40",
+                    "px-2.5 py-1.5 font-display text-[0.62rem] uppercase tracking-[0.26em] text-or",
                 }}
               >
                 {l.label}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={() => setOuvert((o) => !o)}
+              aria-expanded={ouvert}
+              className="ml-1 px-2.5 py-1.5 font-display text-[0.62rem] uppercase tracking-[0.26em] text-parchemin/55 transition-colors hover:text-or"
+            >
+              {ouvert ? "Fermer" : "Grimoire ▾"}
+            </button>
+          </nav>
+        </div>
+
+        {ouvert ? (
+          <div className="mx-auto max-w-6xl px-6 pb-4">
+            <div className="plaque flex flex-wrap gap-1 p-2">
+              {liensSecondaires.map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setOuvert(false)}
+                  className="rounded-[3px] px-3 py-2 text-sm text-parchemin/65 transition-colors hover:bg-or/10 hover:text-or"
+                  activeProps={{
+                    className: "rounded-[3px] bg-or/10 px-3 py-2 text-sm text-or",
+                  }}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
           </div>
-        </nav>
+        ) : null}
       </div>
     </header>
   );
@@ -191,13 +238,13 @@ function SiteNav() {
 function SiteFooter() {
   return (
     <footer className="relative z-10">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <div className="flex flex-col items-start justify-between gap-3 border-t border-border pt-6 sm:flex-row sm:items-center">
-          <span className="font-display text-sm font-semibold tracking-[0.25em] text-foreground/70">
-            POTTER QUEST
+      <div className="mx-auto max-w-6xl px-6 py-12">
+        <div className="flex flex-col items-start justify-between gap-3 border-t border-or/15 pt-6 sm:flex-row sm:items-center">
+          <span className="font-display text-sm font-semibold uppercase tracking-[0.35em] text-parchemin/60">
+            Potter Quest
           </span>
-          <p className="text-sm italic text-muted-foreground">
-            Grimoire de fans — accueil, Choixpeau et mini-jeux. Non affilié aux ayants droit.
+          <p className="text-sm italic text-parchemin/40">
+            Grimoire de fans — non affilié aux ayants droit.
           </p>
         </div>
       </div>
@@ -211,19 +258,16 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <JoueurProvider>
-      <div className="relative min-h-screen overflow-hidden bg-background font-body text-foreground">
-        <div className="pointer-events-none absolute -top-24 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-candle/10 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-0 right-0 h-[420px] w-[420px] rounded-full bg-emeraude/10 blur-3xl" />
-        <div className="pointer-events-none absolute left-0 top-1/3 h-[380px] w-[380px] rounded-full bg-brass/10 blur-3xl" />
-        <SiteNav />
-        <BandeauJoueur />
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <main className="relative z-10">
-          <Outlet />
-        </main>
-        <SiteFooter />
-        <RewardPopup />
-      </div>
+        <div className="relative min-h-screen font-body text-foreground">
+          <SiteNav />
+          <BandeauJoueur />
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <main className="relative z-10">
+            <Outlet />
+          </main>
+          <SiteFooter />
+          <RewardPopup />
+        </div>
       </JoueurProvider>
     </QueryClientProvider>
   );
