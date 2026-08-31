@@ -12,6 +12,18 @@ import { useEffect, useState, type ReactNode } from "react";
 import appCss from "@/styles.css?url";
 import { JoueurProvider, useJoueur } from "@/lib/joueur-context";
 import { DecorInterieur } from "@/components/immersif/DecorInterieur";
+import {
+  IconeChoixpeau,
+  IconeEpees,
+  IconeCarte,
+  IconeEtoile,
+  IconeSac,
+  IconeCoupe,
+  IconeSablier,
+  IconeCle,
+  IconeChandelle,
+  Ornement,
+} from "@/components/immersif/Icones";
 import { RewardPopup } from "@/components/jeu/RewardPopup";
 import { XPBar } from "@/components/jeu/XPBar";
 import { reportLovableError } from "@/lib/lovable-error-reporting";
