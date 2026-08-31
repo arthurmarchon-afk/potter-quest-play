@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PlayerSummary } from "@/components/jeu/PlayerSummary";
 import { HouseBadge } from "@/components/jeu/HouseBadge";
-import { maisons } from "@/lib/choixpeau";
+import { maisons as infosMaisons } from "@/lib/choixpeau";
 import { ordreMaisons, pointsCoupe } from "@/lib/joueur";
 import { useJoueur } from "@/lib/joueur-context";
 import grimoire from "@/assets/grimoire.jpg";
@@ -303,7 +303,7 @@ function TableauDeBord() {
                 {classement.map((cle) => (
                   <li key={cle} className="flex items-center gap-3 text-sm">
                     <HouseBadge maison={cle} taille="sm" />
-                    <span className="flex-1 text-foreground/80">{maisons[cle].nom}</span>
+                    <span className="flex-1 text-foreground/80">{infosMaisons[cle].nom}</span>
                     <span className="text-brass-2">{points[cle]} pts</span>
                   </li>
                 ))}
