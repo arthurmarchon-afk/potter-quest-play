@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useJoueur } from "@/lib/joueur-context";
 import { classement, classementMaisons, recompenseRang, saisonCourante } from "@/lib/saison";
-import { emblemes } from "@/lib/joueur";
 import { Salle, EnTetePage, Jauge, Sceau } from "@/components/immersif/Page";
 import { Reveler } from "@/components/immersif/Reveler";
 import { Blason, IconeMedaille, IconeSablier } from "@/components/immersif/Icones";
