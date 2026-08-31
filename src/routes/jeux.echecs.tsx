@@ -191,7 +191,7 @@ function Echecs() {
     nouvellePartie();
   }, [niveau, nouvellePartie]);
 
-  const { joueur, gagner } = useJoueur();
+  const { joueur, gagner, signalerPartie } = useJoueur();
   const recompense = useRef(false);
   const victoire = jeu.isCheckmate() && jeu.turn() === "b";
   const nulle = jeu.isDraw();
@@ -212,7 +212,8 @@ function Echecs() {
     } else {
       gagner({ xp: 30 * mult, gallions: 10 * mult }, "♟️ Partie nulle");
     }
-  }, [victoire, nulle, joueur, niveau, gagner]);
+    signalerPartie({ victoire });
+  }, [victoire, nulle, joueur, niveau, gagner, signalerPartie]);
 
   const statut = jeu.isCheckmate()
     ? jeu.turn() === "w"

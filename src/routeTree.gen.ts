@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChoixpeauRouteImport } from './routes/choixpeau'
 import { Route as CoupeRouteImport } from './routes/coupe'
+import { Route as InventaireRouteImport } from './routes/inventaire'
 import { Route as JeuxRouteImport } from './routes/jeux'
 import { Route as QuetesRouteImport } from './routes/quetes'
 import { Route as SorcierRouteImport } from './routes/sorcier'
@@ -34,6 +35,11 @@ const ChoixpeauRoute = ChoixpeauRouteImport.update({
 const CoupeRoute = CoupeRouteImport.update({
   id: '/coupe',
   path: '/coupe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventaireRoute = InventaireRouteImport.update({
+  id: '/inventaire',
+  path: '/inventaire',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JeuxRoute = JeuxRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
+  '/inventaire': typeof InventaireRoute
   '/jeux': typeof JeuxRouteWithChildren
   '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
+  '/inventaire': typeof InventaireRoute
   '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
   '/succes': typeof SuccesRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
+  '/inventaire': typeof InventaireRoute
   '/jeux': typeof JeuxRouteWithChildren
   '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
     | '/'
     | '/choixpeau'
     | '/coupe'
+    | '/inventaire'
     | '/jeux'
     | '/quetes'
     | '/sorcier'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/'
     | '/choixpeau'
     | '/coupe'
+    | '/inventaire'
     | '/quetes'
     | '/sorcier'
     | '/succes'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
     | '/'
     | '/choixpeau'
     | '/coupe'
+    | '/inventaire'
     | '/jeux'
     | '/quetes'
     | '/sorcier'
@@ -161,6 +173,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChoixpeauRoute: typeof ChoixpeauRoute
   CoupeRoute: typeof CoupeRoute
+  InventaireRoute: typeof InventaireRoute
   JeuxRoute: typeof JeuxRouteWithChildren
   QuetesRoute: typeof QuetesRoute
   SorcierRoute: typeof SorcierRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/coupe'
       fullPath: '/coupe'
       preLoaderRoute: typeof CoupeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventaire': {
+      id: '/inventaire'
+      path: '/inventaire'
+      fullPath: '/inventaire'
+      preLoaderRoute: typeof InventaireRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jeux': {
@@ -269,6 +289,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChoixpeauRoute: ChoixpeauRoute,
   CoupeRoute: CoupeRoute,
+  InventaireRoute: InventaireRoute,
   JeuxRoute: JeuxRouteWithChildren,
   QuetesRoute: QuetesRoute,
   SorcierRoute: SorcierRoute,

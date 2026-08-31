@@ -66,7 +66,7 @@ function tirer(niveau: Niveau): Question[] {
 }
 
 function Quiz() {
-  const { joueur, gagner } = useJoueur();
+  const { joueur, gagner, signalerPartie } = useJoueur();
   const recompense = useRef(false);
   const [niveau, setNiveau] = useState<Niveau>("sorcier");
   const conf = niveaux[niveau];
@@ -135,7 +135,12 @@ function Quiz() {
       },
       `🧠 Quiz terminé — ${score}/${liste.length}`,
     );
-  }, [fini, joueur, liste.length, score, niveau, gagner]);
+    signalerPartie({
+      victoire: score >= liste.length * 0.6,
+      bonnes: score,
+      parfait: score === liste.length,
+    });
+  }, [fini, joueur, liste.length, score, niveau, gagner, signalerPartie]);
 
   const mention = useMemo(() => {
     const ratio = liste.length ? score / liste.length : 0;
