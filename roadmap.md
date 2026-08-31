@@ -15,9 +15,9 @@
 - [x] Succès automatiques (/succes) — 8 trophées avec récompenses
 - [x] Inventaire (/inventaire) — objets consommables et reliques
 
-## Phase 3 — Contenu
-- [ ] Bibliothèque / encyclopédie avec découvertes
-- [ ] Exploration (carte de Poudlard)
+## Phase 3 — Contenu (fait)
+- [x] Bibliothèque / encyclopédie (/bibliotheque) — 16 pages, filtres, XP à la découverte
+- [x] Exploration (/carte) — 8 lieux, première visite récompensée, trouvailles ensuite
 
 ## Phase 4 — Mini-jeux
 - [ ] Maître des sorts, Potions, Devine le personnage, Quidditch
