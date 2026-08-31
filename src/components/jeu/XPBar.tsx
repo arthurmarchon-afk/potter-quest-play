@@ -14,20 +14,17 @@ export function XPBar({
   return (
     <div className="w-full">
       {!compact && (
-        <div className="mb-1.5 flex items-baseline justify-between text-xs">
-          <span className="font-medium uppercase tracking-[0.2em] text-brass-2">
+        <div className="mb-2 flex items-baseline justify-between">
+          <span className="font-display text-[0.6rem] uppercase tracking-[0.35em] text-or/80">
             Niveau {niveau}
           </span>
-          <span className="text-muted-foreground">
+          <span className="chiffre text-xs text-parchemin/60">
             {xp} / {requis} XP
           </span>
         </div>
       )}
-      <div className="h-2 w-full overflow-hidden rounded-full bg-foreground/10 ring-1 ring-border">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-brass to-candle transition-[width] duration-700 ease-out"
-          style={{ width: `${pct}%` }}
-        />
+      <div className="entaille w-full">
+        <div className="entaille-remplie transition-[width] duration-700 ease-out" style={{ width: `${pct}%` }} />
       </div>
     </div>
   );

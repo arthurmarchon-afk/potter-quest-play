@@ -13,6 +13,9 @@ import {
   type Adversaire,
   type SortDuel,
 } from "@/lib/duel";
+import { Salle, EnTetePage, Jauge } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeEpees, IconeCrane } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/duels")({
   head: () => ({
@@ -48,9 +51,15 @@ function Duels() {
   const [tour, setTour] = useState(1);
   const [journal, setJournal] = useState<string[]>([]);
   const [attente, setAttente] = useState(false);
+  const [eclair, setEclair] = useState<"joueur" | "adv" | null>(null);
   const compte = useRef(false);
 
   const ecrire = useCallback((l: string) => setJournal((j) => [l, ...j].slice(0, 12)), []);
+
+  const declencherEclair = useCallback((cible: "joueur" | "adv") => {
+    setEclair(cible);
+    setTimeout(() => setEclair(null), 550);
+  }, []);
 
   const lancerDuel = useCallback(
     (a: Adversaire) => {
@@ -65,7 +74,7 @@ function Duels() {
       setPvAdv(a.pv);
       setBouclier(0);
       setTour(1);
-      setJournal([`⚔️ Le duel contre ${a.nom} commence !`]);
+      setJournal([`Le duel contre ${a.nom} commence.`]);
       setEtat("combat");
       setAttente(false);
       compte.current = false;
@@ -79,6 +88,7 @@ function Duels() {
       const { degats, texte } = attaqueAdversaire(adv);
       const absorbe = Math.min(bouclierActif, degats);
       const subis = degats - absorbe;
+      declencherEclair("joueur");
       setPv((p) => {
         const reste = Math.max(0, p - subis);
         if (reste === 0) setEtat("defaite");
@@ -86,7 +96,7 @@ function Duels() {
       });
       ecrire(
         absorbe > 0
-          ? `${texte} — 🛡️ ${absorbe} absorbés, ${subis} dégâts subis.`
+          ? `${texte} — ${absorbe} absorbés par le bouclier, ${subis} dégâts subis.`
           : `${texte} — ${subis} dégâts subis.`,
       );
       setBouclier(0);
@@ -94,14 +104,14 @@ function Duels() {
       setEnergie((e) => Math.min(energieMax, e + 12));
       setAttente(false);
     },
-    [adv, ecrire, energieMax],
+    [adv, ecrire, energieMax, declencherEclair],
   );
 
   const lancerSort = useCallback(
     (s: SortDuel) => {
       if (!joueur || !adv || etat !== "combat" || attente) return;
       if (energie < s.cout) {
-        ecrire("💤 Pas assez d'énergie magique — reprenez votre souffle.");
+        ecrire("Pas assez d'énergie magique — reprenez votre souffle.");
         return;
       }
       setAttente(true);
@@ -111,21 +121,22 @@ function Duels() {
       if (s.bouclier) {
         bouclierActif = s.bouclier + (joueur.stats?.sagesse ?? 0);
         setBouclier(bouclierActif);
-        ecrire(`${s.icone} ${s.nom} — bouclier de ${bouclierActif} points dressé.`);
+        ecrire(`${s.nom} — bouclier de ${bouclierActif} points dressé.`);
       } else if (s.soin) {
         const soin = soinSort(joueur, s);
         setPv((p) => Math.min(pvMax, p + soin));
-        ecrire(`${s.icone} ${s.nom} — ${soin} PV regagnés.`);
+        ecrire(`${s.nom} — ${soin} PV regagnés.`);
       } else if (!reussite(joueur, s)) {
-        ecrire(`${s.icone} ${s.nom} — le sort se disperse dans le vide !`);
+        ecrire(`${s.nom} — le sort se disperse dans le vide.`);
       } else {
         const d = degatsSort(joueur, s);
+        declencherEclair("adv");
         setPvAdv((p) => {
           const reste = Math.max(0, p - d);
           if (reste === 0) setEtat("victoire");
           return reste;
         });
-        ecrire(`${s.icone} ${s.nom} — ${d} dégâts infligés à ${adv.nom}.`);
+        ecrire(`${s.nom} — ${d} dégâts infligés à ${adv.nom}.`);
       }
 
       setTimeout(() => {
@@ -139,7 +150,7 @@ function Duels() {
         });
       }, 750);
     },
-    [joueur, adv, etat, attente, energie, ecrire, pvMax, riposte],
+    [joueur, adv, etat, attente, energie, ecrire, pvMax, riposte, declencherEclair],
   );
 
   useEffect(() => {
@@ -157,159 +168,160 @@ function Duels() {
             stat: { cle: "courage", valeur: 1 },
           }
         : { xp: Math.round(adv.recompense.xp * 0.2), gallions: 5 },
-      gagne ? `⚔️ Duel remporté contre ${adv.nom}` : `🩹 Défaite honorable face à ${adv.nom}`,
+      gagne ? `Duel remporté contre ${adv.nom}` : `Défaite honorable face à ${adv.nom}`,
     );
   }, [etat, adv, joueur, pv, pvMax, gagner, signalerPartie]);
 
-  const barre = (valeur: number, max: number, couleur: string) => (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-border">
-      <div
-        className={`h-full transition-all ${couleur}`}
-        style={{ width: `${Math.max(0, Math.round((valeur / Math.max(1, max)) * 100))}%` }}
-      />
-    </div>
-  );
-
   return (
-    <section>
-      <div className="mx-auto max-w-4xl px-6 py-12 lg:py-20">
-        <p className="font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
-          Club de duel
-        </p>
-        <h1 className="mt-3 titre-cinema text-2xl text-parchemin sm:text-4xl">
-          Baguettes levées, saluez votre adversaire
-        </h1>
-        <p className="mt-2 max-w-[60ch] text-sm text-parchemin/60">
-          Chaque sortilège coûte de l'énergie magique. Vos statistiques amplifient les dégâts, la
-          précision et les soins.
-        </p>
+    <Salle>
+      <EnTetePage
+        surtitre="Club de duel"
+        titre="Baguettes levées"
+        icone={<IconeEpees />}
+        intro="Chaque sortilège coûte de l'énergie magique. Vos statistiques amplifient les dégâts, la précision et les soins."
+      />
 
-        {!joueur && (
-          <p className="panel mt-6 p-4 text-sm">
-            Créez d'abord votre sorcier sur la page{" "}
-            <Link to="/sorcier" className="text-or hover:underline">
-              Mon Sorcier
-            </Link>
-            .
-          </p>
-        )}
+      {!joueur && (
+        <div className="plaque p-5 text-sm">
+          Créez d'abord votre sorcier sur la page{" "}
+          <Link to="/sorcier" className="text-or hover:underline">
+            Mon Sorcier
+          </Link>
+          .
+        </div>
+      )}
 
-        {joueur && etat === "choix" && (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {adversaires.map((a) => {
-              const verrouille = joueur.niveau < a.niveau;
-              return (
-                <div key={a.id} className="panel p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-display text-lg">
-                      {a.icone} {a.nom}
+      {joueur && etat === "choix" && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          {adversaires.map((a, i) => {
+            const verrouille = joueur.niveau < a.niveau;
+            return (
+              <Reveler key={a.id} delai={i * 70}>
+                <div className="plaque relative overflow-hidden p-5">
+                  {/* portrait sombre */}
+                  <div className="mb-4 flex h-28 items-center justify-center rounded-[3px] bg-gradient-to-b from-black/60 to-black/20">
+                    <span className="grid h-16 w-16 place-items-center rounded-full border border-or/25 bg-black/50 text-or [&>svg]:h-7 [&>svg]:w-7">
+                      <IconeCrane />
                     </span>
-                    <span className="text-sm text-parchemin/60">Niv. {a.niveau}+</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-display text-lg text-parchemin">{a.nom}</span>
+                    <span className="font-display text-[0.6rem] uppercase tracking-[0.25em] text-or/70">
+                      Niv. {a.niveau}+
+                    </span>
                   </div>
                   <p className="mt-2 text-sm text-parchemin/60">{a.description}</p>
-                  <p className="mt-2 text-sm text-or">
-                    ❤️ {a.pv} PV · ✨ {a.recompense.xp} XP · 🪙 {a.recompense.gallions} ·
-                    🏆 {a.recompense.points}
+                  <p className="chiffre mt-3 text-sm">
+                    {a.pv} PV · {a.recompense.xp} XP · {a.recompense.gallions} Gallions ·{" "}
+                    {a.recompense.points} points
                   </p>
                   <button
                     onClick={() => lancerDuel(a)}
                     disabled={verrouille}
-                    className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-4 w-full disabled:opacity-40"
+                    className="bouton-magique mt-4 w-full justify-center px-5 py-2.5 text-[0.6rem] disabled:opacity-40"
                   >
-                    {verrouille ? `🔒 Niveau ${a.niveau} requis` : "Défier"}
+                    {verrouille ? `Niveau ${a.niveau} requis` : "Défier"}
                   </button>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </Reveler>
+            );
+          })}
+        </div>
+      )}
 
-        {joueur && adv && etat !== "choix" && (
-          <div className="mt-6 grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-            <div className="panel p-5">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <p className="font-display">🧙 {joueur.nom}</p>
-                  <p className="mt-1 text-sm text-parchemin/60">
-                    ❤️ {pv}/{pvMax}
+      {joueur && adv && etat !== "choix" && (
+        <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
+          <div className="plaque relative overflow-hidden p-6">
+            {eclair && (
+              <span
+                aria-hidden
+                className={`scintille pointer-events-none absolute h-24 w-24 rounded-full bg-[oklch(0.85_0.1_85/60%)] blur-2xl ${
+                  eclair === "joueur" ? "left-6 top-6" : "right-6 top-6"
+                }`}
+              />
+            )}
+            {/* pupitres face à face */}
+            <div className="relative grid gap-8 sm:grid-cols-2">
+              <div className="border-b-2 border-bronze/40 pb-4 text-center sm:border-b-0 sm:border-r-2 sm:pr-6">
+                <p className="font-display text-sm uppercase tracking-[0.25em] text-parchemin">
+                  {joueur.nom}
+                </p>
+                <p className="mt-3 text-xs uppercase tracking-[0.2em] text-parchemin/50">
+                  Points de vie · {pv}/{pvMax}
+                </p>
+                <Jauge valeur={(pv / Math.max(1, pvMax)) * 100} className="mt-1.5" />
+                <p className="mt-3 text-xs uppercase tracking-[0.2em] text-parchemin/50">
+                  Énergie · {energie}/{energieMax}
+                </p>
+                <Jauge valeur={(energie / Math.max(1, energieMax)) * 100} className="mt-1.5" />
+                {bouclier > 0 && (
+                  <p className="mt-2 font-display text-[0.6rem] uppercase tracking-[0.25em] text-or">
+                    Bouclier {bouclier}
                   </p>
-                  {barre(pv, pvMax, "bg-emeraude")}
-                  <p className="mt-2 text-sm text-parchemin/60">
-                    ✨ Énergie {energie}/{energieMax}
-                  </p>
-                  {barre(energie, energieMax, "bg-primary")}
-                  {bouclier > 0 && (
-                    <p className="mt-2 text-sm text-or">🛡️ Bouclier {bouclier}</p>
-                  )}
-                </div>
-                <div>
-                  <p className="font-display">
-                    {adv.icone} {adv.nom}
-                  </p>
-                  <p className="mt-1 text-sm text-parchemin/60">
-                    ❤️ {pvAdv}/{adv.pv}
-                  </p>
-                  {barre(pvAdv, adv.pv, "bg-destructive")}
-                  <p className="mt-2 text-sm text-parchemin/60">Tour {tour}</p>
+                )}
+              </div>
+              <div className="pt-4 text-center sm:pl-6 sm:pt-0">
+                <p className="font-display text-sm uppercase tracking-[0.25em] text-parchemin">
+                  {adv.nom}
+                </p>
+                <p className="mt-3 text-xs uppercase tracking-[0.2em] text-parchemin/50">
+                  Points de vie · {pvAdv}/{adv.pv}
+                </p>
+                <Jauge valeur={(pvAdv / Math.max(1, adv.pv)) * 100} className="mt-1.5" />
+                <p className="mt-6 chiffre text-sm">Tour {tour}</p>
+              </div>
+            </div>
+
+            {etat === "combat" ? (
+              <div className="relative mt-6 grid gap-3 sm:grid-cols-2">
+                {sortsDuel.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => lancerSort(s)}
+                    disabled={attente || energie < s.cout}
+                    className="filet-or rounded-[3px] bg-black/30 px-4 py-3 text-left text-sm transition-transform hover:-translate-y-0.5 hover:bg-black/40 disabled:opacity-40"
+                  >
+                    <span className="font-display text-sm text-parchemin">{s.nom}</span>
+                    <span className="mt-1 block text-xs text-parchemin/55">
+                      {s.description} — coût {s.cout}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="relative mt-6 text-center">
+                <p className="titre-monument text-xl">
+                  {etat === "victoire"
+                    ? `Victoire ! ${adv.nom} s'incline.`
+                    : `Vous êtes désarmé… ${adv.nom} l'emporte.`}
+                </p>
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  <button onClick={() => lancerDuel(adv)} className="bouton-magique px-5 py-2.5 text-[0.6rem]">
+                    Revanche
+                  </button>
+                  <button
+                    onClick={() => setEtat("choix")}
+                    className="rounded-[3px] px-4 py-2 text-sm ring-1 ring-border"
+                  >
+                    Choisir un autre adversaire
+                  </button>
                 </div>
               </div>
-
-              {etat === "combat" ? (
-                <div className="mt-5 grid gap-2 sm:grid-cols-2">
-                  {sortsDuel.map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={() => lancerSort(s)}
-                      disabled={attente || energie < s.cout}
-                      className="rounded-[12px] px-4 py-3 text-left text-sm ring-1 ring-border transition-all hover:-translate-y-0.5 hover:text-foreground disabled:opacity-40"
-                    >
-                      <span className="font-medium">
-                        {s.icone} {s.nom}
-                      </span>
-                      <span className="mt-1 block text-xs text-parchemin/60">
-                        {s.description} — coût {s.cout}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <div className="mt-5 text-center">
-                  <p className="font-display text-xl">
-                    {etat === "victoire"
-                      ? `Victoire ! ${adv.nom} s'incline.`
-                      : `Vous êtes désarmé… ${adv.nom} l'emporte.`}
-                  </p>
-                  <div className="mt-4 flex flex-wrap justify-center gap-2">
-                    <button
-                      onClick={() => lancerDuel(adv)}
-                      className="bouton-magique px-5 py-2.5 text-[0.6rem]"
-                    >
-                      Revanche
-                    </button>
-                    <button
-                      onClick={() => setEtat("choix")}
-                      className="rounded-[10px] px-4 py-2 text-sm ring-1 ring-border"
-                    >
-                      Choisir un autre adversaire
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="panel p-5">
-              <p className="text-xs uppercase tracking-[0.3em] text-or">Registre du duel</p>
-              <ul className="mt-3 space-y-2 text-sm text-parchemin/60">
-                {journal.map((l, i) => (
-                  <li key={`${l}-${i}`} className={i === 0 ? "text-foreground" : undefined}>
-                    {l}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            )}
           </div>
-        )}
-      </div>
-    </section>
+
+          <div className="plaque p-5">
+            <p className="font-display text-xs uppercase tracking-[0.3em] text-or">Registre du duel</p>
+            <ul className="mt-3 space-y-2 text-sm text-parchemin/60">
+              {journal.map((l, i) => (
+                <li key={`${l}-${i}`} className={i === 0 ? "text-foreground" : undefined}>
+                  {l}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </Salle>
   );
 }

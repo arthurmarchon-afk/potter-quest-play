@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useJoueur } from "@/lib/joueur-context";
+import { Salle, EnTetePage, Cadre, ChoixGrave, Jauge, SeparateurOrne } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeBaguette, IconeSablier, IconeEclair } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/jeux/sorts")({
   head: () => ({
@@ -97,6 +100,11 @@ function construire(n: Niveau): Manche[] {
     });
 }
 
+const optionsNiveau = (Object.keys(niveaux) as Niveau[]).map((n) => ({
+  valeur: n,
+  libelle: niveaux[n].label,
+}));
+
 function MaitreDesSorts() {
   const { joueur, gagner, signalerPartie } = useJoueur();
   const [niveau, setNiveau] = useState<Niveau>("sorcier");
@@ -113,21 +121,18 @@ function MaitreDesSorts() {
   const cfg = niveaux[niveau];
   const manche = manches[index];
 
-  const rejouer = useCallback(
-    (n: Niveau) => {
-      setNiveau(n);
-      setManches(construire(n));
-      setIndex(0);
-      setScore(0);
-      setSerie(0);
-      setMeilleureSerie(0);
-      setReponse(null);
-      setReste(niveaux[n].temps);
-      setFini(false);
-      compte.current = false;
-    },
-    [],
-  );
+  const rejouer = useCallback((n: Niveau) => {
+    setNiveau(n);
+    setManches(construire(n));
+    setIndex(0);
+    setScore(0);
+    setSerie(0);
+    setMeilleureSerie(0);
+    setReponse(null);
+    setReste(niveaux[n].temps);
+    setFini(false);
+    compte.current = false;
+  }, []);
 
   const suivant = useCallback(() => {
     setReponse(null);
@@ -184,7 +189,7 @@ function MaitreDesSorts() {
         points: victoire ? 5 * cfg.mult : 0,
         ...(score === manches.length ? { stat: { cle: "magie" as const, valeur: 1 } } : {}),
       },
-      `🪄 Maître des Sorts — ${score}/${manches.length}`,
+      `Maître des Sorts — ${score}/${manches.length}`,
     );
   }, [fini, joueur, score, manches.length, meilleureSerie, cfg.mult, gagner, signalerPartie]);
 
@@ -194,78 +199,75 @@ function MaitreDesSorts() {
   );
 
   return (
-    <section>
-      <div className="mx-auto max-w-3xl px-6 py-12 lg:py-20">
-        <Link to="/jeux" className="text-sm text-or hover:underline">
-          ← Salle des mini-jeux
-        </Link>
-        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">Maître des Sorts</h1>
-        <p className="mt-2 text-sm text-parchemin/60">{cfg.texte}</p>
+    <Salle>
+      <Link to="/jeux" className="font-display text-[0.6rem] uppercase tracking-[0.3em] text-or/70 hover:text-or">
+        Salle des mini-jeux
+      </Link>
 
-        <div className="mt-5 flex flex-wrap gap-2">
-          {(Object.keys(niveaux) as Niveau[]).map((n) => (
-            <button
-              key={n}
-              onClick={() => rejouer(n)}
-              className={`rounded-[10px] px-3 py-2 text-sm font-medium ring-1 transition-colors ${
-                n === niveau
-                  ? "bg-primary/15 text-primary ring-primary/40"
-                  : "text-parchemin/60 ring-border hover:text-foreground"
-              }`}
-            >
-              {niveaux[n].label}
-            </button>
-          ))}
-        </div>
+      <EnTetePage
+        surtitre="Duel d'incantations"
+        titre="Maître des Sorts"
+        intro={`${cfg.texte} Foudroyez le bon sortilège avant que le sablier ne se vide.`}
+        icone={<IconeBaguette />}
+        aside={
+          <ChoixGrave label="Rang" options={optionsNiveau} valeur={niveau} onChange={(v) => rejouer(v as Niveau)} />
+        }
+      />
 
-        {!joueur && (
-          <p className="mt-4 text-sm italic text-parchemin/60">
+      {!joueur && (
+        <Reveler>
+          <p className="annotation mb-6 text-sm">
             Créez votre sorcier sur la page{" "}
             <Link to="/sorcier" className="text-or hover:underline">
               Mon Sorcier
             </Link>{" "}
             pour gagner de l'XP.
           </p>
-        )}
+        </Reveler>
+      )}
 
-        <div className="panel mt-6 p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-            <span className="text-parchemin/60">
+      <Reveler>
+        <Cadre className="p-6 sm:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="font-display text-[0.6rem] uppercase tracking-[0.35em] text-parchemin/50">
               Manche {Math.min(index + 1, manches.length)} / {manches.length}
             </span>
-            <span className="text-or">Score {score}</span>
-            <span className="text-parchemin/60">🔥 Série {serie}</span>
-            {!fini && <span className="text-parchemin/60">⏳ {reste}s</span>}
+            <span className="chiffre text-lg">Score {score}</span>
+            <span className="font-display text-[0.6rem] uppercase tracking-[0.3em] text-parchemin/50">
+              Série {serie}
+            </span>
+            {!fini && (
+              <span className="flex items-center gap-2 text-or">
+                <IconeSablier className={`h-4 w-4 ${reste <= 2 ? "scintille" : ""}`} />
+                <span className="chiffre text-base">{reste}s</span>
+              </span>
+            )}
           </div>
-          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-border">
-            <div
-              className="h-full bg-primary transition-all"
-              style={{ width: `${progression}%` }}
-            />
-          </div>
+          <Jauge valeur={progression} className="mt-4" />
 
           {!fini && manche ? (
-            <div className="mt-6">
-              <p className="text-xs uppercase tracking-[0.3em] text-or">Effet observé</p>
-              <p className="mt-2 font-display text-lg">{manche.sort.effet}</p>
-              <div className="mt-5 grid gap-2 sm:grid-cols-2">
+            <div className="mt-8">
+              <p className="font-display text-[0.6rem] uppercase tracking-[0.4em] text-or/70">Effet observé</p>
+              <p className="annotation mt-3 text-xl leading-relaxed">{manche.sort.effet}</p>
+              <SeparateurOrne className="mt-5" />
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {manche.options.map((o) => {
                   const estBon = o === manche.sort.nom;
                   const choisi = reponse === o;
                   const style =
                     reponse === null
-                      ? "ring-border hover:-translate-y-0.5 hover:text-foreground"
+                      ? "border-or/20 text-parchemin/80 hover:-translate-y-0.5 hover:border-or/50 hover:text-parchemin"
                       : estBon
-                        ? "bg-emeraude/20 text-foreground ring-emeraude/50"
+                        ? "border-or/70 bg-or/10 text-parchemin scintille"
                         : choisi
-                          ? "bg-destructive/15 text-foreground ring-destructive/40"
-                          : "ring-border opacity-60";
+                          ? "border-sang/70 bg-sang/20 text-parchemin"
+                          : "border-or/10 text-parchemin/40";
                   return (
                     <button
                       key={o}
                       onClick={() => repondre(o)}
                       disabled={reponse !== null}
-                      className={`rounded-[12px] px-4 py-3 text-left text-sm ring-1 transition-all ${style}`}
+                      className={`rounded-[2px] border bg-black/30 px-4 py-3 text-left font-display text-sm uppercase tracking-[0.08em] transition-all ${style}`}
                     >
                       {o}
                     </button>
@@ -274,27 +276,25 @@ function MaitreDesSorts() {
               </div>
             </div>
           ) : (
-            <div className="mt-6 text-center">
-              <p className="font-display text-xl">
+            <div className="mt-8 text-center">
+              <IconeEclair className="mx-auto h-8 w-8 text-or" />
+              <p className="titre-monument mt-3 text-2xl">
                 {score === manches.length
                   ? "Sans-faute ! Le grimoire vous salue."
                   : score / manches.length >= 0.7
                     ? "Belle maîtrise des incantations."
                     : "Encore quelques révisions au grimoire…"}
               </p>
-              <p className="mt-2 text-sm text-parchemin/60">
+              <p className="annotation mt-3 text-base">
                 {score} bonnes réponses sur {manches.length} — meilleure série : {meilleureSerie}
               </p>
-              <button
-                onClick={() => rejouer(niveau)}
-                className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-5"
-              >
+              <button onClick={() => rejouer(niveau)} className="bouton-magique mt-6">
                 Rejouer
               </button>
             </div>
           )}
-        </div>
-      </div>
-    </section>
+        </Cadre>
+      </Reveler>
+    </Salle>
   );
 }

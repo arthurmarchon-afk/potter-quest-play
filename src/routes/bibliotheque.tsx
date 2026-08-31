@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useJoueur } from "@/lib/joueur-context";
 import { articles, categoriesMeta, type Categorie } from "@/lib/contenu";
+import { Salle, EnTetePage, SeparateurOrne, ChoixGrave, Cadre } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeLivre, IconeCadenas, IconeParchemin } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/bibliotheque")({
   head: () => ({
@@ -31,6 +34,10 @@ const filtres: (Categorie | "tout")[] = [
   "lieux",
 ];
 
+function lettrine(titre: string) {
+  return titre.charAt(0).toUpperCase();
+}
+
 function BibliothequePage() {
   const { joueur, pret, lireArticle } = useJoueur();
   const [filtre, setFiltre] = useState<Categorie | "tout">("tout");
@@ -48,86 +55,105 @@ function BibliothequePage() {
   }
 
   return (
-    <section>
-      <div className="mx-auto max-w-5xl px-6 py-14 lg:py-20">
-        <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
-          Rayon des connaissances
-        </p>
-        <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">📚 Bibliothèque</h1>
-        <p className="mt-4 max-w-[62ch] text-parchemin/60">
-          {lues.length} / {articles.length} pages découvertes. Chaque première lecture rapporte
-          de l'XP — certaines pages ne s'ouvrent qu'à partir d'un certain niveau.
-        </p>
+    <Salle large>
+      <EnTetePage
+        surtitre="La Réserve"
+        titre="Bibliothèque"
+        icone={<IconeLivre />}
+        intro={`${lues.length} / ${articles.length} pages découvertes. Chaque première lecture rapporte de l'expérience — certaines pages restent scellées avant un certain niveau.`}
+      />
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          {filtres.map((f) => (
-            <button
-              key={f}
-              onClick={() => setFiltre(f)}
-              className={`rounded-[10px] px-3 py-2 text-sm font-medium transition-transform hover:-translate-y-0.5 ${
-                filtre === f
-                  ? "bg-primary/15 text-primary ring-1 ring-primary/40"
-                  : "text-parchemin/60 ring-1 ring-border"
-              }`}
-            >
-              {f === "tout" ? "📖 Tout" : `${categoriesMeta[f].icone} ${categoriesMeta[f].nom}`}
-            </button>
-          ))}
-        </div>
+      <Reveler className="mt-2">
+        <ChoixGrave
+          label="Rayon"
+          valeur={filtre}
+          onChange={(v) => setFiltre(v as Categorie | "tout")}
+          options={filtres.map((f) => ({
+            valeur: f,
+            libelle: f === "tout" ? "Tout" : categoriesMeta[f].nom,
+          }))}
+        />
+      </Reveler>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {liste.map((a) => {
-            const lu = lues.includes(a.id);
-            const verrouille = !lu && a.niveau > niveau;
-            const actif = ouvert === a.id;
-            return (
+      <div className="mt-10 grid gap-6 sm:grid-cols-2">
+        {liste.map((a, i) => {
+          const lu = lues.includes(a.id);
+          const verrouille = !lu && a.niveau > niveau;
+          const actif = ouvert === a.id;
+          return (
+            <Reveler key={a.id} delai={(i % 6) * 60}>
               <article
-                key={a.id}
-                className={`panel p-5 text-left transition-transform ${
-                  verrouille ? "opacity-60" : "cursor-pointer hover:-translate-y-0.5"
-                } ${lu ? "ring-1 ring-brass/50" : ""}`}
+                className={`relative overflow-hidden rounded-[3px] transition-transform duration-500 ${
+                  verrouille ? "" : "cursor-pointer hover:-translate-y-1"
+                }`}
                 onClick={() => ouvrir(a.id, verrouille)}
               >
-                <div className="flex items-start gap-4">
-                  <span className="text-2xl">{verrouille ? "🔒" : a.icone}</span>
+                {/* double page de grimoire */}
+                <div
+                  className={`parchemin relative grid grid-cols-[auto_1fr] gap-4 p-6 ${
+                    verrouille ? "opacity-90" : ""
+                  }`}
+                >
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-y-3 left-1/2 w-px -translate-x-1/2 bg-black/15"
+                  />
+                  {verrouille ? (
+                    <div className="absolute inset-0 grid place-items-center bg-black/55 backdrop-blur-[3px]">
+                      <div className="sceau h-14 w-14 [&>svg]:h-6 [&>svg]:w-6">
+                        <IconeCadenas />
+                      </div>
+                      <p className="absolute bottom-6 font-display text-[0.55rem] uppercase tracking-[0.4em] text-parchemin/80">
+                        Niveau {a.niveau} requis
+                      </p>
+                    </div>
+                  ) : null}
+
+                  <span
+                    aria-hidden
+                    className="row-span-2 mt-1 flex h-14 w-14 shrink-0 items-center justify-center border border-black/20 bg-black/5 font-display text-3xl text-bordeaux"
+                  >
+                    {lettrine(a.titre)}
+                  </span>
+
                   <div className="min-w-0">
-                    <h2 className="font-display text-lg">{a.titre}</h2>
-                    <p className="mt-0.5 text-xs uppercase tracking-[0.2em] text-or">
+                    <p className="font-display text-[0.55rem] uppercase tracking-[0.35em] text-bordeaux/70">
                       {categoriesMeta[a.categorie].nom}
                     </p>
-                    <p className="mt-2 text-sm text-parchemin/60">
-                      {verrouille ? `Réservé aux sorciers de niveau ${a.niveau}.` : a.resume}
+                    <h2 className="titre-monument mt-1 text-xl !text-[oklch(0.22_0.02_60)] [text-shadow:none]">
+                      {a.titre}
+                    </h2>
+                  </div>
+
+                  <div className="col-span-2 mt-1">
+                    <p className="annotation text-[1.02rem] leading-relaxed text-[oklch(0.22_0.02_60/85%)]">
+                      {a.resume}
                     </p>
-                    {actif && !verrouille && (
-                      <p className="mt-3 border-t border-border pt-3 text-sm leading-relaxed">
+                    {actif && (
+                      <p className="annotation mt-3 border-t border-black/15 pt-3 text-[1.02rem] leading-relaxed text-[oklch(0.22_0.02_60/85%)]">
                         {a.texte}
                       </p>
                     )}
-                    {!verrouille && (
-                      <p className="mt-2 text-xs text-or">
-                        {lu
-                          ? "✓ Page découverte"
-                          : `Première lecture : ✨ ${a.recompense.xp ?? 0} XP${
-                              a.recompense.gallions ? ` · 🪙 ${a.recompense.gallions}` : ""
-                            }`}
-                      </p>
-                    )}
+                    <p className="mt-3 font-display text-[0.6rem] uppercase tracking-[0.25em] text-bordeaux/70">
+                      {lu
+                        ? "Page découverte"
+                        : `Première lecture : ${a.recompense.xp ?? 0} XP${
+                            a.recompense.gallions ? ` · ${a.recompense.gallions} Gallions` : ""
+                          }`}
+                    </p>
                   </div>
                 </div>
               </article>
-            );
-          })}
-        </div>
-
-        {pret && !joueur && (
-          <Link
-            to="/sorcier"
-            className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-8"
-          >
-            🪄 Créer mon sorcier pour gagner de l'XP
-          </Link>
-        )}
+            </Reveler>
+          );
+        })}
       </div>
-    </section>
+
+      {pret && !joueur && (
+        <Link to="/sorcier" className="bouton-magique mt-10 px-5 py-2.5 text-[0.6rem]">
+          <IconeParchemin className="h-4 w-4" /> Créer mon sorcier pour gagner de l'XP
+        </Link>
+      )}
+    </Salle>
   );
 }

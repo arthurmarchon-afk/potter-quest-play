@@ -1,25 +1,42 @@
 import { maisons } from "@/lib/choixpeau";
+import {
+  IconeBaguette,
+  IconeBalai,
+  IconeChandelle,
+  IconeChoixpeau,
+  IconeEpees,
+  IconeGallion,
+  IconeCoupe,
+  IconeEtoile,
+  IconeLivre,
+} from "@/components/immersif/Icones";
+import { Jauge } from "@/components/immersif/Page";
 import { statsMeta, type Joueur, type Stat } from "@/lib/joueur";
 import { HouseBadge } from "./HouseBadge";
 import { XPBar } from "./XPBar";
 
+const glyphesStats: Record<Stat, (p: React.SVGProps<SVGSVGElement>) => React.ReactElement> = {
+  intelligence: IconeLivre,
+  courage: IconeEpees,
+  magie: IconeBaguette,
+  agilite: IconeBalai,
+  sagesse: IconeChandelle,
+};
+
 export function StatLine({ cle, valeur }: { cle: Stat; valeur: number }) {
   const meta = statsMeta[cle];
+  const Glyphe = glyphesStats[cle];
   const pct = Math.min(100, (valeur / 20) * 100);
   return (
     <div>
-      <div className="mb-1 flex items-baseline justify-between text-xs">
-        <span className="text-foreground/80">
-          {meta.icone} {meta.nom}
+      <div className="mb-1.5 flex items-center justify-between">
+        <span className="flex items-center gap-2 font-display text-[0.62rem] uppercase tracking-[0.28em] text-parchemin/70">
+          <Glyphe className="h-3.5 w-3.5 text-or/70" />
+          {meta.nom}
         </span>
-        <span className="text-muted-foreground">{valeur}</span>
+        <span className="chiffre text-sm">{valeur}</span>
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-foreground/10">
-        <div
-          className="h-full rounded-full bg-brass/80 transition-[width] duration-500"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
+      <Jauge valeur={pct} />
     </div>
   );
 }
@@ -27,39 +44,55 @@ export function StatLine({ cle, valeur }: { cle: Stat; valeur: number }) {
 export function PlayerSummary({ joueur }: { joueur: Joueur }) {
   const m = joueur.maison ? maisons[joueur.maison] : null;
   return (
-    <div className="panel p-5 sm:p-6">
-      <div className="flex items-center gap-4">
+    <div className="plaque relative overflow-hidden p-6 sm:p-8">
+      <span
+        className="rai-lumiere pointer-events-none absolute -top-16 left-1/2 h-48 w-80 -translate-x-1/2"
+        aria-hidden
+      />
+      <div className="relative flex items-center gap-5">
         {joueur.maison ? (
           <HouseBadge maison={joueur.maison} taille="lg" />
         ) : (
-          <div className="grid h-20 w-20 place-items-center rounded-full text-2xl ring-1 ring-border">
-            🎩
-          </div>
+          <span className="sceau h-20 w-20 shrink-0 [&>svg]:h-8 [&>svg]:w-8">
+            <IconeChoixpeau />
+          </span>
         )}
         <div className="min-w-0">
-          <h2 className="truncate font-display text-2xl font-semibold">{joueur.nom}</h2>
-          <p className="text-sm italic text-muted-foreground">
+          <h2 className="titre-monument truncate text-2xl">{joueur.nom}</h2>
+          <p className="annotation mt-1 text-base">
             {m ? m.nom : "Maison non attribuée — passez le Choixpeau"}
           </p>
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="relative mt-6">
         <XPBar niveau={joueur.niveau} xp={joueur.xp} />
       </div>
 
-      <dl className="mt-5 grid grid-cols-3 gap-3 border-t border-border pt-4 text-center">
+      <dl className="relative mt-6 grid grid-cols-3 gap-3 border-t border-or/15 pt-5 text-center">
         <div>
-          <dt className="text-xs uppercase tracking-[0.15em] text-muted-foreground">Gallions</dt>
-          <dd className="font-display text-xl text-brass-2">🪙 {joueur.gallions}</dd>
+          <dt className="font-display text-[0.55rem] uppercase tracking-[0.25em] text-parchemin/50">
+            Gallions
+          </dt>
+          <dd className="chiffre mt-1.5 flex items-center justify-center gap-1.5 text-xl">
+            <IconeGallion className="h-4 w-4 text-or" /> {joueur.gallions}
+          </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-[0.15em] text-muted-foreground">Points</dt>
-          <dd className="font-display text-xl text-brass-2">🏆 {joueur.pointsMaison}</dd>
+          <dt className="font-display text-[0.55rem] uppercase tracking-[0.25em] text-parchemin/50">
+            Points
+          </dt>
+          <dd className="chiffre mt-1.5 flex items-center justify-center gap-1.5 text-xl">
+            <IconeCoupe className="h-4 w-4 text-or" /> {joueur.pointsMaison}
+          </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-[0.15em] text-muted-foreground">XP totale</dt>
-          <dd className="font-display text-xl text-brass-2">✨ {joueur.xpTotal}</dd>
+          <dt className="font-display text-[0.55rem] uppercase tracking-[0.25em] text-parchemin/50">
+            XP totale
+          </dt>
+          <dd className="chiffre mt-1.5 flex items-center justify-center gap-1.5 text-xl">
+            <IconeEtoile className="h-4 w-4 text-or" /> {joueur.xpTotal}
+          </dd>
         </div>
       </dl>
     </div>

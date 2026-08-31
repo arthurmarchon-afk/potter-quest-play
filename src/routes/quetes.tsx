@@ -1,6 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import type { ReactElement, SVGProps } from "react";
 import { useJoueur } from "@/lib/joueur-context";
-import { objets, progressionQuete, quetesQuotidiennes } from "@/lib/progression";
+import { objets, progressionQuete, quetesQuotidiennes, type Quete } from "@/lib/progression";
+import { Cadre, EnTetePage, Jauge, Salle, Sceau } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import {
+  IconeBaguette,
+  IconeCarte,
+  IconeCoeur,
+  IconeCoupe,
+  IconeEtoile,
+  IconeFiole,
+  IconeFlamme,
+  IconeGallion,
+  IconeLivre,
+  IconeMedaille,
+  IconeParchemin,
+  IconePlume,
+  IconeSablier,
+  IconeVif,
+} from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/quetes")({
   head: () => ({
@@ -21,94 +40,128 @@ export const Route = createFileRoute("/quetes")({
   component: Quetes,
 });
 
+type Glyphe = (p: SVGProps<SVGSVGElement>) => ReactElement;
+
+const glyphesQuetes: Record<string, Glyphe> = {
+  "q-parties": IconeSablier,
+  "q-victoire": IconeMedaille,
+  "q-quiz": IconeLivre,
+  "q-xp": IconeEtoile,
+};
+
+const glyphesObjets: Record<string, Glyphe> = {
+  chocogrenouille: IconeCoeur,
+  fiole: IconeFiole,
+  plume: IconePlume,
+  patacitrouille: IconeFlamme,
+  carte: IconeCarte,
+  vif: IconeVif,
+};
+
+function GlypheQuete({ q }: { q: Quete }) {
+  const G = glyphesQuetes[q.id] ?? IconeParchemin;
+  return <G className="h-5 w-5" />;
+}
+
+function ligneRecompense(q: Quete) {
+  const items: { g: Glyphe; texte: string }[] = [];
+  if (q.recompense.xp) items.push({ g: IconeEtoile, texte: `${q.recompense.xp} XP` });
+  if (q.recompense.gallions) items.push({ g: IconeGallion, texte: `${q.recompense.gallions}` });
+  if (q.recompense.points) items.push({ g: IconeCoupe, texte: `${q.recompense.points}` });
+  if (q.objet && objets[q.objet]) {
+    const G = glyphesObjets[q.objet] ?? IconeParchemin;
+    items.push({ g: G, texte: objets[q.objet]!.nom });
+  }
+  return items;
+}
+
 function Quetes() {
   const { joueur, pret, reclamerQuete } = useJoueur();
 
   return (
-    <section>
-      <div className="mx-auto max-w-4xl px-6 py-14 lg:py-20">
-        <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
-          Tableau d'affichage · Salle commune
-        </p>
-        <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">📜 Quêtes du jour</h1>
-        <p className="mt-4 max-w-[62ch] text-parchemin/60">
-          Quatre missions sont affichées chaque jour. Elles se réinitialisent à minuit — vos
-          récompenses, elles, restent acquises.
-        </p>
+    <Salle>
+      <EnTetePage
+        surtitre="Tableau d'affichage · Salle commune"
+        titre="Quêtes du jour"
+        icone={<IconeParchemin />}
+        intro="Quatre missions sont épinglées chaque jour. Elles se réinitialisent à minuit — vos récompenses, elles, restent acquises."
+      />
 
-        {!pret ? (
-          <p className="mt-10 text-sm text-parchemin/60">Déroulement du parchemin…</p>
-        ) : !joueur ? (
-          <div className="panel mt-8 p-6">
-            <p className="text-parchemin/60">
-              Créez d'abord votre sorcier pour recevoir des quêtes.
-            </p>
-            <Link
-              to="/sorcier"
-              className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-4"
-            >
-              🪄 Créer mon sorcier
-            </Link>
-          </div>
-        ) : (
-          <div className="mt-8 space-y-4">
-            {quetesQuotidiennes.map((q) => {
-              const { valeur, complete, reclamee } = progressionQuete(joueur, q);
-              const pct = Math.round((valeur / q.cible) * 100);
-              return (
-                <div
-                  key={q.id}
-                  className={`panel p-5 ${reclamee ? "opacity-60" : complete ? "ring-1 ring-or/60" : ""}`}
+      {!pret ? (
+        <p className="annotation text-base">Déroulement du parchemin…</p>
+      ) : !joueur ? (
+        <Cadre ton="parchemin" className="p-7">
+          <p className="text-[oklch(0.32_0.03_60)]">
+            Créez d'abord votre sorcier pour recevoir des quêtes.
+          </p>
+          <Link to="/sorcier" className="bouton-magique mt-5 px-6 py-3 text-[0.6rem]">
+            <IconeBaguette className="mr-2 h-4 w-4" />
+            Créer mon sorcier
+          </Link>
+        </Cadre>
+      ) : (
+        <div className="space-y-5">
+          {quetesQuotidiennes.map((q, i) => {
+            const { valeur, complete, reclamee } = progressionQuete(joueur, q);
+            const pct = Math.round((valeur / q.cible) * 100);
+            const recompenses = ligneRecompense(q);
+            return (
+              <Reveler key={q.id} delai={i * 60}>
+                <Cadre
+                  className={`p-6 transition-opacity ${
+                    reclamee ? "opacity-50" : complete ? "filet-or" : ""
+                  }`}
                 >
-                  <div className="flex flex-wrap items-start gap-4">
-                    <span className="text-2xl">{q.icone}</span>
+                  <div className="flex flex-wrap items-start gap-5">
+                    <Sceau className={reclamee ? "grayscale" : ""}>
+                      <GlypheQuete q={q} />
+                    </Sceau>
                     <div className="min-w-0 flex-1">
-                      <h2 className="font-display text-lg">{q.titre}</h2>
-                      <p className="mt-1 text-sm text-parchemin/60">{q.description}</p>
-                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-foreground/10 ring-1 ring-border">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-brass to-candle transition-[width] duration-500"
-                          style={{ width: `${pct}%` }}
-                        />
+                      <h2 className="titre-monument text-lg">{q.titre}</h2>
+                      <p className="annotation mt-1 text-base">{q.description}</p>
+                      <div className="mt-4">
+                        <Jauge valeur={pct} />
                       </div>
-                      <p className="mt-2 text-xs text-parchemin/60">
-                        {valeur} / {q.cible} · Récompense :{" "}
-                        {[
-                          q.recompense.xp ? `✨ ${q.recompense.xp} XP` : null,
-                          q.recompense.gallions ? `🪙 ${q.recompense.gallions}` : null,
-                          q.recompense.points ? `🏆 ${q.recompense.points}` : null,
-                          q.objet ? `${objets[q.objet]?.icone} ${objets[q.objet]?.nom}` : null,
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </p>
+                      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5">
+                        <span className="chiffre text-xs text-parchemin/55">
+                          {valeur} / {q.cible}
+                        </span>
+                        {recompenses.map((r, j) => (
+                          <span
+                            key={j}
+                            className="flex items-center gap-1.5 font-display text-[0.62rem] uppercase tracking-[0.2em] text-or/80"
+                          >
+                            <r.g className="h-3.5 w-3.5" /> {r.texte}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                     <button
                       onClick={() => reclamerQuete(q.id)}
                       disabled={!complete || reclamee}
-                      className="bouton-magique px-5 py-2.5 text-[0.6rem] disabled:opacity-40"
+                      className="bouton-magique shrink-0 px-5 py-2.5 text-[0.58rem] disabled:opacity-40"
                     >
                       {reclamee ? "Réclamée" : complete ? "Réclamer" : "En cours"}
                     </button>
                   </div>
-                </div>
-              );
-            })}
+                </Cadre>
+              </Reveler>
+            );
+          })}
 
-            <div className="panel p-5">
-              <p className="text-sm text-parchemin/60">
-                Les compteurs avancent en jouant dans la salle des mini-jeux.
-              </p>
-              <Link
-                to="/jeux"
-                className="mt-4 inline-flex items-center rounded-[10px] px-5 py-2.5 text-sm font-medium text-foreground/80 ring-1 ring-border transition-transform hover:-translate-y-0.5"
-              >
-                🎮 Aller jouer
-              </Link>
-            </div>
-          </div>
-        )}
-      </div>
-    </section>
+          <Cadre className="p-6">
+            <p className="annotation text-base">
+              Les compteurs avancent en jouant dans la salle des mini-jeux.
+            </p>
+            <Link
+              to="/jeux"
+              className="filet-or mt-4 inline-flex items-center rounded-[3px] px-5 py-2.5 font-display text-[0.6rem] uppercase tracking-[0.25em] text-parchemin/80 transition-transform hover:-translate-y-0.5"
+            >
+              Aller jouer
+            </Link>
+          </Cadre>
+        </div>
+      )}
+    </Salle>
   );
 }

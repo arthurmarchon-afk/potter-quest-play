@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useJoueur } from "@/lib/joueur-context";
+import { Salle, EnTetePage, ChoixGrave } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeLivre, IconeSablier, Ornement } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/jeux/quiz")({
   head: () => ({
@@ -53,6 +56,11 @@ const niveaux: Record<Niveau, { label: string; max: 1 | 2 | 3; nb: number; chron
   sorcier: { label: "Sorcier", max: 2, nb: 10, chrono: 20, texte: "Questions mêlées, 20 secondes par question." },
   mage: { label: "Mage", max: 3, nb: 12, chrono: 10, texte: "Les questions les plus retorses, 10 secondes chrono." },
 };
+
+const optionsNiveau = (Object.keys(niveaux) as Niveau[]).map((n) => ({
+  valeur: n,
+  libelle: niveaux[n].label,
+}));
 
 function tirer(niveau: Niveau): Question[] {
   const conf = niveaux[niveau];
@@ -133,7 +141,7 @@ function Quiz() {
         points: score * 2 * mult,
         stat: { cle: "intelligence", valeur: score >= liste.length * 0.8 ? 1 : 0 },
       },
-      `🧠 Quiz terminé — ${score}/${liste.length}`,
+      `Quiz terminé — ${score}/${liste.length}`,
     );
     signalerPartie({
       victoire: score >= liste.length * 0.6,
@@ -149,103 +157,100 @@ function Quiz() {
     return "Troll. Retenue à la bibliothèque.";
   }, [score, liste.length]);
 
+  const fractionTemps = conf.chrono ? temps / conf.chrono : 1;
+
   return (
-    <section>
-      <div className="mx-auto max-w-3xl px-6 py-16">
-        <Link to="/jeux" className="text-sm text-parchemin/60 hover:text-foreground">
-          ← Salle des mini-jeux
-        </Link>
-        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
-          Le Quiz du Professeur
-        </h1>
+    <Salle>
+      <Link
+        to="/jeux"
+        className="mb-6 inline-flex items-center gap-2 font-display text-[0.62rem] uppercase tracking-[0.35em] text-or/60 transition-colors hover:text-or"
+      >
+        <Ornement className="h-2.5 w-2.5 rotate-180" />
+        Salle des mini-jeux
+      </Link>
+      <EnTetePage
+        surtitre="Salle de classe"
+        titre="Le Quiz du Professeur"
+        intro="Des questions tirées des carnets de cours pour éprouver votre savoir sorcier."
+        icone={<IconeLivre />}
+      />
 
-        <div className="panel mt-6 p-5">
-          <p className="text-xs uppercase tracking-[0.25em] text-or">Niveau</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {(Object.keys(niveaux) as Niveau[]).map((n) => (
-              <button
-                key={n}
-                onClick={() => setNiveau(n)}
-                className={`rounded-[10px] px-4 py-2 text-sm font-medium ring-1 transition-transform hover:-translate-y-0.5 ${
-                  niveau === n
-                    ? "bg-primary/20 text-or ring-primary/50"
-                    : "bg-foreground/5 text-foreground/70 ring-border"
-                }`}
-              >
-                {niveaux[n].label}
-              </button>
-            ))}
-          </div>
-          <p className="mt-3 text-sm italic text-parchemin/60">{conf.texte}</p>
+      <Reveler className="plaque relative p-6">
+        <p className="font-display text-[0.6rem] uppercase tracking-[0.35em] text-or/70">Niveau</p>
+        <div className="mt-4">
+          <ChoixGrave options={optionsNiveau} valeur={niveau} onChange={(v) => setNiveau(v as Niveau)} />
         </div>
+        <p className="annotation mt-4 text-sm leading-relaxed">{conf.texte}</p>
+      </Reveler>
 
-        <div className="panel mt-6 p-6 sm:p-8">
-          {fini || !question ? (
-            <div className="text-center">
-              <p className="text-xs uppercase tracking-[0.3em] text-or">Copie corrigée</p>
-              <p className="mt-4 font-display text-4xl font-semibold">
-                {score} / {liste.length}
-              </p>
-              <p className="mt-3 text-parchemin/60">{mention}</p>
-              <button
-                onClick={recommencer}
-                className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-6"
-              >
-                Repasser l'examen
-              </button>
+      <Reveler delai={100} className="parchemin relative mt-6 p-6 sm:p-8">
+        {fini || !question ? (
+          <div className="text-center">
+            <p className="font-display text-[0.62rem] uppercase tracking-[0.35em] text-[oklch(0.36_0.06_50)]">
+              Copie corrigée
+            </p>
+            <p className="chiffre mt-4 text-5xl">
+              {score} / {liste.length}
+            </p>
+            <p className="annotation mt-3 text-base text-[oklch(0.32_0.05_50)]">{mention}</p>
+            <button onClick={recommencer} className="bouton-magique mt-6 px-5 py-2.5 text-[0.6rem]">
+              Repasser l'examen
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="mb-4 flex items-center justify-between">
+              <span className="font-display text-xs uppercase tracking-[0.25em] text-[oklch(0.36_0.06_50)]">
+                Question {index + 1} / {liste.length}
+              </span>
+              <span className="chiffre text-lg">{score}</span>
             </div>
-          ) : (
-            <>
-              <div className="mb-4 flex items-center justify-between text-xs">
-                <span className="uppercase tracking-[0.25em] text-or">
-                  Question {index + 1} / {liste.length}
-                </span>
-                <span className="italic text-parchemin/60">Score : {score}</span>
+
+            {conf.chrono !== null ? (
+              <div className="mb-6 flex items-center justify-center gap-3">
+                <IconeSablier
+                  className="h-6 w-6 text-[oklch(0.36_0.08_50)]"
+                  style={{ transform: `rotate(${(1 - fractionTemps) * 180}deg)`, transition: "transform 1s linear" }}
+                />
+                <span className="chiffre text-xl">{temps}s</span>
               </div>
-              <div className="mb-6 h-1.5 overflow-hidden rounded-full bg-foreground/10">
+            ) : (
+              <div className="mb-6 h-1 overflow-hidden rounded-full bg-[oklch(0.4_0.06_60/25%)]">
                 <div
-                  className={conf.chrono ? "h-full bg-primary transition-all duration-1000 ease-linear" : "h-full bg-brass/60 transition-all duration-300"}
-                  style={{
-                    width: conf.chrono
-                      ? `${(temps / conf.chrono) * 100}%`
-                      : `${((index + 1) / liste.length) * 100}%`,
-                  }}
+                  className="h-full bg-[oklch(0.4_0.09_55)] transition-all duration-300"
+                  style={{ width: `${((index + 1) / liste.length) * 100}%` }}
                 />
               </div>
-              <h2 className="text-balance font-display text-xl font-medium sm:text-2xl">
-                {question.q}
-              </h2>
-              <div className="mt-6 grid gap-3">
-                {question.r.map((r, i) => {
-                  const repondu = choix !== null;
-                  const juste = i === question.bonne;
-                  return (
-                    <button
-                      key={r}
-                      disabled={repondu}
-                      onClick={() => suivant(i)}
-                      className={`rounded-[12px] px-4 py-3 text-left text-sm ring-1 transition-all duration-200 hover:-translate-y-0.5 disabled:hover:translate-y-0 ${
-                        repondu && juste
-                          ? "bg-emeraude/25 text-foreground ring-emeraude/60"
-                          : repondu && choix === i
-                            ? "bg-destructive/20 text-foreground ring-destructive/50"
-                            : "bg-foreground/5 text-foreground/80 ring-border"
-                      }`}
-                    >
-                      {r}
-                    </button>
-                  );
-                })}
-              </div>
-              {conf.chrono !== null && (
-                <p className="mt-4 text-xs italic text-parchemin/60">
-                  Temps restant : {temps} s
-                </p>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-    </section>
+            )}
+
+            <h2 className="text-balance text-center font-display text-xl font-medium text-[oklch(0.22_0.02_60)] sm:text-2xl">
+              {question.q}
+            </h2>
+            <div className="mt-6 grid gap-3">
+              {question.r.map((r, i) => {
+                const repondu = choix !== null;
+                const juste = i === question.bonne;
+                return (
+                  <button
+                    key={r}
+                    disabled={repondu}
+                    onClick={() => suivant(i)}
+                    className={`plaque relative px-4 py-3 text-left text-sm text-parchemin transition-all duration-300 hover:-translate-y-0.5 disabled:hover:translate-y-0 ${
+                      repondu && juste
+                        ? "shadow-[inset_0_0_0_1px_var(--or),0_0_24px_-4px_color-mix(in_oklab,var(--or)_60%,transparent)]"
+                        : repondu && choix === i
+                          ? "shadow-[inset_0_0_0_1px_var(--sang)]"
+                          : ""
+                    }`}
+                  >
+                    {r}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </Reveler>
+    </Salle>
   );
 }
