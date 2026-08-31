@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
+import { Route as CarteRouteImport } from './routes/carte'
 import { Route as ChoixpeauRouteImport } from './routes/choixpeau'
 import { Route as CoupeRouteImport } from './routes/coupe'
 import { Route as InventaireRouteImport } from './routes/inventaire'
@@ -25,6 +27,16 @@ import { Route as JeuxQuizRouteImport } from './routes/jeux.quiz'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BibliothequeRoute = BibliothequeRouteImport.update({
+  id: '/bibliotheque',
+  path: '/bibliotheque',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarteRoute = CarteRouteImport.update({
+  id: '/carte',
+  path: '/carte',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChoixpeauRoute = ChoixpeauRouteImport.update({
@@ -85,6 +97,8 @@ const JeuxQuizRoute = JeuxQuizRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bibliotheque': typeof BibliothequeRoute
+  '/carte': typeof CarteRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
   '/inventaire': typeof InventaireRoute
@@ -99,6 +113,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bibliotheque': typeof BibliothequeRoute
+  '/carte': typeof CarteRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
   '/inventaire': typeof InventaireRoute
@@ -113,6 +129,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bibliotheque': typeof BibliothequeRoute
+  '/carte': typeof CarteRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
   '/inventaire': typeof InventaireRoute
@@ -129,6 +147,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/bibliotheque'
+    | '/carte'
     | '/choixpeau'
     | '/coupe'
     | '/inventaire'
@@ -143,6 +163,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/bibliotheque'
+    | '/carte'
     | '/choixpeau'
     | '/coupe'
     | '/inventaire'
@@ -156,6 +178,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/bibliotheque'
+    | '/carte'
     | '/choixpeau'
     | '/coupe'
     | '/inventaire'
@@ -171,6 +195,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BibliothequeRoute: typeof BibliothequeRoute
+  CarteRoute: typeof CarteRoute
   ChoixpeauRoute: typeof ChoixpeauRoute
   CoupeRoute: typeof CoupeRoute
   InventaireRoute: typeof InventaireRoute
@@ -187,6 +213,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bibliotheque': {
+      id: '/bibliotheque'
+      path: '/bibliotheque'
+      fullPath: '/bibliotheque'
+      preLoaderRoute: typeof BibliothequeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/carte': {
+      id: '/carte'
+      path: '/carte'
+      fullPath: '/carte'
+      preLoaderRoute: typeof CarteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/choixpeau': {
@@ -287,6 +327,8 @@ const JeuxRouteWithChildren = JeuxRoute._addFileChildren(JeuxRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BibliothequeRoute: BibliothequeRoute,
+  CarteRoute: CarteRoute,
   ChoixpeauRoute: ChoixpeauRoute,
   CoupeRoute: CoupeRoute,
   InventaireRoute: InventaireRoute,
