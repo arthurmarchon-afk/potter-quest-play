@@ -51,6 +51,10 @@ export type Joueur = {
   succes: string[];
   /** Objets possédés : identifiant -> quantité. */
   inventaire: Record<string, number>;
+  /** Articles de la bibliothèque déjà lus. */
+  decouvertes: string[];
+  /** Lieux de Poudlard déjà explorés. */
+  lieuxVisites: string[];
 };
 
 export type PointsMaisons = Record<Maison, number>;
@@ -81,6 +85,8 @@ export const joueurVide = (nom = ""): Joueur => ({
   totaux: { parties: 0, victoires: 0, bonnes: 0, parfaits: 0 },
   succes: [],
   inventaire: {},
+  decouvertes: [],
+  lieuxVisites: [],
 });
 
 /** XP nécessaire pour passer du niveau n au niveau n+1. */
