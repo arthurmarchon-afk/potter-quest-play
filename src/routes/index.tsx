@@ -11,13 +11,13 @@ import voie from "@/assets/voie.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Parchemin — Le grimoire des maisons de Poudlard" },
+      { title: "Potter Quest — Votre parcours de sorcier à Poudlard" },
       {
         name: "description",
         content:
           "Passez l'épreuve du Choixpeau et découvrez votre maison, puis affrontez les mini-jeux sorciers : échecs, memory de sortilèges et quiz.",
       },
-      { property: "og:title", content: "Parchemin — Le grimoire des maisons de Poudlard" },
+      { property: "og:title", content: "Potter Quest — Votre parcours de sorcier" },
       {
         property: "og:description",
         content: "Le Choixpeau, votre maison, et une salle de mini-jeux sorciers.",

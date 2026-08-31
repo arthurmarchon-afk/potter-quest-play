@@ -1,0 +1,29 @@
+# Potter Quest — feuille de route
+
+## Phase 1 — Core (fait)
+- [x] Profil sorcier (création, nom, maison, stats) — /sorcier
+- [x] XP, niveaux, courbe de progression, animation de niveau
+- [x] Gallions + points de maison
+- [x] Persistance locale (localStorage, clé potter-quest:joueur:v1)
+- [x] Dashboard sur l'accueil
+- [x] Choixpeau immersif + enregistrement de la maison + stats initiales
+- [x] Coupe des Maisons (/coupe)
+- [x] Mini-jeux existants reliés à la boucle (XP / Gallions / points)
+
+## Phase 2 — Gameplay
+- [ ] Quêtes quotidiennes + principales
+- [ ] Succès
+- [ ] Inventaire
+
+## Phase 3 — Contenu
+- [ ] Bibliothèque / encyclopédie avec découvertes
+- [ ] Exploration (carte de Poudlard)
+
+## Phase 4 — Mini-jeux
+- [ ] Maître des sorts, Potions, Devine le personnage, Quidditch
+
+## Phase 5 — Duels
+## Phase 6 — Saisons & classements
+## Divers
+- [ ] Persistance serveur (Lovable Cloud) si comptes utilisateurs souhaités
+- [ ] Architecture audio + bouton mute
