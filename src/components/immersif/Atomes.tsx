@@ -16,7 +16,7 @@ export function BoutonInterne({
   to: string;
   children: ReactNode;
   className?: string;
-  icone?: string;
+  icone?: ReactNode;
 }) {
   return (
     <Link to={to} className={cn(styleBouton, className)}>
@@ -35,7 +35,7 @@ export function BoutonExterne({
   href: string;
   children: ReactNode;
   className?: string;
-  icone?: string;
+  icone?: ReactNode;
 }) {
   return (
     <a
