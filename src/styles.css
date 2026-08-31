@@ -209,9 +209,7 @@
     color 0.45s ease,
     border-color 0.45s ease,
     transform 0.45s ease;
-}
 
-@utility bouton-magique {
   &:hover {
     color: oklch(0.96 0.05 88);
     border-color: color-mix(in oklab, var(--or) 85%, transparent);
