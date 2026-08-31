@@ -52,7 +52,7 @@ export function BoutonExterne({
 
 /* -------------------------------------------------------------- titres */
 
-export function Sur_titre({ children }: { children: ReactNode }) {
+export function SurTitre({ children }: { children: ReactNode }) {
   return (
     <p className="font-display text-[0.62rem] uppercase tracking-[0.55em] text-or/70 sm:text-xs">
       {children}
