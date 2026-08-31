@@ -459,15 +459,15 @@ function Accueil() {
                 legende={e.enseigne}
                 texte={e.description}
                 action={
-                  e.bientot ? (
-                    <span className="font-display text-[0.6rem] uppercase tracking-[0.3em] text-parchemin/40">
-                      Volets bientôt ouverts
-                    </span>
-                  ) : (
+                  <>
                     <BoutonExterne href={e.url} className="px-4 py-2 text-[0.6rem]">
-                      {e.specialite}
+                      Pousser la porte
                     </BoutonExterne>
-                  )
+                    <p className="mt-3 font-display text-[0.55rem] uppercase tracking-[0.3em] text-parchemin/35">
+                      {e.specialite}
+                      {e.bientot ? " · vitrine en préparation" : ""}
+                    </p>
+                  </>
                 }
               />
             </Reveler>
