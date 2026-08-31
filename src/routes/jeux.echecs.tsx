@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Chess, type Move, type Square } from "chess.js";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useJoueur } from "@/lib/joueur-context";
 
 export const Route = createFileRoute("/jeux/echecs")({
   head: () => ({
@@ -189,6 +190,29 @@ function Echecs() {
   useEffect(() => {
     nouvellePartie();
   }, [niveau, nouvellePartie]);
+
+  const { joueur, gagner } = useJoueur();
+  const recompense = useRef(false);
+  const victoire = jeu.isCheckmate() && jeu.turn() === "b";
+  const nulle = jeu.isDraw();
+
+  useEffect(() => {
+    if (!victoire && !nulle) {
+      recompense.current = false;
+      return;
+    }
+    if (recompense.current || !joueur) return;
+    recompense.current = true;
+    const mult = niveau === "mage" ? 3 : niveau === "sorcier" ? 2 : 1;
+    if (victoire) {
+      gagner(
+        { xp: 120 * mult, gallions: 40 * mult, points: 25 * mult, stat: { cle: "courage", valeur: 1 } },
+        "♟️ Échec et mat — victoire !",
+      );
+    } else {
+      gagner({ xp: 30 * mult, gallions: 10 * mult }, "♟️ Partie nulle");
+    }
+  }, [victoire, nulle, joueur, niveau, gagner]);
 
   const statut = jeu.isCheckmate()
     ? jeu.turn() === "w"
