@@ -89,7 +89,7 @@ export function Plaque({
   action,
   className,
 }: {
-  icone: string;
+  icone: ReactNode;
   titre: string;
   texte: string;
   action?: ReactNode;
@@ -122,7 +122,7 @@ export function Enseigne({
   texte,
   action,
 }: {
-  icone: string;
+  icone: ReactNode;
   nom: string;
   legende: string;
   texte: string;
