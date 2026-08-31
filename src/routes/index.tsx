@@ -1,4 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { PlayerSummary } from "@/components/jeu/PlayerSummary";
+import { HouseBadge } from "@/components/jeu/HouseBadge";
+import { maisons as infosMaisons } from "@/lib/choixpeau";
+import { ordreMaisons, pointsCoupe } from "@/lib/joueur";
+import { useJoueur } from "@/lib/joueur-context";
 import grimoire from "@/assets/grimoire.jpg";
 import train from "@/assets/train.jpg";
 import voie from "@/assets/voie.jpg";
@@ -6,13 +11,13 @@ import voie from "@/assets/voie.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Parchemin — Le grimoire des maisons de Poudlard" },
+      { title: "Potter Quest — Votre parcours de sorcier à Poudlard" },
       {
         name: "description",
         content:
           "Passez l'épreuve du Choixpeau et découvrez votre maison, puis affrontez les mini-jeux sorciers : échecs, memory de sortilèges et quiz.",
       },
-      { property: "og:title", content: "Parchemin — Le grimoire des maisons de Poudlard" },
+      { property: "og:title", content: "Potter Quest — Votre parcours de sorcier" },
       {
         property: "og:description",
         content: "Le Choixpeau, votre maison, et une salle de mini-jeux sorciers.",
@@ -55,6 +60,7 @@ const etapes = [
 function Accueil() {
   return (
     <>
+      <TableauDeBord />
       <section>
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
           <div>
@@ -215,5 +221,97 @@ function Accueil() {
         </div>
       </section>
     </>
+  );
+}
+
+function TableauDeBord() {
+  const { joueur, pret } = useJoueur();
+
+  if (!pret) return null;
+
+  if (!joueur) {
+    return (
+      <section>
+        <div className="mx-auto max-w-6xl px-6 pt-10">
+          <div className="panel flex flex-wrap items-center justify-between gap-4 p-6">
+            <div className="max-w-[46ch]">
+              <p className="mb-2 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+                Votre parcours commence ici
+              </p>
+              <h2 className="font-display text-2xl font-semibold">Créez votre sorcier</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Nom, maison, niveau, XP, Gallions et points de maison : votre progression est
+                conservée sur cet appareil.
+              </p>
+            </div>
+            <Link
+              to="/sorcier"
+              className="inline-flex items-center rounded-[10px] bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2 transition-transform hover:-translate-y-0.5"
+            >
+              🪄 Créer mon sorcier
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const points = pointsCoupe(joueur);
+  const classement = [...ordreMaisons].sort((a, b) => points[b] - points[a]);
+
+  return (
+    <section>
+      <div className="mx-auto max-w-6xl px-6 pt-10">
+        <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-brass-2">
+          Bienvenue à Poudlard
+        </p>
+        <h2 className="font-display text-2xl font-semibold sm:text-3xl">
+          Bonjour, {joueur.nom}.
+        </h2>
+
+        <div className="mt-6 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          <PlayerSummary joueur={joueur} />
+
+          <div className="grid gap-5">
+            <div className="panel p-5">
+              <h3 className="font-display text-lg">🎮 Continuer à jouer</h3>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                {[
+                  { to: "/jeux/quiz", label: "🧠 Quiz" },
+                  { to: "/jeux/memory", label: "🧪 Memory" },
+                  { to: "/jeux/echecs", label: "♟️ Échecs" },
+                ].map((g) => (
+                  <Link
+                    key={g.to}
+                    to={g.to}
+                    className="rounded-[10px] bg-foreground/5 px-3 py-2.5 text-center text-sm ring-1 ring-border transition-transform hover:-translate-y-0.5"
+                  >
+                    {g.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="panel p-5">
+              <div className="flex items-baseline justify-between">
+                <h3 className="font-display text-lg">🏆 Coupe des maisons</h3>
+                <Link to="/coupe" className="text-sm text-brass-2">
+                  Voir →
+                </Link>
+              </div>
+              <ul className="mt-3 space-y-2">
+                {classement.map((cle) => (
+                  <li key={cle} className="flex items-center gap-3 text-sm">
+                    <HouseBadge maison={cle} taille="sm" />
+                    <span className="flex-1 text-foreground/80">{infosMaisons[cle].nom}</span>
+                    <span className="text-brass-2">{points[cle]} pts</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
