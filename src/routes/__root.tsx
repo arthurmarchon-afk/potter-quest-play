@@ -11,6 +11,7 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "@/styles.css?url";
 import { JoueurProvider, useJoueur } from "@/lib/joueur-context";
+import { DecorInterieur } from "@/components/immersif/DecorInterieur";
 import { RewardPopup } from "@/components/jeu/RewardPopup";
 import { XPBar } from "@/components/jeu/XPBar";
 import { reportLovableError } from "@/lib/lovable-error-reporting";
@@ -80,11 +81,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Parchemin — Grimoire des Maisons" },
+      { title: "Potter Quest — Le grimoire vivant de Poudlard" },
       {
         name: "description",
         content:
-          "Le Choixpeau, les maisons de Poudlard et une salle de mini-jeux sorciers : échecs, memory de sortilèges et quiz.",
+          "Créez votre sorcier, passez sous le Choixpeau, explorez Poudlard, relevez les quêtes et affrontez les mini-jeux magiques.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -259,10 +260,11 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <JoueurProvider>
         <div className="relative min-h-screen font-body text-foreground">
+          <DecorInterieur />
           <SiteNav />
           <BandeauJoueur />
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <main className="relative z-10">
+          <main className="relative z-10 min-h-[68vh]">
             <Outlet />
           </main>
           <SiteFooter />

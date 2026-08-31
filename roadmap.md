@@ -40,4 +40,4 @@
 
 ## Refonte immersive
 - [x] Phase 1 — Home cinématique : King's Cross → train → Poudlard → forêt → Pré-au-Lard, décor continu, navigation discrète, échoppes configurables (src/lib/boutiques.ts)
-- [ ] Phase 2 — Aligner les autres pages sur la nouvelle direction artistique
+- [x] Phase 2 — Toutes les pages alignées sur la DA : décor fixe par zone du château, plaques de laiton, titres cinéma, boutons filet d'or, visuels pour les 7 mini-jeux

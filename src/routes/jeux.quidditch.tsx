@@ -152,13 +152,13 @@ function Quidditch() {
   return (
     <section>
       <div className="mx-auto max-w-3xl px-6 py-12 lg:py-20">
-        <Link to="/jeux" className="text-sm text-brass-2 hover:underline">
+        <Link to="/jeux" className="text-sm text-or hover:underline">
           ← Salle des mini-jeux
         </Link>
-        <h1 className="mt-4 font-display text-2xl font-semibold sm:text-3xl">
+        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
           Quidditch — Attrapez le Vif d'or
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-parchemin/60">
           {cfg.texte} Souafle 🔴 +10, Vif d'or 🥇 +150, Cognard ⚫ −20.
         </p>
 
@@ -170,7 +170,7 @@ function Quidditch() {
               className={`rounded-[10px] px-3 py-2 text-sm font-medium ring-1 transition-colors ${
                 n === niveau
                   ? "bg-primary/15 text-primary ring-primary/40"
-                  : "text-muted-foreground ring-border hover:text-foreground"
+                  : "text-parchemin/60 ring-border hover:text-foreground"
               }`}
             >
               {niveaux[n].label}
@@ -180,9 +180,9 @@ function Quidditch() {
 
         <div className="panel mt-6 p-5">
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-            <span className="text-brass-2">Score {score}</span>
-            <span className="text-muted-foreground">🥇 {vifs}</span>
-            <span className="text-muted-foreground">⏳ {reste}s</span>
+            <span className="text-or">Score {score}</span>
+            <span className="text-parchemin/60">🥇 {vifs}</span>
+            <span className="text-parchemin/60">⏳ {reste}s</span>
           </div>
 
           <div className="relative mt-4 h-[340px] w-full overflow-hidden rounded-[14px] bg-primary/5 ring-1 ring-border">
@@ -193,18 +193,18 @@ function Quidditch() {
                     <p className="font-display text-xl">
                       {vifs > 0 ? "Vif d'or attrapé — match remporté !" : "Match terminé."}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-parchemin/60">
                       {score} points, {vifs} Vif(s) d'or
                     </p>
                   </>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-parchemin/60">
                     Enfourchez votre balai et choisissez un niveau pour décoller.
                   </p>
                 )}
                 <button
                   onClick={() => demarrer(niveau)}
-                  className="rounded-[10px] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                  className="bouton-magique px-5 py-2.5 text-[0.6rem]"
                 >
                   {fini ? "Rejouer" : "Décoller"}
                 </button>

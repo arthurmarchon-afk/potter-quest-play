@@ -161,18 +161,18 @@ function Memory() {
   return (
     <section>
       <div className="mx-auto max-w-4xl px-6 py-16">
-        <Link to="/jeux" className="text-sm text-muted-foreground hover:text-foreground">
+        <Link to="/jeux" className="text-sm text-parchemin/60 hover:text-foreground">
           ← Salle des mini-jeux
         </Link>
-        <h1 className="mt-4 font-display text-2xl font-semibold sm:text-3xl">
+        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
           Memory de Sortilèges
         </h1>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-2 text-parchemin/60">
           Retournez les parchemins deux par deux et retrouvez toutes les paires d'incantations.
         </p>
 
         <div className="panel mt-6 p-5">
-          <p className="text-xs uppercase tracking-[0.25em] text-brass-2">Niveau</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-or">Niveau</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {(Object.keys(niveaux) as Niveau[]).map((n) => (
               <button
@@ -180,7 +180,7 @@ function Memory() {
                 onClick={() => setNiveau(n)}
                 className={`rounded-[10px] px-4 py-2 text-sm font-medium ring-1 transition-transform hover:-translate-y-0.5 ${
                   niveau === n
-                    ? "bg-primary/20 text-brass-2 ring-primary/50"
+                    ? "bg-primary/20 text-or ring-primary/50"
                     : "bg-foreground/5 text-foreground/70 ring-border"
                 }`}
               >
@@ -188,18 +188,18 @@ function Memory() {
               </button>
             ))}
           </div>
-          <p className="mt-3 text-sm italic text-muted-foreground">{config.texte}</p>
+          <p className="mt-3 text-sm italic text-parchemin/60">{config.texte}</p>
         </div>
 
         <div className="panel mt-6 p-5 sm:p-7">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 text-sm">
-            <span className="text-brass-2">
+            <span className="text-or">
               Paires : {trouvees.length} / {config.paires}
             </span>
-            <span className="text-muted-foreground">Coups : {coups}</span>
+            <span className="text-parchemin/60">Coups : {coups}</span>
             <button
               onClick={rejouer}
-              className="rounded-[10px] bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2"
+              className="bouton-magique px-5 py-2.5 text-[0.6rem]"
             >
               Rebattre les cartes
             </button>
@@ -218,9 +218,9 @@ function Memory() {
                     manque
                       ? "bg-destructive/20 text-foreground/80 ring-destructive/50"
                       : appariee
-                        ? "bg-emeraude/20 text-brass-2 ring-emeraude/50 opacity-80"
+                        ? "bg-emeraude/20 text-or ring-emeraude/50 opacity-80"
                         : visible
-                          ? "bg-primary/15 text-brass-2 ring-primary/50"
+                          ? "bg-primary/15 text-or ring-primary/50"
                           : "bg-ink-2/70 text-brass/40 ring-border"
                   }`}
                 >
@@ -231,7 +231,7 @@ function Memory() {
           </div>
 
           {gagne && (
-            <p className="mt-6 text-center font-display text-lg text-brass-2">
+            <p className="mt-6 text-center font-display text-lg text-or">
               Sortilèges maîtrisés en {coups} coups — {"✦".repeat(etoiles)}
             </p>
           )}

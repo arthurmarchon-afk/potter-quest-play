@@ -230,13 +230,13 @@ function Echecs() {
   return (
     <section>
       <div className="mx-auto max-w-6xl px-6 py-16">
-        <Link to="/jeux" className="text-sm text-muted-foreground hover:text-foreground">
+        <Link to="/jeux" className="text-sm text-parchemin/60 hover:text-foreground">
           ← Salle des mini-jeux
         </Link>
-        <h1 className="mt-4 font-display text-2xl font-semibold sm:text-3xl">
+        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
           Échecs des Sorciers
         </h1>
-        <p className="mt-2 max-w-[60ch] text-muted-foreground">
+        <p className="mt-2 max-w-[60ch] text-parchemin/60">
           Vous jouez les blancs. Cliquez une pièce, puis sa destination : les règles complètes des
           échecs s'appliquent, promotions et roques compris.
         </p>
@@ -289,7 +289,7 @@ function Echecs() {
           </div>
 
           <div className="panel h-fit p-6">
-            <p className="text-xs uppercase tracking-[0.25em] text-brass-2">Niveau du maître</p>
+            <p className="text-xs uppercase tracking-[0.25em] text-or">Niveau du maître</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {(Object.keys(niveaux) as Niveau[]).map((n) => (
                 <button
@@ -297,7 +297,7 @@ function Echecs() {
                   onClick={() => setNiveau(n)}
                   className={`rounded-[10px] px-3 py-2 text-sm font-medium ring-1 transition-transform hover:-translate-y-0.5 ${
                     niveau === n
-                      ? "bg-primary/20 text-brass-2 ring-primary/50"
+                      ? "bg-primary/20 text-or ring-primary/50"
                       : "bg-foreground/5 text-foreground/70 ring-border"
                   }`}
                 >
@@ -305,21 +305,21 @@ function Echecs() {
                 </button>
               ))}
             </div>
-            <p className="mt-3 text-sm italic text-muted-foreground">{niveaux[niveau].texte}</p>
+            <p className="mt-3 text-sm italic text-parchemin/60">{niveaux[niveau].texte}</p>
 
             <div className="mt-6 border-t border-border pt-4">
-              <p className="text-xs uppercase tracking-[0.25em] text-brass-2">État du duel</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-or">État du duel</p>
               <p className="mt-3 font-display text-lg">{statut}</p>
               <button
                 onClick={nouvellePartie}
-                className="mt-5 rounded-[10px] bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground ring-1 ring-brass-2"
+                className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-5"
               >
                 Nouvelle partie
               </button>
             </div>
             <div className="mt-6 border-t border-border pt-4">
-              <p className="text-xs uppercase tracking-[0.25em] text-brass-2">Registre des coups</p>
-              <ol className="mt-3 max-h-64 space-y-1 overflow-auto text-sm text-muted-foreground">
+              <p className="text-xs uppercase tracking-[0.25em] text-or">Registre des coups</p>
+              <ol className="mt-3 max-h-64 space-y-1 overflow-auto text-sm text-parchemin/60">
                 {journal.length === 0 && <li className="italic">Aucun coup joué.</li>}
                 {journal.map((coup, i) => (
                   <li key={`${coup}-${i}`}>
