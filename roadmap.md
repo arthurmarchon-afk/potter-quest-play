@@ -37,3 +37,7 @@
 ## Divers
 - [ ] Persistance serveur (Lovable Cloud) si comptes utilisateurs souhaités
 - [ ] Architecture audio + bouton mute
+
+## Refonte immersive
+- [x] Phase 1 — Home cinématique : King's Cross → train → Poudlard → forêt → Pré-au-Lard, décor continu, navigation discrète, échoppes configurables (src/lib/boutiques.ts)
+- [ ] Phase 2 — Aligner les autres pages sur la nouvelle direction artistique
