@@ -264,7 +264,7 @@ function RootComponent() {
           <SiteNav />
           <BandeauJoueur />
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <main className="relative z-10">
+          <main className="relative z-10 min-h-[68vh]">
             <Outlet />
           </main>
           <SiteFooter />
