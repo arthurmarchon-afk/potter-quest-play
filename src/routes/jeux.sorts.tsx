@@ -108,7 +108,7 @@ const optionsNiveau = (Object.keys(niveaux) as Niveau[]).map((n) => ({
 function MaitreDesSorts() {
   const { joueur, gagner, signalerPartie } = useJoueur();
   const [niveau, setNiveau] = useState<Niveau>("sorcier");
-  const [manches, setManches] = useState<Manche[]>(() => construire("sorcier"));
+  const [manches, setManches] = useState<Manche[]>([]);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [serie, setSerie] = useState(0);
@@ -117,6 +117,11 @@ function MaitreDesSorts() {
   const [reste, setReste] = useState(niveaux["sorcier"].temps);
   const [fini, setFini] = useState(false);
   const compte = useRef(false);
+
+  // Tirage aléatoire uniquement après montage : évite tout écart d'hydratation.
+  useEffect(() => {
+    setManches(construire("sorcier"));
+  }, []);
 
   const cfg = niveaux[niveau];
   const manche = manches[index];
@@ -194,7 +199,7 @@ function MaitreDesSorts() {
   }, [fini, joueur, score, manches.length, meilleureSerie, cfg.mult, gagner, signalerPartie]);
 
   const progression = useMemo(
-    () => Math.round(((index + (fini ? 1 : 0)) / manches.length) * 100),
+    () => Math.round(((index + (fini ? 1 : 0)) / (manches.length || 1)) * 100),
     [index, fini, manches.length],
   );
 

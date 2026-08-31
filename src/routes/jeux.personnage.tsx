@@ -167,7 +167,7 @@ const optionsNiveau = (Object.keys(niveaux) as Niveau[]).map((n) => ({
 function DevinePersonnage() {
   const { joueur, gagner, signalerPartie } = useJoueur();
   const [niveau, setNiveau] = useState<Niveau>("sorcier");
-  const [manches, setManches] = useState<Manche[]>(() => construire("sorcier"));
+  const [manches, setManches] = useState<Manche[]>([]);
   const [index, setIndex] = useState(0);
   const [indices, setIndices] = useState(1);
   const [points, setPoints] = useState(0);
@@ -175,6 +175,11 @@ function DevinePersonnage() {
   const [reponse, setReponse] = useState<string | null>(null);
   const [fini, setFini] = useState(false);
   const compte = useRef(false);
+
+  // Tirage aléatoire uniquement après montage : évite tout écart d'hydratation.
+  useEffect(() => {
+    setManches(construire("sorcier"));
+  }, []);
 
   const cfg = niveaux[niveau];
   const manche = manches[index];
