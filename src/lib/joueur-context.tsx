@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Maison } from "./choixpeau";
+import { articles, lieux } from "./contenu";
 import {
   appliquerRecompense,
   chargerJoueur,
@@ -45,6 +46,8 @@ type Ctx = {
   signalerPartie: (evt: EvenementJeu) => void;
   reclamerQuete: (id: string) => void;
   utiliserObjet: (id: string) => void;
+  lireArticle: (id: string) => void;
+  explorer: (id: string) => string | null;
   reinitialiser: () => void;
   notifs: Notif[];
 };
@@ -227,6 +230,89 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
     [pousser],
   );
 
+  const lireArticle = useCallback(
+    (id: string) => {
+      setJoueur((prev) => {
+        if (!prev) return prev;
+        const deja = prev.decouvertes ?? [];
+        if (deja.includes(id)) return prev;
+        const article = articles.find((a) => a.id === id);
+        if (!article) return prev;
+        const { joueur: base } = appliquerRecompense(prev, article.recompense);
+        const { joueur: final, nouveaux } = verifierSucces({
+          ...base,
+          decouvertes: [...deja, id],
+        });
+        sauverJoueur(final);
+        const lignes = [`${article.icone} Page découverte — ${article.titre}`];
+        if (article.recompense.xp) lignes.push(`✨ +${article.recompense.xp} XP`);
+        if (article.recompense.gallions)
+          lignes.push(`🪙 +${article.recompense.gallions} Gallions`);
+        pousser(lignes);
+        if (nouveaux.length) {
+          setTimeout(
+            () => pousser(nouveaux.map((s) => `🏅 Succès débloqué — ${s.titre}`)),
+            600,
+          );
+        }
+        return final;
+      });
+    },
+    [pousser],
+  );
+
+  const explorer = useCallback(
+    (id: string) => {
+      const lieu = lieux.find((l) => l.id === id);
+      if (!lieu) return null;
+      let recit: string | null = null;
+      setJoueur((prev) => {
+        if (!prev) return prev;
+        const visites = prev.lieuxVisites ?? [];
+        const premiere = !visites.includes(id);
+        const recompense = premiere
+          ? lieu.recompense
+          : { xp: 10 + Math.floor(Math.random() * 16), gallions: Math.floor(Math.random() * 8) };
+        const { joueur: b0, niveauxGagnes } = appliquerRecompense(prev, recompense);
+        const journal = journalDuJour(b0.journal);
+        const base: Joueur = {
+          ...b0,
+          journal: {
+            ...journal,
+            compteurs: {
+              ...journal.compteurs,
+              xpJour: journal.compteurs.xpJour + (recompense.xp ?? 0),
+            },
+          },
+          lieuxVisites: premiere ? [...visites, id] : visites,
+          decouvertes:
+            premiere && lieu.article && !(prev.decouvertes ?? []).includes(lieu.article)
+              ? [...(prev.decouvertes ?? []), lieu.article]
+              : (prev.decouvertes ?? []),
+        };
+        const { joueur: final, nouveaux } = verifierSucces(base);
+        sauverJoueur(final);
+        recit = premiere
+          ? lieu.description
+          : (lieu.trouvailles[Math.floor(Math.random() * lieu.trouvailles.length)] ?? null);
+        const lignes = [`${lieu.icone} ${lieu.nom}`];
+        if (recompense.xp) lignes.push(`✨ +${recompense.xp} XP`);
+        if (recompense.gallions) lignes.push(`🪙 +${recompense.gallions} Gallions`);
+        if (recompense.points) lignes.push(`🏆 +${recompense.points} points`);
+        pousser(lignes, niveauxGagnes > 0 ? final.niveau : undefined);
+        if (nouveaux.length) {
+          setTimeout(
+            () => pousser(nouveaux.map((s) => `🏅 Succès débloqué — ${s.titre}`)),
+            600,
+          );
+        }
+        return final;
+      });
+      return recit;
+    },
+    [pousser],
+  );
+
   const reinitialiser = useCallback(() => {
     effacerJoueur();
     setJoueur(null);
@@ -242,6 +328,8 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
       signalerPartie,
       reclamerQuete,
       utiliserObjet,
+      lireArticle,
+      explorer,
       reinitialiser,
       notifs,
     }),
@@ -254,6 +342,8 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
       signalerPartie,
       reclamerQuete,
       utiliserObjet,
+      lireArticle,
+      explorer,
       reinitialiser,
       notifs,
     ],
