@@ -47,7 +47,7 @@ type Ctx = {
   reclamerQuete: (id: string) => void;
   utiliserObjet: (id: string) => void;
   lireArticle: (id: string) => void;
-  explorer: (id: string) => string | null;
+  explorer: (id: string) => void;
   reinitialiser: () => void;
   notifs: Notif[];
 };
@@ -264,8 +264,7 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
   const explorer = useCallback(
     (id: string) => {
       const lieu = lieux.find((l) => l.id === id);
-      if (!lieu) return null;
-      let recit: string | null = null;
+      if (!lieu) return;
       setJoueur((prev) => {
         if (!prev) return prev;
         const visites = prev.lieuxVisites ?? [];
@@ -292,9 +291,6 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
         };
         const { joueur: final, nouveaux } = verifierSucces(base);
         sauverJoueur(final);
-        recit = premiere
-          ? lieu.description
-          : (lieu.trouvailles[Math.floor(Math.random() * lieu.trouvailles.length)] ?? null);
         const lignes = [`${lieu.icone} ${lieu.nom}`];
         if (recompense.xp) lignes.push(`✨ +${recompense.xp} XP`);
         if (recompense.gallions) lignes.push(`🪙 +${recompense.gallions} Gallions`);
@@ -308,7 +304,6 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
         }
         return final;
       });
-      return recit;
     },
     [pousser],
   );
