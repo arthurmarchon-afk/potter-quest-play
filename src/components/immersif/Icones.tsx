@@ -214,3 +214,134 @@ export function Blason({
     </svg>
   );
 }
+
+/* ------------------------------------------------- glyphes complémentaires */
+
+export const IconeLoupe = (p: P) => (
+  <Glyphe {...p}>
+    <circle cx="10.5" cy="10.5" r="6" />
+    <path d="m15 15 5 5M8 10.5h5" />
+  </Glyphe>
+);
+
+export const IconeCadenas = (p: P) => (
+  <Glyphe {...p}>
+    <rect x="5" y="10" width="14" height="10" rx="1.5" />
+    <path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10M12 14v2.5" />
+  </Glyphe>
+);
+
+export const IconeMedaille = (p: P) => (
+  <Glyphe {...p}>
+    <path d="m8 2 2.4 5M16 2l-2.4 5" />
+    <circle cx="12" cy="14.5" r="6" />
+    <path d="m12 11 1.1 2.3 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4L8.5 13.6l2.4-.3z" />
+  </Glyphe>
+);
+
+export const IconeGallion = (p: P) => (
+  <Glyphe {...p}>
+    <circle cx="12" cy="12" r="8" />
+    <circle cx="12" cy="12" r="4.6" />
+    <path d="M12 3.8v2.2M12 18v2.2M3.8 12H6M18 12h2.2" />
+  </Glyphe>
+);
+
+export const IconeFiole = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M10 3h4v5.4l3.4 7.1A3 3 0 0 1 14.7 20H9.3a3 3 0 0 1-2.7-4.5L10 8.4z" />
+    <path d="M7.7 14.5h8.6" />
+  </Glyphe>
+);
+
+export const IconeFlamme = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M12 3c3.4 3.2 5.4 5.8 5.4 8.8A5.4 5.4 0 0 1 12 21a5.4 5.4 0 0 1-5.4-9.2C7.4 10 9 9.4 9.6 7.6c1 .9 1.6 2 1.7 3.2C12.3 9.4 12.6 7 12 3z" />
+  </Glyphe>
+);
+
+export const IconeVif = (p: P) => (
+  <Glyphe {...p}>
+    <circle cx="12" cy="12" r="3.2" />
+    <path d="M9 10.6C6.6 8 3.8 7.2 2.4 8.4c-1.2 1 .2 3.6 3 5.2M15 10.6c2.4-2.6 5.2-3.4 6.6-2.2 1.2 1-.2 3.6-3 5.2" />
+    <path d="M9.6 13.6 8 15.8M14.4 13.6 16 15.8" />
+  </Glyphe>
+);
+
+export const IconeCrane = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M12 3.2c4 0 6.8 2.8 6.8 6.4 0 2.2-1 3.6-2 4.6v2.4H7.2v-2.4c-1-1-2-2.4-2-4.6C5.2 6 8 3.2 12 3.2z" />
+    <circle cx="9.6" cy="10" r="1.4" />
+    <circle cx="14.4" cy="10" r="1.4" />
+    <path d="M9.5 20.8v-2M14.5 20.8v-2M12 13v2" />
+  </Glyphe>
+);
+
+export const IconeOs = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M7.4 16.6 16.6 7.4" />
+    <path d="M7.4 16.6a2 2 0 1 0-2.6 2.6 2 2 0 1 0 2.6-2.6zM16.6 7.4a2 2 0 1 0 2.6-2.6 2 2 0 1 0-2.6 2.6z" />
+  </Glyphe>
+);
+
+export const IconeGoutte = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M12 3.4c3 3.8 5 6.4 5 8.8a5 5 0 0 1-10 0c0-2.4 2-5 5-8.8z" />
+  </Glyphe>
+);
+
+export const IconeTrefle = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M12 12c-1.6-2.2-4.6-2.6-5.6-.8-1 1.8 1 3.8 5.6.8zM12 12c1.6-2.2 4.6-2.6 5.6-.8 1 1.8-1 3.8-5.6.8zM12 12c-2.2-1.6-2.6-4.6-.8-5.6 1.8-1 3.8 1 .8 5.6z" />
+    <path d="M12 12c1.4 2.4 1.6 5 1 8" />
+  </Glyphe>
+);
+
+export const IconeCoeur = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M12 20s-7-4.4-7-9a3.8 3.8 0 0 1 7-2.1A3.8 3.8 0 0 1 19 11c0 4.6-7 9-7 9z" />
+  </Glyphe>
+);
+
+export const IconePlume = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M4 20c1-6 4-10 10-12 3-1 6-1 6-1s-.6 6-3 9.4c-2.4 3.4-6.6 4.4-9.4 3" />
+    <path d="M6.5 17.5 15 9" />
+  </Glyphe>
+);
+
+export const IconeBulle = (p: P) => (
+  <Glyphe {...p}>
+    <circle cx="10" cy="13.5" r="5" />
+    <circle cx="16.5" cy="8" r="2.6" />
+    <path d="M7.6 11.6a2.6 2.6 0 0 1 1.8-1.6" />
+  </Glyphe>
+);
+
+export const IconeChampignon = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M4.5 11.5a7.5 7.5 0 0 1 15 0z" />
+    <path d="M10 11.5v6a2 2 0 0 0 4 0v-6" />
+  </Glyphe>
+);
+
+export const IconeEclair = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M13.6 2.5 6.5 13.4h4.3L10 21.5l7.3-11.2H13z" />
+  </Glyphe>
+);
+
+export const IconeManette = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M8 8h8a5 5 0 0 1 4.8 6.4l-.7 2.4A2.6 2.6 0 0 1 15.6 18L14 16h-4l-1.6 2a2.6 2.6 0 0 1-4.5-1.2l-.7-2.4A5 5 0 0 1 8 8z" />
+    <path d="M8.4 12.5h2.2M9.5 11.4v2.2M15 12h.01M17 13.6h.01" />
+  </Glyphe>
+);
+
+export const IconeSerpent = (p: P) => (
+  <Glyphe {...p}>
+    <path d="M5 18c3.6 0 4.4-2.6 3-4.2-1.4-1.6-4.4-1.2-4.4-3.6C3.6 7.4 6.6 6 9.6 6.8" />
+    <path d="M9.6 6.8c2.8.8 4.2 3 4.2 5.2 0 3-2.2 4.6-2.2 6" />
+    <path d="M18.6 8.6a2.6 2.6 0 1 0 0-2.6" />
+  </Glyphe>
+);
