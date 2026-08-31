@@ -41,3 +41,9 @@
 ## Refonte immersive
 - [x] Phase 1 — Home cinématique : King's Cross → train → Poudlard → forêt → Pré-au-Lard, décor continu, navigation discrète, échoppes configurables (src/lib/boutiques.ts)
 - [x] Phase 2 — Toutes les pages alignées sur la DA : décor fixe par zone du château, plaques de laiton, titres cinéma, boutons filet d'or, visuels pour les 7 mini-jeux
+
+## Refonte visuelle immersive
+- [x] Phase 1 — typographie (Cinzel Decorative / Cinzel / EB Garamond / IM Fell English), palette château, icônes SVG gravées + blasons, navbar ornementée, footer fondu sans filet
+- [x] Phase 2 — Home cinématographique en 8 actes (King's Cross → train → campagne → arrivée → Poudlard → intérieur → forêt → Pré-au-Lard)
+- [ ] Phase 3 — Mon Sorcier (bureau/parchemin)
+- [ ] Phase 4 à 9 — Jeux, Quêtes, Encyclopédie, Grimoire, Coupe, Inventaire/Exploration/Duels

@@ -16,7 +16,7 @@ export function BoutonInterne({
   to: string;
   children: ReactNode;
   className?: string;
-  icone?: string;
+  icone?: ReactNode;
 }) {
   return (
     <Link to={to} className={cn(styleBouton, className)}>
@@ -35,7 +35,7 @@ export function BoutonExterne({
   href: string;
   children: ReactNode;
   className?: string;
-  icone?: string;
+  icone?: ReactNode;
 }) {
   return (
     <a
@@ -89,7 +89,7 @@ export function Plaque({
   action,
   className,
 }: {
-  icone: string;
+  icone: ReactNode;
   titre: string;
   texte: string;
   action?: ReactNode;
@@ -122,7 +122,7 @@ export function Enseigne({
   texte,
   action,
 }: {
-  icone: string;
+  icone: ReactNode;
   nom: string;
   legende: string;
   texte: string;

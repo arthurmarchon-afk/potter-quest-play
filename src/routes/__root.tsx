@@ -12,6 +12,18 @@ import { useEffect, useState, type ReactNode } from "react";
 import appCss from "@/styles.css?url";
 import { JoueurProvider, useJoueur } from "@/lib/joueur-context";
 import { DecorInterieur } from "@/components/immersif/DecorInterieur";
+import {
+  IconeChoixpeau,
+  IconeEpees,
+  IconeCarte,
+  IconeEtoile,
+  IconeSac,
+  IconeCoupe,
+  IconeSablier,
+  IconeCle,
+  IconeChandelle,
+  Ornement,
+} from "@/components/immersif/Icones";
 import { RewardPopup } from "@/components/jeu/RewardPopup";
 import { XPBar } from "@/components/jeu/XPBar";
 import { reportLovableError } from "@/lib/lovable-error-reporting";
@@ -96,8 +108,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English:ital@0,1&display=swap",
       },
+
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
@@ -130,13 +143,13 @@ const liensPrincipaux = [
 ] as const;
 
 const liensSecondaires = [
-  { to: "/choixpeau", label: "🎩 Choixpeau" },
-  { to: "/duels", label: "⚔️ Duels" },
-  { to: "/carte", label: "🗺️ Carte" },
-  { to: "/succes", label: "🏅 Succès" },
-  { to: "/inventaire", label: "🎒 Sacoche" },
-  { to: "/coupe", label: "🏆 Coupe" },
-  { to: "/classement", label: "📈 Saison" },
+  { to: "/choixpeau", label: "Choixpeau", Icone: IconeChoixpeau },
+  { to: "/duels", label: "Duels", Icone: IconeEpees },
+  { to: "/carte", label: "Carte", Icone: IconeCarte },
+  { to: "/succes", label: "Succès", Icone: IconeEtoile },
+  { to: "/inventaire", label: "Sacoche", Icone: IconeSac },
+  { to: "/coupe", label: "Coupe", Icone: IconeCoupe },
+  { to: "/classement", label: "Saison", Icone: IconeSablier },
 ] as const;
 
 function BandeauJoueur() {
@@ -144,13 +157,19 @@ function BandeauJoueur() {
   if (!joueur) return null;
   return (
     <div className="mx-auto mt-3 max-w-6xl px-6">
-      <div className="plaque flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2.5 text-sm">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-or/12 bg-[oklch(0.1_0.02_265/_55%)] px-4 py-2.5 text-sm">
         <span className="font-display uppercase tracking-[0.14em] text-parchemin">
           {joueur.nom}
         </span>
-        <span className="text-or">Niv. {joueur.niveau}</span>
-        <span className="text-parchemin/55">🪙 {joueur.gallions}</span>
-        <span className="text-parchemin/55">🏆 {joueur.pointsMaison}</span>
+        <span className="annotation not-italic text-or">Niveau {joueur.niveau}</span>
+        <span className="flex items-center gap-1.5 text-parchemin/55">
+          <IconeCle className="h-3.5 w-3.5 text-or/70" />
+          <span className="tabular-nums">{joueur.gallions}</span>
+        </span>
+        <span className="flex items-center gap-1.5 text-parchemin/55">
+          <IconeSablier className="h-3.5 w-3.5 text-or/70" />
+          <span className="tabular-nums">{joueur.pointsMaison}</span>
+        </span>
         <div className="min-w-[120px] flex-1">
           <XPBar niveau={joueur.niveau} xp={joueur.xp} compact />
         </div>
@@ -175,57 +194,63 @@ function SiteNav() {
       <div
         className={`transition-all duration-700 ${
           defile
-            ? "border-b border-or/15 bg-[oklch(0.09_0.02_265/_78%)] backdrop-blur-md"
-            : "border-b border-transparent bg-transparent"
+            ? "bg-[oklch(0.08_0.02_265/_82%)] backdrop-blur-[2px]"
+            : "bg-transparent"
         }`}
       >
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-y-2 px-6 py-3">
-          <Link to="/" className="flex items-baseline gap-3">
-            <span className="font-display text-sm font-semibold uppercase tracking-[0.4em] text-parchemin">
-              Potter Quest
+          <Link to="/" className="group flex items-center gap-3">
+            <IconeChandelle className="h-5 w-5 text-or/75 transition-colors group-hover:text-or" />
+            <span className="font-titre text-[0.78rem] uppercase tracking-[0.38em] text-parchemin">
+              Potter <span className="text-or">Quest</span>
             </span>
           </Link>
 
-          <nav className="flex flex-wrap items-center gap-x-1 gap-y-1">
-            {liensPrincipaux.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                activeOptions={{ exact: l.to === "/" }}
-                className="px-2.5 py-1.5 font-display text-[0.62rem] uppercase tracking-[0.26em] text-parchemin/55 transition-colors hover:text-or"
-                activeProps={{
-                  className:
-                    "px-2.5 py-1.5 font-display text-[0.62rem] uppercase tracking-[0.26em] text-or",
-                }}
-              >
-                {l.label}
-              </Link>
+          <nav className="flex flex-wrap items-center gap-y-1">
+            {liensPrincipaux.map((l, i) => (
+              <span key={l.to} className="flex items-center">
+                {i > 0 ? <Ornement className="mx-1 h-2 w-2 text-or/30" /> : null}
+                <Link
+                  to={l.to}
+                  activeOptions={{ exact: l.to === "/" }}
+                  className="px-2 py-1.5 font-display text-[0.62rem] uppercase tracking-[0.26em] text-parchemin/55 transition-colors hover:text-or"
+                  activeProps={{
+                    className:
+                      "px-2 py-1.5 font-display text-[0.62rem] uppercase tracking-[0.26em] text-or",
+                  }}
+                >
+                  {l.label}
+                </Link>
+              </span>
             ))}
+            <Ornement className="mx-1 h-2 w-2 text-or/30" />
             <button
               type="button"
               onClick={() => setOuvert((o) => !o)}
               aria-expanded={ouvert}
-              className="ml-1 px-2.5 py-1.5 font-display text-[0.62rem] uppercase tracking-[0.26em] text-parchemin/55 transition-colors hover:text-or"
+              className="px-2 py-1.5 font-display text-[0.62rem] uppercase tracking-[0.26em] text-parchemin/55 transition-colors hover:text-or"
             >
-              {ouvert ? "Fermer" : "Grimoire ▾"}
+              {ouvert ? "Refermer" : "Grimoire"}
             </button>
           </nav>
         </div>
 
         {ouvert ? (
           <div className="mx-auto max-w-6xl px-6 pb-4">
-            <div className="plaque flex flex-wrap gap-1 p-2">
-              {liensSecondaires.map((l) => (
+            <div className="flex flex-wrap gap-x-1 gap-y-1 border-t border-or/12 pt-3">
+              {liensSecondaires.map(({ to, label, Icone }) => (
                 <Link
-                  key={l.to}
-                  to={l.to}
+                  key={to}
+                  to={to}
                   onClick={() => setOuvert(false)}
-                  className="rounded-[3px] px-3 py-2 text-sm text-parchemin/65 transition-colors hover:bg-or/10 hover:text-or"
+                  className="flex items-center gap-2 px-3 py-2 font-display text-[0.6rem] uppercase tracking-[0.2em] text-parchemin/60 transition-colors hover:text-or"
                   activeProps={{
-                    className: "rounded-[3px] bg-or/10 px-3 py-2 text-sm text-or",
+                    className:
+                      "flex items-center gap-2 px-3 py-2 font-display text-[0.6rem] uppercase tracking-[0.2em] text-or",
                   }}
                 >
-                  {l.label}
+                  <Icone className="h-4 w-4 opacity-80" />
+                  {label}
                 </Link>
               ))}
             </div>
@@ -239,19 +264,27 @@ function SiteNav() {
 function SiteFooter() {
   return (
     <footer className="relative z-10">
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="flex flex-col items-start justify-between gap-3 border-t border-or/15 pt-6 sm:flex-row sm:items-center">
-          <span className="font-display text-sm font-semibold uppercase tracking-[0.35em] text-parchemin/60">
+      <div className="pointer-events-none h-40 bg-gradient-to-b from-transparent to-[oklch(0.06_0.015_265/_92%)]" />
+      <div className="bg-[oklch(0.06_0.015_265/_92%)] px-6 pb-14">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 text-center">
+          <div className="flex items-center gap-3 text-or/45">
+            <Ornement className="h-2 w-2" />
+            <IconeChandelle className="chandelle h-5 w-5" />
+            <Ornement className="h-2 w-2" />
+          </div>
+          <span className="font-titre text-xs uppercase tracking-[0.4em] text-parchemin/55">
             Potter Quest
           </span>
-          <p className="text-sm italic text-parchemin/40">
-            Grimoire de fans — non affilié aux ayants droit.
+          <p className="annotation max-w-sm text-sm">
+            Ici s'achève la page. Le reste du grimoire attend d'être ouvert — récit de fans, non
+            affilié aux ayants droit.
           </p>
         </div>
       </div>
     </footer>
   );
 }
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();

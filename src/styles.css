@@ -306,3 +306,133 @@
     transition: none;
   }
 }
+
+/* ==================================================================
+   REFONTE IMMERSIVE — typographie, matières et ornements
+   ================================================================== */
+
+:root {
+  --bordeaux: oklch(0.29 0.09 24);
+  --bronze: oklch(0.58 0.06 62);
+  --sylve-profonde: oklch(0.24 0.05 158);
+  --encre-nuit: oklch(0.13 0.022 262);
+}
+
+@theme inline {
+  --color-bordeaux: var(--bordeaux);
+  --color-bronze: var(--bronze);
+  --color-sylve-profonde: var(--sylve-profonde);
+  --color-encre-nuit: var(--encre-nuit);
+  --font-titre: "Cinzel Decorative", "Cinzel", serif;
+  --font-manuscrit: "IM Fell English", "EB Garamond", serif;
+}
+
+/* Titre monumental gravé dans la pierre */
+@utility titre-monument {
+  font-family: var(--font-titre);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 0.95;
+  color: var(--parchemin);
+  text-shadow:
+    0 1px 0 oklch(0 0 0 / 60%),
+    0 3px 40px oklch(0 0 0 / 80%),
+    0 0 90px color-mix(in oklab, var(--or) 22%, transparent);
+}
+
+/* Annotation manuscrite à l'encre */
+@utility annotation {
+  font-family: var(--font-manuscrit);
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: color-mix(in oklab, var(--parchemin) 55%, transparent);
+}
+
+/* Chiffres d'apparat */
+@utility chiffre {
+  font-family: var(--font-titre);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--or);
+}
+
+/* Sceau de cire */
+@utility sceau {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: color-mix(in oklab, var(--parchemin) 80%, transparent);
+  background:
+    radial-gradient(60% 60% at 35% 30%, oklch(0.45 0.13 25), oklch(0.26 0.1 24) 70%);
+  box-shadow:
+    inset 0 1px 2px oklch(1 0 0 / 25%),
+    inset 0 -2px 6px oklch(0 0 0 / 55%),
+    0 6px 16px -8px oklch(0 0 0 / 90%);
+}
+
+/* Jauge gravée : pas de barre de dashboard, une entaille dans la matière */
+@utility entaille {
+  position: relative;
+  height: 3px;
+  border-radius: 0;
+  background: color-mix(in oklab, black 55%, transparent);
+  box-shadow: inset 0 1px 1px oklch(0 0 0 / 70%);
+}
+
+@utility entaille-remplie {
+  height: 100%;
+  background: linear-gradient(90deg, var(--or-sombre), var(--or));
+  box-shadow: 0 0 12px color-mix(in oklab, var(--or) 60%, transparent);
+}
+
+/* Fondu de bas de page : remplace toute ligne de séparation */
+@utility fondu-bas {
+  mask-image: linear-gradient(to bottom, black 55%, transparent);
+}
+
+/* Rayon de lumière traversant la page */
+@utility rai-lumiere {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--or) 16%, transparent),
+    transparent 70%
+  );
+  filter: blur(14px);
+}
+
+body {
+  background-color: var(--encre-nuit);
+}
+
+h1,
+h2 {
+  font-family: var(--font-titre);
+}
+
+@keyframes scintille {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 0.9; transform: scale(1.15); }
+}
+
+@keyframes glisse-pluie {
+  0% { transform: translate3d(0, -20vh, 0); opacity: 0; }
+  10% { opacity: 0.5; }
+  100% { transform: translate3d(-6vw, 120vh, 0); opacity: 0; }
+}
+
+@keyframes oscille {
+  0%, 100% { transform: rotate(-1.4deg); }
+  50% { transform: rotate(1.4deg); }
+}
+
+.scintille { animation: scintille 5s ease-in-out infinite; }
+.pluie { animation: glisse-pluie linear infinite; }
+.oscille { transform-origin: top center; animation: oscille 6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scintille,
+  .pluie,
+  .oscille {
+    animation: none !important;
+  }
+}
