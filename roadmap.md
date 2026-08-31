@@ -19,11 +19,21 @@
 - [x] Bibliothèque / encyclopédie (/bibliotheque) — 16 pages, filtres, XP à la découverte
 - [x] Exploration (/carte) — 8 lieux, première visite récompensée, trouvailles ensuite
 
-## Phase 4 — Mini-jeux
-- [ ] Maître des sorts, Potions, Devine le personnage, Quidditch
+## Phase 4 — Mini-jeux (fait)
+- [x] Maître des sorts (/jeux/sorts) — effet → incantation, sablier, séries
+- [x] Laboratoire de potions (/jeux/potions) — mémorisation + ordre des ingrédients
+- [x] Devine le personnage (/jeux/personnage) — indices progressifs
+- [x] Quidditch (/jeux/quidditch) — Vif d'or, Souafles, Cognards
 
-## Phase 5 — Duels
-## Phase 6 — Saisons & classements
+## Phase 5 — Duels (fait)
+- [x] Club de duel (/duels) — tour par tour, 7 sortilèges, énergie, boucliers
+- [x] 5 adversaires débloqués par niveau, récompenses et registre de combat
+
+## Phase 6 — Saisons & classements (fait)
+- [x] Saison trimestrielle avec progression et jours restants (/classement)
+- [x] Classement des élèves (joueur vs rivaux) et course des maisons
+- [x] Récompense de fin de saison estimée selon le rang
+
 ## Divers
 - [ ] Persistance serveur (Lovable Cloud) si comptes utilisateurs souhaités
 - [ ] Architecture audio + bouton mute
