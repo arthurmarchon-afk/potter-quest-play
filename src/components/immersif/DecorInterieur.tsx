@@ -33,10 +33,10 @@ export function DecorInterieur() {
     <div className="pointer-events-none fixed inset-0 -z-10" aria-hidden>
       <div
         key={image}
-        className="absolute inset-0 bg-cover bg-center opacity-[0.32] transition-opacity duration-1000"
+        className="absolute inset-0 bg-cover bg-center opacity-[0.45] transition-opacity duration-1000"
         style={{ backgroundImage: `url(${image})` }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_0%,oklch(0.1_0.02_265/55%),oklch(0.07_0.02_265/94%))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_0%,oklch(0.1_0.02_265/40%),oklch(0.07_0.02_265/86%))]" />
       <div className="grain absolute inset-0 opacity-40" />
       {!reduit ? (
         <div className="absolute inset-0 overflow-hidden">

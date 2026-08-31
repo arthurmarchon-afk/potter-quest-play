@@ -2,6 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import echecsImg from "@/assets/echecs.jpg";
 import memoryImg from "@/assets/memory.jpg";
 import quizImg from "@/assets/quiz.jpg";
+import sortsImg from "@/assets/sorts.jpg";
+import potionsImg from "@/assets/potions.jpg";
+import personnageImg from "@/assets/personnage.jpg";
+import quidditchImg from "@/assets/quidditch.jpg";
 
 export const Route = createFileRoute("/jeux/")({
   head: () => ({
@@ -10,7 +14,7 @@ export const Route = createFileRoute("/jeux/")({
       {
         name: "description",
         content:
-          "Trois épreuves magiques : les échecs des sorciers, le memory de sortilèges et le quiz du professeur.",
+          "Sept épreuves magiques : échecs sorciers, memory de sortilèges, quiz, sorts, potions, énigmes et Quidditch.",
       },
       { property: "og:title", content: "Mini-jeux sorciers de Poudlard" },
       {
@@ -48,25 +52,29 @@ const jeux = [
     to: "/jeux/sorts",
     titre: "Maître des Sorts",
     texte: "Associez chaque effet à son incantation avant la fin du sablier.",
-    icone: "🪄",
+    image: sortsImg,
+    alt: "Baguette lançant des étincelles au-dessus d'un grimoire ouvert",
   },
   {
     to: "/jeux/potions",
     titre: "Laboratoire de Potions",
     texte: "Mémorisez la recette et versez les ingrédients dans le bon ordre.",
-    icone: "⚗️",
+    image: potionsImg,
+    alt: "Chaudron fumant et fioles colorées dans un laboratoire de potions",
   },
   {
     to: "/jeux/personnage",
     titre: "Devine le Personnage",
     texte: "Trois indices, une identité : trouvez le sorcier caché.",
-    icone: "🔍",
+    image: personnageImg,
+    alt: "Portrait encadré d'une silhouette encapuchonnée sur un mur de pierre",
   },
   {
     to: "/jeux/quidditch",
     titre: "Quidditch — Vif d'or",
     texte: "Attrapez le Vif, marquez au Souafle et esquivez les Cognards.",
-    icone: "🧹",
+    image: quidditchImg,
+    alt: "Vif d'or doré volant au-dessus d'un stade au crépuscule",
   },
 ] as const;
 
@@ -79,12 +87,12 @@ function Jeux() {
             <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
               Salle des mini-jeux
             </p>
-            <h1 className="text-balance font-display text-2xl font-semibold leading-tight sm:text-3xl">
+            <h1 className="titre-cinema text-balance text-2xl leading-tight text-parchemin sm:text-4xl">
               Tentez vos sorts
             </h1>
           </div>
           <p className="text-sm italic text-parchemin/60">
-            Trois épreuves, aucune boutique, aucun compte.
+            Sept épreuves magiques, trois niveaux de difficulté, des Gallions à la clé.
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -94,21 +102,18 @@ function Jeux() {
               to={j.to}
               className="panel group p-5 transition-transform hover:-translate-y-1"
             >
-              {"image" in j ? (
+              <div className="relative overflow-hidden rounded-[3px] filet-or">
                 <img
                   src={j.image}
                   alt={j.alt}
                   loading="lazy"
                   width={1024}
                   height={768}
-                  className="aspect-[4/3] w-full rounded-[12px] object-cover"
+                  className="aspect-[4/3] w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105"
                 />
-              ) : (
-                <div className="flex aspect-[4/3] w-full items-center justify-center rounded-[12px] bg-primary/10 text-6xl">
-                  {j.icone}
-                </div>
-              )}
-              <h2 className="mt-4 font-display text-lg font-medium">{j.titre}</h2>
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,oklch(0.09_0.02_265/85%))]" />
+              </div>
+              <h2 className="mt-4 font-display text-base uppercase tracking-[0.16em] text-parchemin">{j.titre}</h2>
               <p className="mt-2 text-pretty text-sm text-parchemin/60">{j.texte}</p>
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-or transition-transform group-hover:translate-x-1">
                 Jouer <span>→</span>
