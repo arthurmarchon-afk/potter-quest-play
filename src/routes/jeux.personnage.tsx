@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useJoueur } from "@/lib/joueur-context";
+import { Salle, EnTetePage, Cadre, ChoixGrave, SeparateurOrne } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeLoupe, IconeMedaille } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/jeux/personnage")({
   head: () => ({
@@ -156,10 +159,15 @@ function construire(n: Niveau): Manche[] {
     });
 }
 
+const optionsNiveau = (Object.keys(niveaux) as Niveau[]).map((n) => ({
+  valeur: n,
+  libelle: niveaux[n].label,
+}));
+
 function DevinePersonnage() {
   const { joueur, gagner, signalerPartie } = useJoueur();
   const [niveau, setNiveau] = useState<Niveau>("sorcier");
-  const [manches, setManches] = useState<Manche[]>(() => construire("sorcier"));
+  const [manches, setManches] = useState<Manche[]>([]);
   const [index, setIndex] = useState(0);
   const [indices, setIndices] = useState(1);
   const [points, setPoints] = useState(0);
@@ -167,6 +175,11 @@ function DevinePersonnage() {
   const [reponse, setReponse] = useState<string | null>(null);
   const [fini, setFini] = useState(false);
   const compte = useRef(false);
+
+  // Tirage aléatoire uniquement après montage : évite tout écart d'hydratation.
+  useEffect(() => {
+    setManches(construire("sorcier"));
+  }, []);
 
   const cfg = niveaux[niveau];
   const manche = manches[index];
@@ -218,113 +231,132 @@ function DevinePersonnage() {
         points: parfait ? 10 * cfg.mult : 0,
         ...(parfait ? { stat: { cle: "intelligence" as const, valeur: 1 } } : {}),
       },
-      `🔍 Devine le Personnage — ${trouves}/${manches.length}`,
+      `Devine le Personnage — ${trouves}/${manches.length}`,
     );
   }, [fini, joueur, trouves, points, manches.length, cfg.mult, gagner, signalerPartie]);
 
   return (
-    <section>
-      <div className="mx-auto max-w-3xl px-6 py-12 lg:py-20">
-        <Link to="/jeux" className="text-sm text-or hover:underline">
-          ← Salle des mini-jeux
-        </Link>
-        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
-          Devine le Personnage
-        </h1>
-        <p className="mt-2 text-sm text-parchemin/60">
-          {cfg.texte} Moins vous demandez d'indices, plus vous marquez de points.
-        </p>
+    <Salle>
+      <Link to="/jeux" className="font-display text-[0.6rem] uppercase tracking-[0.3em] text-or/70 hover:text-or">
+        Salle des mini-jeux
+      </Link>
 
-        <div className="mt-5 flex flex-wrap gap-2">
-          {(Object.keys(niveaux) as Niveau[]).map((n) => (
-            <button
-              key={n}
-              onClick={() => rejouer(n)}
-              className={`rounded-[10px] px-3 py-2 text-sm font-medium ring-1 transition-colors ${
-                n === niveau
-                  ? "bg-primary/15 text-primary ring-primary/40"
-                  : "text-parchemin/60 ring-border hover:text-foreground"
-              }`}
-            >
-              {niveaux[n].label}
-            </button>
-          ))}
-        </div>
+      <EnTetePage
+        surtitre="Galerie des portraits"
+        titre="Devine le Personnage"
+        intro={`${cfg.texte} Moins vous demandez d'indices, plus vous marquez de points.`}
+        icone={<IconeLoupe />}
+        aside={
+          <ChoixGrave label="Rang" options={optionsNiveau} valeur={niveau} onChange={(v) => rejouer(v as Niveau)} />
+        }
+      />
 
-        <div className="panel mt-6 p-5">
-          {!fini && manche ? (
-            <>
-              <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-                <span className="text-parchemin/60">
-                  Énigme {index + 1} / {manches.length}
-                </span>
-                <span className="text-or">
-                  {trouves} trouvé(s) · {points} pts
-                </span>
-              </div>
-
-              <ul className="mt-4 space-y-2">
-                {manche.perso.indices.slice(0, indices).map((ind, i) => (
-                  <li key={ind} className="rounded-[12px] bg-primary/10 px-4 py-3 text-sm">
-                    <span className="mr-2 text-or">Indice {i + 1}</span>
-                    {ind}
-                  </li>
-                ))}
-              </ul>
-
-              {indices < 3 && !reponse && (
-                <button
-                  onClick={() => setIndices((i) => i + 1)}
-                  className="mt-3 rounded-[10px] px-3 py-2 text-sm text-or ring-1 ring-border hover:text-foreground"
-                >
-                  Demander un indice de plus (−1 pt)
-                </button>
-              )}
-
-              <div className="mt-5 grid gap-2 sm:grid-cols-2">
-                {manche.options.map((o) => {
-                  const estBon = o === manche.perso.nom;
-                  const choisi = reponse === o;
-                  const style = !reponse
-                    ? "ring-border hover:-translate-y-0.5 hover:text-foreground"
-                    : estBon
-                      ? "bg-emeraude/20 text-foreground ring-emeraude/50"
-                      : choisi
-                        ? "bg-destructive/15 text-foreground ring-destructive/40"
-                        : "ring-border opacity-60";
-                  return (
-                    <button
-                      key={o}
-                      onClick={() => repondre(o)}
-                      disabled={!!reponse}
-                      className={`rounded-[12px] px-4 py-3 text-left text-sm ring-1 transition-all ${style}`}
-                    >
-                      {o}
-                    </button>
-                  );
-                })}
-              </div>
-            </>
-          ) : (
-            <div className="text-center">
-              <p className="font-display text-xl">
-                {trouves === manches.length
-                  ? "Aucune identité ne vous échappe !"
-                  : "Le grimoire garde encore quelques secrets."}
+      <Reveler>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,17rem)_1fr]">
+          {/* Cadre de portrait voilé de brume */}
+          <div className="relative mx-auto aspect-[3/4] w-full max-w-[17rem] overflow-hidden rounded-[3px] border-[6px] border-double border-or/35 bg-gradient-to-b from-nuit via-pierre to-nuit shadow-[0_20px_50px_-25px_black]">
+            <div
+              className="pointer-events-none absolute inset-0 respire"
+              style={{
+                background:
+                  "radial-gradient(60% 50% at 50% 40%, color-mix(in oklab, var(--parchemin) 18%, transparent), transparent 70%)",
+              }}
+              aria-hidden
+            />
+            <div className="absolute inset-0 grain opacity-40" aria-hidden />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+              <span className="sceau h-14 w-14 [&>svg]:h-6 [&>svg]:w-6">
+                <IconeMedaille />
+              </span>
+              <p className="font-display text-[0.55rem] uppercase tracking-[0.35em] text-or/60">
+                Portrait voilé
               </p>
-              <p className="mt-2 text-sm text-parchemin/60">
-                {trouves} / {manches.length} personnages trouvés — {points} points d'énigme
+              <p className="annotation text-sm text-parchemin/60">
+                Percez le brouillard grâce aux indices révélés au parchemin.
               </p>
-              <button
-                onClick={() => rejouer(niveau)}
-                className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-5"
-              >
-                Rejouer
-              </button>
             </div>
-          )}
+            <div className="fondu-bas absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/70 to-transparent" />
+          </div>
+
+          <Cadre className="p-6 sm:p-8">
+            {!fini && manche ? (
+              <>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="font-display text-[0.6rem] uppercase tracking-[0.3em] text-parchemin/50">
+                    Énigme {index + 1} / {manches.length}
+                  </span>
+                  <span className="chiffre text-base">
+                    {trouves} trouvé(s) · {points} pts
+                  </span>
+                </div>
+
+                <ul className="mt-5 space-y-3">
+                  {manche.perso.indices.slice(0, indices).map((ind, i) => (
+                    <li
+                      key={ind}
+                      className="reveler visible annotation rounded-[2px] border border-or/15 bg-black/25 px-4 py-3 text-base leading-relaxed"
+                    >
+                      <span className="mr-2 font-display text-[0.55rem] uppercase tracking-[0.3em] text-or/70 not-italic">
+                        Indice {i + 1}
+                      </span>
+                      {ind}
+                    </li>
+                  ))}
+                </ul>
+
+                {indices < 3 && !reponse && (
+                  <button
+                    onClick={() => setIndices((i) => i + 1)}
+                    className="mt-4 font-display text-[0.6rem] uppercase tracking-[0.3em] text-or/70 underline decoration-or/30 underline-offset-4 hover:text-or"
+                  >
+                    Demander un indice de plus (moins un point)
+                  </button>
+                )}
+
+                <SeparateurOrne className="mt-5" />
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {manche.options.map((o) => {
+                    const estBon = o === manche.perso.nom;
+                    const choisi = reponse === o;
+                    const style = !reponse
+                      ? "border-or/20 text-parchemin/80 hover:-translate-y-0.5 hover:border-or/50 hover:text-parchemin"
+                      : estBon
+                        ? "border-or/70 bg-or/10 text-parchemin scintille"
+                        : choisi
+                          ? "border-sang/70 bg-sang/20 text-parchemin"
+                          : "border-or/10 text-parchemin/40";
+                    return (
+                      <button
+                        key={o}
+                        onClick={() => repondre(o)}
+                        disabled={!!reponse}
+                        className={`rounded-[2px] border bg-black/30 px-4 py-3 text-left text-sm transition-all ${style}`}
+                      >
+                        {o}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <div className="text-center">
+                <p className="titre-monument text-2xl">
+                  {trouves === manches.length
+                    ? "Aucune identité ne vous échappe !"
+                    : "Le grimoire garde encore quelques secrets."}
+                </p>
+                <p className="annotation mt-3 text-base">
+                  {trouves} / {manches.length} personnages trouvés — {points} points d'énigme
+                </p>
+                <button onClick={() => rejouer(niveau)} className="bouton-magique mt-6">
+                  Rejouer
+                </button>
+              </div>
+            )}
+          </Cadre>
         </div>
-      </div>
-    </section>
+      </Reveler>
+    </Salle>
   );
 }

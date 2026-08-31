@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useJoueur } from "@/lib/joueur-context";
+import { Salle, EnTetePage, Cadre, ChoixGrave } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeBalai, IconeVif, IconeGallion } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/jeux/quidditch")({
   head: () => ({
@@ -56,10 +59,47 @@ const niveaux: Record<
 type Type = "vif" | "souafle" | "cognard";
 type Cible = { id: number; type: Type; x: number; y: number };
 
-const icones: Record<Type, string> = { vif: "🥇", souafle: "🔴", cognard: "⚫" };
-
 function pos() {
   return { x: 6 + Math.random() * 84, y: 8 + Math.random() * 76 };
+}
+
+const optionsNiveau = (Object.keys(niveaux) as Niveau[]).map((n) => ({
+  valeur: n,
+  libelle: niveaux[n].label,
+}));
+
+function Cible({ c, onClick }: { c: Cible; onClick: () => void }) {
+  if (c.type === "vif") {
+    return (
+      <button
+        onClick={onClick}
+        aria-label="Vif d'or"
+        className="absolute grid h-9 w-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full text-or scintille transition-transform hover:scale-125"
+        style={{ left: `${c.x}%`, top: `${c.y}%` }}
+      >
+        <span className="absolute inset-0 rounded-full bg-or/25 blur-md" aria-hidden />
+        <IconeVif className="relative h-6 w-6" />
+      </button>
+    );
+  }
+  if (c.type === "cognard") {
+    return (
+      <button
+        onClick={onClick}
+        aria-label="Cognard"
+        className="absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-or/20 bg-[radial-gradient(circle_at_32%_28%,oklch(0.4_0.01_270),oklch(0.08_0.005_270)_70%)] shadow-[0_6px_14px_-4px_black] transition-transform hover:scale-110"
+        style={{ left: `${c.x}%`, top: `${c.y}%` }}
+      />
+    );
+  }
+  return (
+    <button
+      onClick={onClick}
+      aria-label="Souafle"
+      className="absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border border-bronze/50 bg-[radial-gradient(circle_at_32%_28%,oklch(0.62_0.14_28),oklch(0.32_0.09_24)_75%)] shadow-[0_5px_12px_-4px_black] transition-transform hover:scale-110"
+      style={{ left: `${c.x}%`, top: `${c.y}%` }}
+    />
+  );
 }
 
 function Quidditch() {
@@ -85,18 +125,15 @@ function Quidditch() {
     setCibles(liste);
   }, [cfg.cognards]);
 
-  const demarrer = useCallback(
-    (n: Niveau) => {
-      setNiveau(n);
-      setScore(0);
-      setVifs(0);
-      setReste(niveaux[n].duree);
-      setFini(false);
-      setEnCours(true);
-      compte.current = false;
-    },
-    [],
-  );
+  const demarrer = useCallback((n: Niveau) => {
+    setNiveau(n);
+    setScore(0);
+    setVifs(0);
+    setReste(niveaux[n].duree);
+    setFini(false);
+    setEnCours(true);
+    compte.current = false;
+  }, []);
 
   useEffect(() => {
     if (!enCours) return;
@@ -145,85 +182,87 @@ function Quidditch() {
         points: victoire ? 10 * cfg.mult : 0,
         ...(vifs >= 2 ? { stat: { cle: "agilite" as const, valeur: 1 } } : {}),
       },
-      `🧹 Quidditch — ${score} points, ${vifs} Vif(s) d'or`,
+      `Quidditch — ${score} points, ${vifs} Vif(s) d'or`,
     );
   }, [fini, joueur, score, vifs, cfg.mult, gagner, signalerPartie]);
 
   return (
-    <section>
-      <div className="mx-auto max-w-3xl px-6 py-12 lg:py-20">
-        <Link to="/jeux" className="text-sm text-or hover:underline">
-          ← Salle des mini-jeux
-        </Link>
-        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
-          Quidditch — Attrapez le Vif d'or
-        </h1>
-        <p className="mt-2 text-sm text-parchemin/60">
-          {cfg.texte} Souafle 🔴 +10, Vif d'or 🥇 +150, Cognard ⚫ −20.
-        </p>
+    <Salle large>
+      <Link to="/jeux" className="font-display text-[0.6rem] uppercase tracking-[0.3em] text-or/70 hover:text-or">
+        Salle des mini-jeux
+      </Link>
 
-        <div className="mt-5 flex flex-wrap gap-2">
-          {(Object.keys(niveaux) as Niveau[]).map((n) => (
-            <button
-              key={n}
-              onClick={() => demarrer(n)}
-              className={`rounded-[10px] px-3 py-2 text-sm font-medium ring-1 transition-colors ${
-                n === niveau
-                  ? "bg-primary/15 text-primary ring-primary/40"
-                  : "text-parchemin/60 ring-border hover:text-foreground"
-              }`}
-            >
-              {niveaux[n].label}
-            </button>
-          ))}
-        </div>
+      <EnTetePage
+        surtitre="Stade sous les étoiles"
+        titre="Quidditch — Attrapez le Vif d'or"
+        intro={`${cfg.texte} Souafle : +10. Vif d'or : +150. Cognard : -20.`}
+        icone={<IconeBalai />}
+        aside={
+          <ChoixGrave label="Rang" options={optionsNiveau} valeur={niveau} onChange={(v) => demarrer(v as Niveau)} />
+        }
+      />
 
-        <div className="panel mt-6 p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-            <span className="text-or">Score {score}</span>
-            <span className="text-parchemin/60">🥇 {vifs}</span>
-            <span className="text-parchemin/60">⏳ {reste}s</span>
+      <Reveler>
+        <Cadre className="p-6 sm:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="flex items-center gap-2">
+              <IconeGallion className="h-4 w-4 text-or" />
+              <span className="chiffre text-lg">Score {score}</span>
+            </span>
+            <span className="flex items-center gap-2 text-or">
+              <IconeVif className="h-4 w-4" />
+              <span className="chiffre text-base">{vifs}</span>
+            </span>
+            <span className="font-display text-[0.6rem] uppercase tracking-[0.3em] text-parchemin/50">
+              {reste}s
+            </span>
           </div>
 
-          <div className="relative mt-4 h-[340px] w-full overflow-hidden rounded-[14px] bg-primary/5 ring-1 ring-border">
+          <div className="relative mt-5 h-[380px] w-full overflow-hidden rounded-[3px] border border-or/20 bg-[radial-gradient(ellipse_at_50%_0%,color-mix(in_oklab,var(--pierre)_60%,transparent),var(--nuit)_75%)]">
+            {/* ciel nocturne étoilé */}
+            <div className="pointer-events-none absolute inset-0" aria-hidden>
+              {Array.from({ length: 26 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="absolute h-[2px] w-[2px] rounded-full bg-parchemin/70 scintille"
+                  style={{
+                    left: `${(i * 37) % 100}%`,
+                    top: `${(i * 53) % 90}%`,
+                    animationDelay: `${(i % 7) * 0.6}s`,
+                  }}
+                />
+              ))}
+              <div className="grain absolute inset-0 opacity-30" />
+            </div>
+
             {!enCours && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
                 {fini ? (
                   <>
-                    <p className="font-display text-xl">
+                    <IconeVif className={`h-9 w-9 ${vifs > 0 ? "text-or scintille" : "text-parchemin/50"}`} />
+                    <p className="titre-monument text-2xl">
                       {vifs > 0 ? "Vif d'or attrapé — match remporté !" : "Match terminé."}
                     </p>
-                    <p className="text-sm text-parchemin/60">
+                    <p className="annotation text-base">
                       {score} points, {vifs} Vif(s) d'or
                     </p>
                   </>
                 ) : (
-                  <p className="text-sm text-parchemin/60">
-                    Enfourchez votre balai et choisissez un niveau pour décoller.
+                  <p className="annotation text-base">
+                    Enfourchez votre balai et choisissez un rang pour décoller.
                   </p>
                 )}
-                <button
-                  onClick={() => demarrer(niveau)}
-                  className="bouton-magique px-5 py-2.5 text-[0.6rem]"
-                >
+                <button onClick={() => demarrer(niveau)} className="bouton-magique">
                   {fini ? "Rejouer" : "Décoller"}
                 </button>
               </div>
             )}
             {cibles.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => toucher(c)}
-                aria-label={c.type}
-                className="absolute text-3xl transition-transform hover:scale-110"
-                style={{ left: `${c.x}%`, top: `${c.y}%` }}
-              >
-                {icones[c.type]}
-              </button>
+              <Cible key={c.id} c={c} onClick={() => toucher(c)} />
             ))}
           </div>
-        </div>
-      </div>
-    </section>
+        </Cadre>
+      </Reveler>
+    </Salle>
   );
 }

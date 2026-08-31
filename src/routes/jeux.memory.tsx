@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useJoueur } from "@/lib/joueur-context";
+import { Salle, EnTetePage, ChoixGrave, Sceau } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeParchemin, IconeEtoile, Ornement } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/jeux/memory")({
   head: () => ({
@@ -64,6 +67,11 @@ const niveaux: Record<
     texte: "12 paires et un retournement éclair : mémoire d'archimage requise.",
   },
 };
+
+const optionsNiveau = (Object.keys(niveaux) as Niveau[]).map((n) => ({
+  valeur: n,
+  libelle: niveaux[n].label,
+}));
 
 type Carte = { id: number; sort: string };
 
@@ -139,7 +147,7 @@ function Memory() {
         points: 10 * mult,
         stat: { cle: "agilite", valeur: 1 },
       },
-      `🧪 Memory réussi en ${coups} coups`,
+      `Memory réussi en ${coups} coups`,
     );
     signalerPartie({ victoire: true });
   }, [gagne, joueur, coups, config.paires, niveau, gagner, signalerPartie]);
@@ -159,84 +167,96 @@ function Memory() {
   }, [coups, config.paires]);
 
   return (
-    <section>
-      <div className="mx-auto max-w-4xl px-6 py-16">
-        <Link to="/jeux" className="text-sm text-parchemin/60 hover:text-foreground">
-          ← Salle des mini-jeux
-        </Link>
-        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
-          Memory de Sortilèges
-        </h1>
-        <p className="mt-2 text-parchemin/60">
-          Retournez les parchemins deux par deux et retrouvez toutes les paires d'incantations.
-        </p>
+    <Salle>
+      <Link
+        to="/jeux"
+        className="mb-6 inline-flex items-center gap-2 font-display text-[0.62rem] uppercase tracking-[0.35em] text-or/60 transition-colors hover:text-or"
+      >
+        <Ornement className="h-2.5 w-2.5 rotate-180" />
+        Salle des mini-jeux
+      </Link>
+      <EnTetePage
+        surtitre="Cabinet des incantations"
+        titre="Memory de Sortilèges"
+        intro="Retournez les parchemins deux par deux et retrouvez toutes les paires d'incantations."
+        icone={<IconeParchemin />}
+      />
 
-        <div className="panel mt-6 p-5">
-          <p className="text-xs uppercase tracking-[0.25em] text-or">Niveau</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {(Object.keys(niveaux) as Niveau[]).map((n) => (
+      <Reveler className="plaque relative p-6">
+        <p className="font-display text-[0.6rem] uppercase tracking-[0.35em] text-or/70">Niveau</p>
+        <div className="mt-4">
+          <ChoixGrave options={optionsNiveau} valeur={niveau} onChange={(v) => setNiveau(v as Niveau)} />
+        </div>
+        <p className="annotation mt-4 text-sm leading-relaxed">{config.texte}</p>
+      </Reveler>
+
+      <Reveler delai={100} className="plaque relative mt-6 p-5 sm:p-7">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm">
+          <span className="font-display text-xs uppercase tracking-[0.25em] text-or">
+            Paires : {trouvees.length} / {config.paires}
+          </span>
+          <span className="annotation">Coups : {coups}</span>
+          <button onClick={rejouer} className="bouton-magique px-5 py-2.5 text-[0.6rem]">
+            Rebattre les cartes
+          </button>
+        </div>
+
+        <div className={`grid gap-3 ${config.colonnes}`} style={{ perspective: "1200px" }}>
+          {cartes.map((carte) => {
+            const appariee = trouvees.includes(carte.sort);
+            const visible = retournees.includes(carte.id) || appariee;
+            const manque = rate.includes(carte.id);
+            return (
               <button
-                key={n}
-                onClick={() => setNiveau(n)}
-                className={`rounded-[10px] px-4 py-2 text-sm font-medium ring-1 transition-transform hover:-translate-y-0.5 ${
-                  niveau === n
-                    ? "bg-primary/20 text-or ring-primary/50"
-                    : "bg-foreground/5 text-foreground/70 ring-border"
-                }`}
+                key={carte.id}
+                onClick={() => cliquer(carte)}
+                aria-label={visible ? carte.sort : "Carte cachée"}
+                className="relative aspect-[3/4] [transform-style:preserve-3d] transition-transform duration-500"
+                style={{ transform: visible ? "rotateY(180deg)" : "rotateY(0deg)" }}
               >
-                {niveaux[n].label}
-              </button>
-            ))}
-          </div>
-          <p className="mt-3 text-sm italic text-parchemin/60">{config.texte}</p>
-        </div>
-
-        <div className="panel mt-6 p-5 sm:p-7">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 text-sm">
-            <span className="text-or">
-              Paires : {trouvees.length} / {config.paires}
-            </span>
-            <span className="text-parchemin/60">Coups : {coups}</span>
-            <button
-              onClick={rejouer}
-              className="bouton-magique px-5 py-2.5 text-[0.6rem]"
-            >
-              Rebattre les cartes
-            </button>
-          </div>
-
-          <div className={`grid gap-3 ${config.colonnes}`}>
-            {cartes.map((carte) => {
-              const appariee = trouvees.includes(carte.sort);
-              const visible = retournees.includes(carte.id) || appariee;
-              const manque = rate.includes(carte.id);
-              return (
-                <button
-                  key={carte.id}
-                  onClick={() => cliquer(carte)}
-                  className={`grid aspect-[3/4] place-items-center overflow-hidden rounded-[12px] px-2 text-center text-[11px] font-medium leading-tight ring-1 transition-all duration-200 hover:-translate-y-0.5 sm:text-sm ${
-                    manque
-                      ? "bg-destructive/20 text-foreground/80 ring-destructive/50"
-                      : appariee
-                        ? "bg-emeraude/20 text-or ring-emeraude/50 opacity-80"
-                        : visible
-                          ? "bg-primary/15 text-or ring-primary/50"
-                          : "bg-ink-2/70 text-brass/40 ring-border"
-                  }`}
+                {/* Dos de grimoire */}
+                <span
+                  className="absolute inset-0 grid place-items-center rounded-[8px] bg-pierre text-or/40 ring-1 ring-or/25 [backface-visibility:hidden]"
                 >
-                  {visible || manque ? carte.sort : "✦"}
-                </button>
-              );
-            })}
-          </div>
-
-          {gagne && (
-            <p className="mt-6 text-center font-display text-lg text-or">
-              Sortilèges maîtrisés en {coups} coups — {"✦".repeat(etoiles)}
-            </p>
-          )}
+                  <Ornement className="h-4 w-4" />
+                  <span className="pointer-events-none absolute inset-2 rounded-[5px] ring-1 ring-or/15" />
+                </span>
+                {/* Face révélée */}
+                <span
+                  className={`absolute inset-0 grid place-items-center overflow-hidden rounded-[8px] px-2 text-center text-[11px] font-medium leading-tight ring-1 [backface-visibility:hidden] sm:text-sm ${
+                    manque
+                      ? "bg-sang/40 text-parchemin ring-sang/60"
+                      : appariee
+                        ? "bg-sylve/40 text-or ring-or/50"
+                        : "bg-or/15 text-or ring-or/50"
+                  }`}
+                  style={{ transform: "rotateY(180deg)" }}
+                >
+                  {appariee ? (
+                    <Sceau className="absolute -right-1 -top-1 h-8 w-8">
+                      <Ornement className="h-3 w-3" />
+                    </Sceau>
+                  ) : null}
+                  {carte.sort}
+                </span>
+              </button>
+            );
+          })}
         </div>
-      </div>
-    </section>
+
+        {gagne && (
+          <div className="mt-8 flex flex-col items-center gap-2 text-center">
+            <p className="font-display text-lg text-parchemin">
+              Sortilèges maîtrisés en {coups} coups
+            </p>
+            <div className="flex gap-1 text-or">
+              {Array.from({ length: etoiles }).map((_, i) => (
+                <IconeEtoile key={i} className="h-5 w-5" />
+              ))}
+            </div>
+          </div>
+        )}
+      </Reveler>
+    </Salle>
   );
 }

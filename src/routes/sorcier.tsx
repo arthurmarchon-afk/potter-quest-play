@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { PlayerSummary, StatLine } from "@/components/jeu/PlayerSummary";
+import { Cadre, EnTetePage, Salle, SeparateurOrne } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeBaguette, IconeChoixpeau, IconeManette, IconeParchemin } from "@/components/immersif/Icones";
 import { useJoueur } from "@/lib/joueur-context";
 import { statsMeta, type Stat } from "@/lib/joueur";
 
@@ -29,109 +32,121 @@ function MonSorcier() {
 
   if (!pret) {
     return (
-      <div className="mx-auto max-w-6xl px-6 py-20 text-sm text-parchemin/60">
-        Ouverture du registre…
-      </div>
+      <Salle>
+        <p className="annotation text-base">Ouverture du registre…</p>
+      </Salle>
     );
   }
 
   if (!joueur) {
     return (
-      <section>
-        <div className="mx-auto max-w-2xl px-6 py-16 lg:py-24">
-          <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
-            Registre de Poudlard
-          </p>
-          <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">Créer mon sorcier</h1>
-          <p className="mt-4 text-parchemin/60">
-            Inscrivez votre nom sur le registre. Votre progression — niveau, XP, Gallions et
-            points de maison — sera conservée sur cet appareil.
-          </p>
-          <form
-            className="panel mt-8 flex flex-col gap-4 p-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (nom.trim()) creerSorcier(nom);
-            }}
-          >
-            <label className="text-sm text-foreground/80" htmlFor="nom">
-              Nom du sorcier
-            </label>
-            <input
-              id="nom"
-              value={nom}
-              onChange={(e) => setNom(e.target.value)}
-              maxLength={24}
-              placeholder="Ex. Arthur"
-              className="rounded-[10px] bg-foreground/5 px-4 py-3 text-foreground outline-none ring-1 ring-border focus:ring-primary"
-            />
-            <button
-              type="submit"
-              disabled={!nom.trim()}
-              className="bouton-magique px-5 py-2.5 text-[0.6rem] justify-center disabled:opacity-40"
+      <Salle>
+        <EnTetePage
+          surtitre="Registre de Poudlard"
+          titre="Créer mon sorcier"
+          icone={<IconeParchemin />}
+          intro="Inscrivez votre nom sur le registre. Votre progression — niveau, XP, Gallions et points de maison — sera conservée sur cet appareil."
+        />
+
+        <Reveler>
+          <Cadre ton="parchemin" className="mx-auto max-w-lg p-8 sm:p-10">
+            <p className="font-display text-[0.6rem] uppercase tracking-[0.4em] text-[oklch(0.4_0.05_60)]">
+              Registre des nouveaux élèves
+            </p>
+            <form
+              className="mt-6 flex flex-col gap-6"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (nom.trim()) creerSorcier(nom);
+              }}
             >
-              🪄 Entrer à Poudlard
-            </button>
-          </form>
-        </div>
-      </section>
+              <label htmlFor="nom" className="block">
+                <span className="font-display text-xs uppercase tracking-[0.25em] text-[oklch(0.35_0.05_55)]">
+                  Nom du sorcier
+                </span>
+                <input
+                  id="nom"
+                  value={nom}
+                  onChange={(e) => setNom(e.target.value)}
+                  maxLength={24}
+                  placeholder="Écrivez ici à la plume…"
+                  autoComplete="off"
+                  className="mt-3 w-full border-0 border-b-2 border-[oklch(0.4_0.05_60_/_0.4)] bg-transparent pb-2 font-manuscrit text-2xl italic text-[oklch(0.22_0.02_60)] outline-none transition-colors placeholder:text-[oklch(0.4_0.05_60_/_0.5)] focus:border-[oklch(0.5_0.13_25)]"
+                  style={{ fontFamily: "var(--font-manuscrit)" }}
+                />
+              </label>
+              <button
+                type="submit"
+                disabled={!nom.trim()}
+                className="bouton-magique justify-center px-6 py-3 text-[0.6rem] disabled:opacity-40"
+              >
+                <IconeBaguette className="mr-2 h-4 w-4" />
+                Entrer à Poudlard
+              </button>
+            </form>
+          </Cadre>
+        </Reveler>
+      </Salle>
     );
   }
 
   const stats = Object.keys(statsMeta) as Stat[];
 
   return (
-    <section>
-      <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20">
-        <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
-          Mon Sorcier
-        </p>
-        <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">Parchemin personnel</h1>
+    <Salle large>
+      <EnTetePage
+        surtitre="Mon sorcier"
+        titre="Parchemin personnel"
+        icone={<IconeParchemin />}
+      />
 
-        <div className="mt-8 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <Reveler>
           <PlayerSummary joueur={joueur} />
+        </Reveler>
 
-          <div className="panel p-5 sm:p-6">
-            <h2 className="font-display text-lg">📊 Statistiques</h2>
-            <div className="mt-4 space-y-3">
+        <Reveler delai={100}>
+          <Cadre className="p-6 sm:p-7">
+            <h2 className="titre-monument text-xl">Statistiques</h2>
+            <SeparateurOrne className="mt-3" />
+            <div className="mt-5 space-y-4">
               {stats.map((s) => (
                 <StatLine key={s} cle={s} valeur={joueur.stats[s]} />
               ))}
             </div>
-            <p className="mt-5 text-xs italic text-parchemin/60">
+            <p className="annotation mt-6 text-sm leading-relaxed">
               Quiz → Intelligence · Duels → Magie · Quêtes → Courage · Énigmes → Sagesse ·
               Mini-jeux rapides → Agilité
             </p>
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          {!joueur.maison && (
-            <Link
-              to="/choixpeau"
-              className="bouton-magique px-5 py-2.5 text-[0.6rem]"
-            >
-              🎩 Passer le Choixpeau
-            </Link>
-          )}
-          <Link
-            to="/jeux"
-            className="inline-flex items-center rounded-[10px] px-5 py-3 text-sm font-medium text-foreground/80 ring-1 ring-border transition-transform hover:-translate-y-0.5"
-          >
-            🎮 Gagner de l'XP
-          </Link>
-          <button
-            onClick={() => {
-              if (confirm("Effacer définitivement votre sorcier et sa progression ?")) {
-                reinitialiser();
-              }
-            }}
-            className="inline-flex items-center rounded-[10px] px-5 py-3 text-sm font-medium text-parchemin/60 ring-1 ring-border transition-transform hover:-translate-y-0.5"
-          >
-            Recommencer à zéro
-          </button>
-        </div>
+          </Cadre>
+        </Reveler>
       </div>
-    </section>
+
+      <Reveler className="mt-8 flex flex-wrap gap-3">
+        {!joueur.maison && (
+          <Link to="/choixpeau" className="bouton-magique px-6 py-3 text-[0.6rem]">
+            <IconeChoixpeau className="mr-2 h-4 w-4" />
+            Passer le Choixpeau
+          </Link>
+        )}
+        <Link
+          to="/jeux"
+          className="filet-or inline-flex items-center rounded-[3px] px-6 py-3 font-display text-[0.6rem] uppercase tracking-[0.28em] text-parchemin/80 transition-transform hover:-translate-y-0.5"
+        >
+          <IconeManette className="mr-2 h-4 w-4 text-or/70" />
+          Gagner de l'XP
+        </Link>
+        <button
+          onClick={() => {
+            if (confirm("Effacer définitivement votre sorcier et sa progression ?")) {
+              reinitialiser();
+            }
+          }}
+          className="inline-flex items-center rounded-[3px] px-6 py-3 font-display text-[0.6rem] uppercase tracking-[0.28em] text-parchemin/45 ring-1 ring-or/15 transition-transform hover:-translate-y-0.5 hover:text-parchemin/70"
+        >
+          Recommencer à zéro
+        </button>
+      </Reveler>
+    </Salle>
   );
 }

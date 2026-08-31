@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useJoueur } from "@/lib/joueur-context";
 import { lieux } from "@/lib/contenu";
+import { Salle, EnTetePage, Cadre } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeCarte, IconeCadenas, IconeLoupe, IconePlume } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/carte")({
   head: () => ({
@@ -41,72 +44,117 @@ function CartePage() {
   }
 
   return (
-    <section>
-      <div className="mx-auto max-w-5xl px-6 py-14 lg:py-20">
-        <p className="mb-3 font-display text-[0.62rem] uppercase tracking-[0.5em] text-or/70">
-          Méfait accompli
-        </p>
-        <h1 className="titre-cinema text-3xl text-parchemin sm:text-4xl">🗺️ Carte de Poudlard</h1>
-        <p className="mt-4 max-w-[62ch] text-parchemin/60">
-          {visites.length} / {lieux.length} lieux explorés. La première visite d'un lieu rapporte
-          une grosse récompense ; les suivantes réservent de petites trouvailles.
+    <Salle large>
+      <EnTetePage
+        surtitre="Méfait accompli"
+        titre="Carte du Maraudeur"
+        icone={<IconeCarte />}
+        intro={`${visites.length} / ${lieux.length} lieux explorés. La première visite d'un lieu rapporte une grosse récompense ; les suivantes réservent de petites trouvailles.`}
+      />
+
+      {pret && !joueur && (
+        <Link to="/sorcier" className="bouton-magique mb-10 px-5 py-2.5 text-[0.6rem]">
+          <IconePlume className="h-4 w-4" /> Créer mon sorcier pour explorer
+        </Link>
+      )}
+
+      <div
+        className="parchemin relative overflow-hidden rounded-[3px] p-6 sm:p-10"
+        style={{
+          backgroundImage:
+            "radial-gradient(1px 1px at 20% 30%, oklch(0.3 0.05 60 / 25%) 40%, transparent 41%)," +
+            "radial-gradient(1px 1px at 70% 60%, oklch(0.3 0.05 60 / 20%) 40%, transparent 41%)",
+        }}
+      >
+        <svg
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
+          aria-hidden
+        >
+          <path
+            d="M 40 60 C 200 20, 400 140, 620 70 S 900 200, 1100 90"
+            stroke="oklch(0.3 0.06 55)"
+            strokeWidth="1.4"
+            fill="none"
+            strokeDasharray="2 7"
+          />
+          <path
+            d="M 60 250 C 260 320, 480 200, 700 300 S 980 260, 1150 340"
+            stroke="oklch(0.3 0.06 55)"
+            strokeWidth="1.4"
+            fill="none"
+            strokeDasharray="2 7"
+          />
+        </svg>
+
+        <p className="relative font-display text-[0.6rem] uppercase tracking-[0.4em] text-bordeaux/70">
+          Je jure solennellement que mes intentions sont mauvaises
         </p>
 
-        {pret && !joueur && (
-          <Link
-            to="/sorcier"
-            className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-8"
-          >
-            🪄 Créer mon sorcier pour explorer
-          </Link>
-        )}
-
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {lieux.map((l) => {
+        <div className="relative mt-8 grid gap-6 sm:grid-cols-2">
+          {lieux.map((l, i) => {
             const vu = visites.includes(l.id);
             const verrouille = l.niveau > niveau;
             return (
-              <div
-                key={l.id}
-                className={`panel flex flex-col p-5 ${verrouille ? "opacity-60" : ""} ${
-                  vu ? "ring-1 ring-brass/50" : ""
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  <span className="text-2xl">{verrouille ? "🔒" : l.icone}</span>
-                  <div className="min-w-0">
-                    <h2 className="font-display text-lg">{l.nom}</h2>
-                    <p className="mt-1 text-sm text-parchemin/60">{l.description}</p>
-                    <p className="mt-2 text-xs text-or">
-                      {verrouille
-                        ? `Accessible au niveau ${l.niveau}`
-                        : vu
-                          ? "✓ Lieu exploré · visites suivantes : petite trouvaille"
-                          : `Première visite : ✨ ${l.recompense.xp} XP · 🪙 ${l.recompense.gallions}${
-                              l.recompense.points ? ` · 🏆 ${l.recompense.points}` : ""
-                            }`}
-                    </p>
-                  </div>
-                </div>
-
-                {recits[l.id] && (
-                  <p className="mt-3 border-t border-border pt-3 text-sm italic leading-relaxed">
-                    {recits[l.id]}
-                  </p>
-                )}
-
-                <button
-                  disabled={verrouille || !joueur}
-                  onClick={() => visiter(l.id)}
-                  className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-4 disabled:opacity-50"
+              <Reveler key={l.id} delai={(i % 6) * 60}>
+                <div
+                  className={`relative rounded-[3px] border border-black/15 bg-black/5 p-5 shadow-[0_10px_24px_-16px_rgba(0,0,0,0.5)] ${
+                    verrouille ? "opacity-70" : ""
+                  }`}
                 >
-                  {vu ? "🔎 Explorer encore" : "🚶 Explorer"}
-                </button>
-              </div>
+                  <div className="flex items-start gap-4">
+                    <span
+                      aria-hidden
+                      className={`sceau h-11 w-11 shrink-0 [&>svg]:h-4 [&>svg]:w-4 ${
+                        vu ? "" : "grayscale"
+                      }`}
+                    >
+                      {verrouille ? <IconeCadenas /> : <IconeLoupe />}
+                    </span>
+                    <div className="min-w-0">
+                      <h2 className="titre-monument text-lg !text-[oklch(0.22_0.02_60)] [text-shadow:none]">
+                        {l.nom}
+                      </h2>
+                      <p className="annotation mt-1 text-[1rem] leading-relaxed text-[oklch(0.22_0.02_60/80%)]">
+                        {l.description}
+                      </p>
+                      <p className="mt-2 font-display text-[0.58rem] uppercase tracking-[0.25em] text-bordeaux/80">
+                        {verrouille
+                          ? `Accessible au niveau ${l.niveau}`
+                          : vu
+                            ? "Lieu exploré · petite trouvaille à chaque passage"
+                            : `Première visite : ${l.recompense.xp} XP · ${l.recompense.gallions} Gallions${
+                                l.recompense.points ? ` · ${l.recompense.points} points` : ""
+                              }`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {recits[l.id] && (
+                    <p className="annotation mt-3 border-t border-black/15 pt-3 text-[1rem] italic leading-relaxed text-[oklch(0.22_0.02_60/85%)]">
+                      {recits[l.id]}
+                    </p>
+                  )}
+
+                  {/* empreintes de pas */}
+                  {vu && !verrouille && (
+                    <span className="pointer-events-none absolute -right-1 -top-1 text-bordeaux/40">
+                      <IconePlume className="h-4 w-4" />
+                    </span>
+                  )}
+
+                  <button
+                    disabled={verrouille || !joueur}
+                    onClick={() => visiter(l.id)}
+                    className="mt-4 inline-flex items-center gap-2 border border-bordeaux/40 bg-bordeaux/10 px-4 py-2 font-display text-[0.58rem] uppercase tracking-[0.3em] text-bordeaux transition-transform hover:-translate-y-0.5 hover:bg-bordeaux/20 disabled:opacity-40"
+                  >
+                    {vu ? "Explorer encore" : "Explorer"}
+                  </button>
+                </div>
+              </Reveler>
             );
           })}
         </div>
       </div>
-    </section>
+    </Salle>
   );
 }

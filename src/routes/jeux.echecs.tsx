@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Chess, type Move, type Square } from "chess.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useJoueur } from "@/lib/joueur-context";
+import { Salle, EnTetePage, ChoixGrave, CoinsLaiton } from "@/components/immersif/Page";
+import { Reveler } from "@/components/immersif/Reveler";
+import { IconeEchiquier, Ornement } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/jeux/echecs")({
   head: () => ({
@@ -48,6 +51,11 @@ const niveaux: Record<Niveau, { label: string; texte: string }> = {
   sorcier: { label: "Sorcier", texte: "Il saisit les pièces mal gardées et cherche l'échec." },
   mage: { label: "Mage", texte: "Il calcule votre riposte avant de bouger. Prudence." },
 };
+
+const optionsNiveau = (Object.keys(niveaux) as Niveau[]).map((n) => ({
+  valeur: n,
+  libelle: niveaux[n].label,
+}));
 
 function materiel(jeu: Chess) {
   let score = 0;
@@ -207,10 +215,10 @@ function Echecs() {
     if (victoire) {
       gagner(
         { xp: 120 * mult, gallions: 40 * mult, points: 25 * mult, stat: { cle: "courage", valeur: 1 } },
-        "♟️ Échec et mat — victoire !",
+        "Échec et mat — victoire !",
       );
     } else {
-      gagner({ xp: 30 * mult, gallions: 10 * mult }, "♟️ Partie nulle");
+      gagner({ xp: 30 * mult, gallions: 10 * mult }, "Partie nulle");
     }
     signalerPartie({ victoire });
   }, [victoire, nulle, joueur, niveau, gagner, signalerPartie]);
@@ -228,22 +236,26 @@ function Echecs() {
           : "Le grand maître réfléchit...";
 
   return (
-    <section>
-      <div className="mx-auto max-w-6xl px-6 py-16">
-        <Link to="/jeux" className="text-sm text-parchemin/60 hover:text-foreground">
-          ← Salle des mini-jeux
-        </Link>
-        <h1 className="mt-4 titre-cinema text-2xl text-parchemin sm:text-4xl">
-          Échecs des Sorciers
-        </h1>
-        <p className="mt-2 max-w-[60ch] text-parchemin/60">
-          Vous jouez les blancs. Cliquez une pièce, puis sa destination : les règles complètes des
-          échecs s'appliquent, promotions et roques compris.
-        </p>
+    <Salle large>
+      <Link
+        to="/jeux"
+        className="mb-6 inline-flex items-center gap-2 font-display text-[0.62rem] uppercase tracking-[0.35em] text-or/60 transition-colors hover:text-or"
+      >
+        <Ornement className="h-2.5 w-2.5 rotate-180" />
+        Salle des mini-jeux
+      </Link>
+      <EnTetePage
+        surtitre="Table de la salle commune"
+        titre="Échecs des Sorciers"
+        intro="Vous jouez les blancs. Cliquez une pièce, puis sa destination : les règles complètes des échecs s'appliquent, promotions et roques compris."
+        icone={<IconeEchiquier />}
+      />
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="panel p-4 sm:p-6">
-            <div className="mx-auto grid aspect-square w-full max-w-[560px] grid-cols-8 grid-rows-8 overflow-hidden rounded-[12px] ring-1 ring-border">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <Reveler>
+          <div className="relative rounded-[6px] bg-bois p-4 shadow-[inset_0_2px_10px_black,0_25px_50px_-25px_black] sm:p-8">
+            <div className="relative mx-auto grid aspect-square w-full max-w-[560px] grid-cols-8 grid-rows-8 overflow-hidden rounded-[3px] plaque p-2">
+              <CoinsLaiton />
               {rangees.map((rangee) =>
                 colonnes.map((colonne, i) => {
                   const case_ = `${colonne}${rangee}` as Square;
@@ -257,17 +269,17 @@ function Echecs() {
                       key={case_}
                       onClick={() => cliquerCase(case_)}
                       className={`relative flex h-full w-full min-w-0 items-center justify-center overflow-hidden p-0 transition-colors ${
-                        sombre ? "bg-ink-2" : "bg-vellum/15"
-                      } ${joue ? "bg-candle/15" : ""} ${
-                        selectionnee ? "ring-2 ring-inset ring-primary" : ""
+                        sombre ? "bg-pierre" : "bg-parchemin/15"
+                      } ${joue ? "bg-or/20" : ""} ${
+                        selectionnee ? "shadow-[inset_0_0_0_2px_var(--or)]" : ""
                       }`}
                       aria-label={case_}
                     >
                       <span
                         className={`block select-none leading-none [font-size:min(7vw,2.6rem)] ${
                           piece?.color === "w"
-                            ? "text-vellum drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
-                            : "text-brass drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
+                            ? "text-parchemin drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
+                            : "text-or drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
                         }`}
                       >
                         {piece ? glyphes[`${piece.color}${piece.type}`] : "\u00A0"}
@@ -276,8 +288,8 @@ function Echecs() {
                         <span
                           className={`pointer-events-none absolute rounded-full ${
                             piece
-                              ? "inset-1 border-2 border-primary/70"
-                              : "h-[22%] w-[22%] bg-primary/70"
+                              ? "inset-1 border-2 border-or/80"
+                              : "h-[22%] w-[22%] bg-or/70"
                           }`}
                         />
                       )}
@@ -287,51 +299,47 @@ function Echecs() {
               )}
             </div>
           </div>
+        </Reveler>
 
-          <div className="panel h-fit p-6">
-            <p className="text-xs uppercase tracking-[0.25em] text-or">Niveau du maître</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {(Object.keys(niveaux) as Niveau[]).map((n) => (
-                <button
-                  key={n}
-                  onClick={() => setNiveau(n)}
-                  className={`rounded-[10px] px-3 py-2 text-sm font-medium ring-1 transition-transform hover:-translate-y-0.5 ${
-                    niveau === n
-                      ? "bg-primary/20 text-or ring-primary/50"
-                      : "bg-foreground/5 text-foreground/70 ring-border"
-                  }`}
-                >
-                  {niveaux[n].label}
-                </button>
-              ))}
+        <Reveler delai={120} className="h-fit space-y-6">
+          <div className="plaque relative p-6">
+            <CoinsLaiton />
+            <p className="font-display text-[0.6rem] uppercase tracking-[0.35em] text-or/70">
+              Niveau du maître
+            </p>
+            <div className="mt-4">
+              <ChoixGrave options={optionsNiveau} valeur={niveau} onChange={(v) => setNiveau(v as Niveau)} />
             </div>
-            <p className="mt-3 text-sm italic text-parchemin/60">{niveaux[niveau].texte}</p>
-
-            <div className="mt-6 border-t border-border pt-4">
-              <p className="text-xs uppercase tracking-[0.25em] text-or">État du duel</p>
-              <p className="mt-3 font-display text-lg">{statut}</p>
-              <button
-                onClick={nouvellePartie}
-                className="bouton-magique px-5 py-2.5 text-[0.6rem] mt-5"
-              >
-                Nouvelle partie
-              </button>
-            </div>
-            <div className="mt-6 border-t border-border pt-4">
-              <p className="text-xs uppercase tracking-[0.25em] text-or">Registre des coups</p>
-              <ol className="mt-3 max-h-64 space-y-1 overflow-auto text-sm text-parchemin/60">
-                {journal.length === 0 && <li className="italic">Aucun coup joué.</li>}
-                {journal.map((coup, i) => (
-                  <li key={`${coup}-${i}`}>
-                    {i % 2 === 0 ? `${Math.floor(i / 2) + 1}. ` : "… "}
-                    {coup}
-                  </li>
-                ))}
-              </ol>
-            </div>
+            <p className="annotation mt-4 text-sm leading-relaxed">{niveaux[niveau].texte}</p>
           </div>
-        </div>
+
+          <div className="plaque relative p-6">
+            <CoinsLaiton />
+            <p className="font-display text-[0.6rem] uppercase tracking-[0.35em] text-or/70">
+              État du duel
+            </p>
+            <p className="mt-3 font-display text-lg text-parchemin">{statut}</p>
+            <button onClick={nouvellePartie} className="bouton-magique mt-5 px-5 py-2.5 text-[0.6rem]">
+              Nouvelle partie
+            </button>
+          </div>
+
+          <div className="parchemin relative p-6">
+            <p className="text-center font-display text-[0.55rem] uppercase tracking-[0.35em] text-[oklch(0.36_0.06_50)]">
+              Registre des coups
+            </p>
+            <ol className="mt-3 max-h-64 space-y-1 overflow-auto font-manuscrit text-sm italic text-[oklch(0.3_0.05_50)]">
+              {journal.length === 0 && <li>Aucun coup joué.</li>}
+              {journal.map((coup, i) => (
+                <li key={`${coup}-${i}`}>
+                  {i % 2 === 0 ? `${Math.floor(i / 2) + 1}. ` : "… "}
+                  {coup}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </Reveler>
       </div>
-    </section>
+    </Salle>
   );
 }
