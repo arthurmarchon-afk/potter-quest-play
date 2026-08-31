@@ -19,7 +19,7 @@ import {
   type Recompense,
 } from "./joueur";
 
-type Notif = { id: number; lignes: string[]; niveau?: number };
+type Notif = { id: number; lignes: string[]; niveau?: number | undefined };
 
 type Ctx = {
   joueur: Joueur | null;
