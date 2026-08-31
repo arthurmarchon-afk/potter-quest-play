@@ -120,10 +120,19 @@
 }
 
 @utility panel {
-  background-color: color-mix(in oklab, var(--vellum) 5%, transparent);
-  border-radius: 18px;
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--vellum) 10%, transparent);
-  backdrop-filter: blur(12px);
+  position: relative;
+  border-radius: 4px;
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in oklab, var(--nuit) 86%, transparent),
+      color-mix(in oklab, var(--pierre) 74%, transparent)
+    );
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, var(--or) 20%, transparent),
+    inset 0 0 0 1px color-mix(in oklab, var(--or) 14%, transparent),
+    0 18px 40px -24px oklch(0 0 0 / 90%);
+  backdrop-filter: blur(10px);
 }
 
 
