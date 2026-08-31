@@ -2,22 +2,25 @@ import { useMemo } from "react";
 
 import gare from "@/assets/scene-gare.jpg";
 import voyage from "@/assets/scene-voyage.jpg";
+import campagne from "@/assets/scene-campagne.jpg";
 import poudlard from "@/assets/scene-poudlard.jpg";
+import interieur from "@/assets/scene-interieur.jpg";
 import foret from "@/assets/scene-foret.jpg";
 import village from "@/assets/scene-village.jpg";
 import { useMouvementReduit, useProgressionScroll } from "@/hooks/use-recit";
 
-/* Décor continu : les tableaux se fondent l'un dans l'autre au fil du scroll,
-   avec un léger travelling vertical pour donner la sensation d'une caméra. */
+/* Caméra continue : sept tableaux se relaient au fil du scroll, avec
+   travelling, changement de température de couleur et effets d'ambiance
+   propres à chaque environnement (pluie, brume, neige, chandelles). */
 
 type Tableau = {
   id: string;
   image: string;
-  /** Fenêtre de présence dans la progression globale (0 → 1). */
   de: number;
   a: number;
-  /** Voile coloré posé par-dessus l'image. */
   voile: string;
+  /** Décalage de teinte / saturation pour la température de lumière. */
+  filtre?: string;
 };
 
 const tableaux: Tableau[] = [
@@ -25,50 +28,78 @@ const tableaux: Tableau[] = [
     id: "gare",
     image: gare,
     de: 0,
-    a: 0.19,
+    a: 0.12,
     voile:
-      "linear-gradient(180deg, oklch(0.12 0.02 265 / 55%), oklch(0.1 0.02 265 / 45%) 45%, oklch(0.09 0.02 265 / 92%))",
+      "linear-gradient(180deg, oklch(0.12 0.02 265 / 52%), oklch(0.1 0.02 265 / 42%) 45%, oklch(0.09 0.02 265 / 92%))",
+    filtre: "saturate(0.85) contrast(1.05)",
   },
   {
     id: "voyage",
     image: voyage,
-    de: 0.15,
-    a: 0.37,
+    de: 0.1,
+    a: 0.25,
     voile:
-      "linear-gradient(180deg, oklch(0.11 0.02 250 / 62%), oklch(0.1 0.03 240 / 55%) 50%, oklch(0.08 0.02 255 / 92%))",
+      "linear-gradient(180deg, oklch(0.11 0.02 250 / 58%), oklch(0.1 0.03 240 / 50%) 50%, oklch(0.08 0.02 255 / 92%))",
+    filtre: "saturate(0.8)",
+  },
+  {
+    id: "campagne",
+    image: campagne,
+    de: 0.23,
+    a: 0.39,
+    voile:
+      "linear-gradient(180deg, oklch(0.14 0.04 80 / 42%), oklch(0.11 0.03 70 / 45%) 50%, oklch(0.08 0.02 260 / 92%))",
+    filtre: "saturate(0.95) sepia(0.12)",
   },
   {
     id: "poudlard",
     image: poudlard,
-    de: 0.33,
-    a: 0.63,
+    de: 0.37,
+    a: 0.56,
     voile:
-      "linear-gradient(180deg, oklch(0.1 0.03 265 / 45%), oklch(0.08 0.03 265 / 40%) 45%, oklch(0.07 0.02 265 / 92%))",
+      "linear-gradient(180deg, oklch(0.1 0.03 265 / 42%), oklch(0.08 0.03 265 / 38%) 45%, oklch(0.07 0.02 265 / 92%))",
+  },
+  {
+    id: "interieur",
+    image: interieur,
+    de: 0.54,
+    a: 0.71,
+    voile:
+      "linear-gradient(180deg, oklch(0.1 0.03 60 / 40%), oklch(0.09 0.03 55 / 40%) 50%, oklch(0.07 0.02 260 / 90%))",
+    filtre: "saturate(1.05)",
   },
   {
     id: "foret",
     image: foret,
-    de: 0.6,
-    a: 0.81,
+    de: 0.69,
+    a: 0.85,
     voile:
-      "linear-gradient(180deg, oklch(0.09 0.03 170 / 60%), oklch(0.08 0.03 165 / 55%) 50%, oklch(0.06 0.02 170 / 94%))",
+      "linear-gradient(180deg, oklch(0.09 0.03 170 / 58%), oklch(0.08 0.03 165 / 52%) 50%, oklch(0.06 0.02 170 / 94%))",
+    filtre: "saturate(0.85) contrast(1.08)",
   },
   {
     id: "village",
     image: village,
-    de: 0.78,
+    de: 0.83,
     a: 1.01,
     voile:
-      "linear-gradient(180deg, oklch(0.1 0.03 260 / 55%), oklch(0.09 0.02 255 / 42%) 50%, oklch(0.08 0.02 258 / 88%))",
+      "linear-gradient(180deg, oklch(0.1 0.03 260 / 52%), oklch(0.09 0.02 255 / 40%) 50%, oklch(0.08 0.02 258 / 88%))",
   },
 ];
 
-const FONDU = 0.055;
+const FONDU = 0.05;
 
 function opacite(p: number, t: Tableau) {
   if (p <= t.de - FONDU || p >= t.a + FONDU) return 0;
   if (p < t.de) return (p - (t.de - FONDU)) / FONDU;
   if (p > t.a) return 1 - (p - t.a) / FONDU;
+  return 1;
+}
+
+function fenetre(p: number, de: number, a: number, marge = 0.06) {
+  if (p <= de - marge || p >= a + marge) return 0;
+  if (p < de) return (p - (de - marge)) / marge;
+  if (p > a) return 1 - (p - a) / marge;
   return 1;
 }
 
@@ -108,8 +139,32 @@ export function Decor() {
     }));
   }, []);
 
-  const neige = Math.max(0, Math.min(1, (progression - 0.76) / 0.1));
-  const brume = Math.max(0, Math.min(1, (progression - 0.55) / 0.12)) * (1 - neige * 0.7);
+  const gouttes = useMemo(() => {
+    const r = suite(90, 41);
+    return Array.from({ length: 30 }, (_, i) => ({
+      gauche: r[i * 3]! * 100,
+      duree: 1.1 + r[i * 3 + 1]! * 1.3,
+      delai: r[i * 3 + 2]! * 3,
+      hauteur: 40 + r[i * 3]! * 70,
+    }));
+  }, []);
+
+  const etincelles = useMemo(() => {
+    const r = suite(60, 97);
+    return Array.from({ length: 18 }, (_, i) => ({
+      gauche: 4 + r[i * 3]! * 92,
+      haut: 8 + r[i * 3 + 1]! * 78,
+      duree: 3.5 + r[i * 3 + 2]! * 4,
+      delai: r[i * 3]! * 6,
+      taille: 2 + r[i * 3 + 1]! * 2.5,
+    }));
+  }, []);
+
+  const pluie = fenetre(progression, 0.12, 0.36);
+  const chandelles = fenetre(progression, 0.56, 0.7);
+  const brume = fenetre(progression, 0.7, 0.84) * 0.85;
+  const neige = fenetre(progression, 0.85, 1.05);
+  const quai = Math.max(0, 1 - progression / 0.14);
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[oklch(0.08_0.02_265)]">
@@ -117,8 +172,8 @@ export function Decor() {
         const o = opacite(progression, t);
         if (o <= 0) return null;
         const local = Math.min(1, Math.max(0, (progression - t.de) / (t.a - t.de || 1)));
-        const decalage = reduit ? 0 : (local - 0.5) * 9;
-        const echelle = reduit ? 1.04 : 1.14 - local * 0.08;
+        const decalage = reduit ? 0 : (local - 0.5) * 10;
+        const echelle = reduit ? 1.05 : 1.16 - local * 0.1;
         return (
           <div key={t.id} className="absolute inset-0" style={{ opacity: o }}>
             <div
@@ -126,6 +181,7 @@ export function Decor() {
               style={{
                 backgroundImage: `url(${t.image})`,
                 transform: `translate3d(0, ${decalage}%, 0) scale(${echelle})`,
+                filter: t.filtre,
               }}
             />
             <div className="absolute inset-0" style={{ background: t.voile }} />
@@ -133,21 +189,97 @@ export function Decor() {
         );
       })}
 
+      {/* Vapeur du quai, au tout début du voyage */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-2/3 transition-opacity duration-700"
+        style={{
+          opacity: quai * 0.55,
+          background:
+            "radial-gradient(90% 70% at 50% 100%, oklch(0.85 0.02 90 / 26%), transparent 68%)",
+        }}
+      />
+
+      {/* Pluie sur la vitre du wagon */}
+      <div
+        className="absolute inset-0 transition-opacity duration-700"
+        style={{ opacity: pluie * 0.6 }}
+      >
+        {pluie > 0.02 &&
+          gouttes.map((g, i) => (
+            <span
+              key={i}
+              className="pluie absolute w-px bg-gradient-to-b from-transparent via-[oklch(0.9_0.02_240/_45%)] to-transparent"
+              style={{
+                left: `${g.gauche}%`,
+                height: g.hauteur,
+                animationDuration: `${g.duree}s`,
+                animationDelay: `-${g.delai}s`,
+              }}
+            />
+          ))}
+      </div>
+
+      {/* Chandelles flottantes des couloirs du château */}
+      <div
+        className="absolute inset-0 transition-opacity duration-700"
+        style={{ opacity: chandelles }}
+      >
+        {chandelles > 0.02 &&
+          etincelles.map((e, i) => (
+            <span
+              key={i}
+              className="scintille absolute rounded-full bg-[oklch(0.92_0.12_85)]"
+              style={{
+                left: `${e.gauche}%`,
+                top: `${e.haut}%`,
+                width: e.taille,
+                height: e.taille,
+                boxShadow: "0 0 14px 4px oklch(0.85 0.13 82 / 45%)",
+                animationDuration: `${e.duree}s`,
+                animationDelay: `-${e.delai}s`,
+              }}
+            />
+          ))}
+      </div>
+
       {/* Brume basse de la forêt */}
       <div
         className="absolute inset-x-0 bottom-0 h-1/2 transition-opacity duration-700"
         style={{
-          opacity: brume * 0.7,
+          opacity: brume * 0.75,
           background:
-            "radial-gradient(120% 80% at 50% 100%, oklch(0.8 0.03 170 / 22%), transparent 70%)",
+            "radial-gradient(120% 80% at 50% 100%, oklch(0.8 0.03 170 / 24%), transparent 70%)",
         }}
       />
+
+      {/* Neige de Pré-au-Lard */}
+      <div className="absolute inset-0 transition-opacity duration-700" style={{ opacity: neige }}>
+        {neige > 0.02 &&
+          flocons.map((f, i) => (
+            <span
+              key={i}
+              className="flocon absolute rounded-full bg-white/80"
+              style={
+                {
+                  left: `${f.gauche}%`,
+                  top: 0,
+                  width: f.taille,
+                  height: f.taille,
+                  animationDuration: `${f.duree}s`,
+                  animationDelay: `-${f.delai}s`,
+                  "--dx": `${f.derive}px`,
+                  "--o": 0.75,
+                } as React.CSSProperties
+              }
+            />
+          ))}
+      </div>
 
       {/* Lueur de chandelle en haut de page */}
       <div
         className="absolute left-1/2 top-0 h-[60vh] w-[80vw] -translate-x-1/2 rounded-full blur-3xl"
         style={{
-          opacity: 0.35 * (1 - Math.min(1, progression * 2.2)) + 0.12,
+          opacity: 0.32 * (1 - Math.min(1, progression * 2.2)) + 0.1,
           background:
             "radial-gradient(circle, color-mix(in oklab, var(--or) 28%, transparent), transparent 65%)",
         }}
@@ -175,32 +307,17 @@ export function Decor() {
         ))}
       </div>
 
-      {/* Neige de Pré-au-Lard */}
-      <div className="absolute inset-0 transition-opacity duration-700" style={{ opacity: neige }}>
-        {neige > 0.02 &&
-          flocons.map((f, i) => (
-            <span
-              key={i}
-              className="flocon absolute rounded-full bg-white/80"
-              style={
-                {
-                  left: `${f.gauche}%`,
-                  top: 0,
-                  width: f.taille,
-                  height: f.taille,
-                  animationDuration: `${f.duree}s`,
-                  animationDelay: `-${f.delai}s`,
-                  "--dx": `${f.derive}px`,
-                  "--o": 0.75,
-                } as React.CSSProperties
-              }
-            />
-          ))}
-      </div>
+      {/* Premier plan : arche de pierre qui encadre discrètement la caméra */}
+      <div
+        className="absolute inset-0 transition-opacity duration-700"
+        style={{
+          opacity: 0.55,
+          background:
+            "radial-gradient(130% 95% at 50% 40%, transparent 52%, oklch(0.05 0.01 265 / 88%) 100%)",
+        }}
+      />
 
-      {/* Grain + vignette pour la texture argentique */}
       <div className="grain absolute inset-0 opacity-40" />
-      <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_50%_45%,transparent_45%,oklch(0_0_0/_70%))]" />
     </div>
   );
 }
