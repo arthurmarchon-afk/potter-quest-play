@@ -77,7 +77,7 @@ function Classement() {
                 >
                   <span className="flex items-center gap-3">
                     <span className="chiffre w-7">{i + 1}</span>
-                    <span>{emblemes[e.maison]}</span>
+                    <Blason maison={e.maison} className="h-5 w-5" />
                     <span className={e.joueur ? "font-medium text-foreground" : "text-parchemin/70"}>
                       {e.nom}
                     </span>
