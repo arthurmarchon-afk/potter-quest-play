@@ -9,11 +9,11 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
-import appCss from "../styles.css?url";
-import { JoueurProvider, useJoueur } from "../lib/joueur-context";
-import { RewardPopup } from "../components/jeu/RewardPopup";
-import { XPBar } from "../components/jeu/XPBar";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import appCss from "@/styles.css?url";
+import { JoueurProvider, useJoueur } from "@/lib/joueur-context";
+import { RewardPopup } from "@/components/jeu/RewardPopup";
+import { XPBar } from "@/components/jeu/XPBar";
+import { reportLovableError } from "@/lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
