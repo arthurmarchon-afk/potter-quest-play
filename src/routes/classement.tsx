@@ -110,8 +110,8 @@ function Classement() {
                           className="absolute bottom-0 left-0 right-0 transition-[height] duration-700"
                           style={{
                             height: `${pct}%`,
-                            background: `linear-gradient(to top, color-mix(in oklab, ${m.couleur} 85%, transparent), color-mix(in oklab, ${m.couleur} 45%, transparent))`,
-                            boxShadow: `inset 0 0 10px color-mix(in oklab, ${m.couleur} 70%, black)`,
+                            background: `linear-gradient(to top, color-mix(in oklab, var(--${m.maison}) 85%, transparent), color-mix(in oklab, var(--${m.maison}) 45%, transparent))`,
+                            boxShadow: `inset 0 0 10px color-mix(in oklab, var(--${m.maison}) 70%, black)`,
                           }}
                         />
                         <span
