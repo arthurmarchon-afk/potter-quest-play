@@ -121,7 +121,7 @@ function Memory() {
 
   const gagne = trouvees.length === config.paires && cartes.length > 0;
   const recompense = useRef(false);
-  const { joueur, gagner } = useJoueur();
+  const { joueur, gagner, signalerPartie } = useJoueur();
 
   useEffect(() => {
     if (!gagne) {
@@ -141,7 +141,8 @@ function Memory() {
       },
       `🧪 Memory réussi en ${coups} coups`,
     );
-  }, [gagne, joueur, coups, config.paires, niveau, gagner]);
+    signalerPartie({ victoire: true });
+  }, [gagne, joueur, coups, config.paires, niveau, gagner, signalerPartie]);
 
   function cliquer(carte: Carte) {
     if (retournees.length === 2) return;

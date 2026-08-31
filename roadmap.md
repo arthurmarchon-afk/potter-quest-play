@@ -10,10 +10,10 @@
 - [x] Coupe des Maisons (/coupe)
 - [x] Mini-jeux existants reliés à la boucle (XP / Gallions / points)
 
-## Phase 2 — Gameplay
-- [ ] Quêtes quotidiennes + principales
-- [ ] Succès
-- [ ] Inventaire
+## Phase 2 — Gameplay (fait)
+- [x] Quêtes quotidiennes (/quetes) — 4 missions, compteurs, réclamation
+- [x] Succès automatiques (/succes) — 8 trophées avec récompenses
+- [x] Inventaire (/inventaire) — objets consommables et reliques
 
 ## Phase 3 — Contenu
 - [ ] Bibliothèque / encyclopédie avec découvertes

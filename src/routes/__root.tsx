@@ -125,6 +125,9 @@ const navLinks = [
   { to: "/sorcier", label: "🧙 Mon Sorcier" },
   { to: "/choixpeau", label: "🎩 Choixpeau" },
   { to: "/jeux", label: "🎮 Mini-jeux" },
+  { to: "/quetes", label: "📜 Quêtes" },
+  { to: "/succes", label: "🏅 Succès" },
+  { to: "/inventaire", label: "🎒 Sacoche" },
   { to: "/coupe", label: "🏆 Coupe" },
 ] as const;
 

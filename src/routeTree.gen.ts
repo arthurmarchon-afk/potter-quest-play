@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChoixpeauRouteImport } from './routes/choixpeau'
 import { Route as CoupeRouteImport } from './routes/coupe'
+import { Route as InventaireRouteImport } from './routes/inventaire'
 import { Route as JeuxRouteImport } from './routes/jeux'
+import { Route as QuetesRouteImport } from './routes/quetes'
 import { Route as SorcierRouteImport } from './routes/sorcier'
+import { Route as SuccesRouteImport } from './routes/succes'
 import { Route as JeuxIndexRouteImport } from './routes/jeux.index'
 import { Route as JeuxEchecsRouteImport } from './routes/jeux.echecs'
 import { Route as JeuxMemoryRouteImport } from './routes/jeux.memory'
@@ -34,14 +37,29 @@ const CoupeRoute = CoupeRouteImport.update({
   path: '/coupe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InventaireRoute = InventaireRouteImport.update({
+  id: '/inventaire',
+  path: '/inventaire',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JeuxRoute = JeuxRouteImport.update({
   id: '/jeux',
   path: '/jeux',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuetesRoute = QuetesRouteImport.update({
+  id: '/quetes',
+  path: '/quetes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SorcierRoute = SorcierRouteImport.update({
   id: '/sorcier',
   path: '/sorcier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuccesRoute = SuccesRouteImport.update({
+  id: '/succes',
+  path: '/succes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JeuxIndexRoute = JeuxIndexRouteImport.update({
@@ -69,8 +87,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
+  '/inventaire': typeof InventaireRoute
   '/jeux': typeof JeuxRouteWithChildren
+  '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
+  '/succes': typeof SuccesRoute
   '/jeux/echecs': typeof JeuxEchecsRoute
   '/jeux/memory': typeof JeuxMemoryRoute
   '/jeux/quiz': typeof JeuxQuizRoute
@@ -80,7 +101,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
+  '/inventaire': typeof InventaireRoute
+  '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
+  '/succes': typeof SuccesRoute
   '/jeux/echecs': typeof JeuxEchecsRoute
   '/jeux/memory': typeof JeuxMemoryRoute
   '/jeux/quiz': typeof JeuxQuizRoute
@@ -91,8 +115,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
+  '/inventaire': typeof InventaireRoute
   '/jeux': typeof JeuxRouteWithChildren
+  '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
+  '/succes': typeof SuccesRoute
   '/jeux/echecs': typeof JeuxEchecsRoute
   '/jeux/memory': typeof JeuxMemoryRoute
   '/jeux/quiz': typeof JeuxQuizRoute
@@ -104,8 +131,11 @@ export interface FileRouteTypes {
     | '/'
     | '/choixpeau'
     | '/coupe'
+    | '/inventaire'
     | '/jeux'
+    | '/quetes'
     | '/sorcier'
+    | '/succes'
     | '/jeux/echecs'
     | '/jeux/memory'
     | '/jeux/quiz'
@@ -115,7 +145,10 @@ export interface FileRouteTypes {
     | '/'
     | '/choixpeau'
     | '/coupe'
+    | '/inventaire'
+    | '/quetes'
     | '/sorcier'
+    | '/succes'
     | '/jeux/echecs'
     | '/jeux/memory'
     | '/jeux/quiz'
@@ -125,8 +158,11 @@ export interface FileRouteTypes {
     | '/'
     | '/choixpeau'
     | '/coupe'
+    | '/inventaire'
     | '/jeux'
+    | '/quetes'
     | '/sorcier'
+    | '/succes'
     | '/jeux/echecs'
     | '/jeux/memory'
     | '/jeux/quiz'
@@ -137,8 +173,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChoixpeauRoute: typeof ChoixpeauRoute
   CoupeRoute: typeof CoupeRoute
+  InventaireRoute: typeof InventaireRoute
   JeuxRoute: typeof JeuxRouteWithChildren
+  QuetesRoute: typeof QuetesRoute
   SorcierRoute: typeof SorcierRoute
+  SuccesRoute: typeof SuccesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -164,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoupeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inventaire': {
+      id: '/inventaire'
+      path: '/inventaire'
+      fullPath: '/inventaire'
+      preLoaderRoute: typeof InventaireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/jeux': {
       id: '/jeux'
       path: '/jeux'
@@ -171,11 +217,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JeuxRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quetes': {
+      id: '/quetes'
+      path: '/quetes'
+      fullPath: '/quetes'
+      preLoaderRoute: typeof QuetesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sorcier': {
       id: '/sorcier'
       path: '/sorcier'
       fullPath: '/sorcier'
       preLoaderRoute: typeof SorcierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/succes': {
+      id: '/succes'
+      path: '/succes'
+      fullPath: '/succes'
+      preLoaderRoute: typeof SuccesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jeux/': {
@@ -229,8 +289,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChoixpeauRoute: ChoixpeauRoute,
   CoupeRoute: CoupeRoute,
+  InventaireRoute: InventaireRoute,
   JeuxRoute: JeuxRouteWithChildren,
+  QuetesRoute: QuetesRoute,
   SorcierRoute: SorcierRoute,
+  SuccesRoute: SuccesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
