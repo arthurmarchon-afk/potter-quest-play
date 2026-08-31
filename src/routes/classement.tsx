@@ -116,10 +116,10 @@ function Classement() {
                         />
                         <span
                           aria-hidden
-                          className="absolute inset-x-0 top-0 h-2 bg-gradient-to-b from-white/25 to-transparent"
+                          className="absolute inset-x-0 top-0 h-2 bg-gradient-to-b from-parchemin/25 to-transparent"
                         />
                       </div>
-                      <span className={`text-lg ${m.vous ? "" : "opacity-70"}`}>{m.embleme}</span>
+                      <Blason maison={m.maison} className={m.vous ? "h-7 w-7" : "h-7 w-7 opacity-60"} />
                       <span className="chiffre text-xs">{m.points}</span>
                     </div>
                   );
