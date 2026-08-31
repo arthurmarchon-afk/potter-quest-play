@@ -13,7 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
 import { Route as CarteRouteImport } from './routes/carte'
 import { Route as ChoixpeauRouteImport } from './routes/choixpeau'
+import { Route as ClassementRouteImport } from './routes/classement'
 import { Route as CoupeRouteImport } from './routes/coupe'
+import { Route as DuelsRouteImport } from './routes/duels'
 import { Route as InventaireRouteImport } from './routes/inventaire'
 import { Route as JeuxRouteImport } from './routes/jeux'
 import { Route as QuetesRouteImport } from './routes/quetes'
@@ -22,7 +24,11 @@ import { Route as SuccesRouteImport } from './routes/succes'
 import { Route as JeuxIndexRouteImport } from './routes/jeux.index'
 import { Route as JeuxEchecsRouteImport } from './routes/jeux.echecs'
 import { Route as JeuxMemoryRouteImport } from './routes/jeux.memory'
+import { Route as JeuxPersonnageRouteImport } from './routes/jeux.personnage'
+import { Route as JeuxPotionsRouteImport } from './routes/jeux.potions'
+import { Route as JeuxQuidditchRouteImport } from './routes/jeux.quidditch'
 import { Route as JeuxQuizRouteImport } from './routes/jeux.quiz'
+import { Route as JeuxSortsRouteImport } from './routes/jeux.sorts'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -44,9 +50,19 @@ const ChoixpeauRoute = ChoixpeauRouteImport.update({
   path: '/choixpeau',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClassementRoute = ClassementRouteImport.update({
+  id: '/classement',
+  path: '/classement',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoupeRoute = CoupeRouteImport.update({
   id: '/coupe',
   path: '/coupe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DuelsRoute = DuelsRouteImport.update({
+  id: '/duels',
+  path: '/duels',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InventaireRoute = InventaireRouteImport.update({
@@ -89,9 +105,29 @@ const JeuxMemoryRoute = JeuxMemoryRouteImport.update({
   path: '/memory',
   getParentRoute: () => JeuxRoute,
 } as any)
+const JeuxPersonnageRoute = JeuxPersonnageRouteImport.update({
+  id: '/personnage',
+  path: '/personnage',
+  getParentRoute: () => JeuxRoute,
+} as any)
+const JeuxPotionsRoute = JeuxPotionsRouteImport.update({
+  id: '/potions',
+  path: '/potions',
+  getParentRoute: () => JeuxRoute,
+} as any)
+const JeuxQuidditchRoute = JeuxQuidditchRouteImport.update({
+  id: '/quidditch',
+  path: '/quidditch',
+  getParentRoute: () => JeuxRoute,
+} as any)
 const JeuxQuizRoute = JeuxQuizRouteImport.update({
   id: '/quiz',
   path: '/quiz',
+  getParentRoute: () => JeuxRoute,
+} as any)
+const JeuxSortsRoute = JeuxSortsRouteImport.update({
+  id: '/sorts',
+  path: '/sorts',
   getParentRoute: () => JeuxRoute,
 } as any)
 
@@ -100,7 +136,9 @@ export interface FileRoutesByFullPath {
   '/bibliotheque': typeof BibliothequeRoute
   '/carte': typeof CarteRoute
   '/choixpeau': typeof ChoixpeauRoute
+  '/classement': typeof ClassementRoute
   '/coupe': typeof CoupeRoute
+  '/duels': typeof DuelsRoute
   '/inventaire': typeof InventaireRoute
   '/jeux': typeof JeuxRouteWithChildren
   '/quetes': typeof QuetesRoute
@@ -108,7 +146,11 @@ export interface FileRoutesByFullPath {
   '/succes': typeof SuccesRoute
   '/jeux/echecs': typeof JeuxEchecsRoute
   '/jeux/memory': typeof JeuxMemoryRoute
+  '/jeux/personnage': typeof JeuxPersonnageRoute
+  '/jeux/potions': typeof JeuxPotionsRoute
+  '/jeux/quidditch': typeof JeuxQuidditchRoute
   '/jeux/quiz': typeof JeuxQuizRoute
+  '/jeux/sorts': typeof JeuxSortsRoute
   '/jeux/': typeof JeuxIndexRoute
 }
 export interface FileRoutesByTo {
@@ -116,14 +158,20 @@ export interface FileRoutesByTo {
   '/bibliotheque': typeof BibliothequeRoute
   '/carte': typeof CarteRoute
   '/choixpeau': typeof ChoixpeauRoute
+  '/classement': typeof ClassementRoute
   '/coupe': typeof CoupeRoute
+  '/duels': typeof DuelsRoute
   '/inventaire': typeof InventaireRoute
   '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
   '/succes': typeof SuccesRoute
   '/jeux/echecs': typeof JeuxEchecsRoute
   '/jeux/memory': typeof JeuxMemoryRoute
+  '/jeux/personnage': typeof JeuxPersonnageRoute
+  '/jeux/potions': typeof JeuxPotionsRoute
+  '/jeux/quidditch': typeof JeuxQuidditchRoute
   '/jeux/quiz': typeof JeuxQuizRoute
+  '/jeux/sorts': typeof JeuxSortsRoute
   '/jeux': typeof JeuxIndexRoute
 }
 export interface FileRoutesById {
@@ -132,7 +180,9 @@ export interface FileRoutesById {
   '/bibliotheque': typeof BibliothequeRoute
   '/carte': typeof CarteRoute
   '/choixpeau': typeof ChoixpeauRoute
+  '/classement': typeof ClassementRoute
   '/coupe': typeof CoupeRoute
+  '/duels': typeof DuelsRoute
   '/inventaire': typeof InventaireRoute
   '/jeux': typeof JeuxRouteWithChildren
   '/quetes': typeof QuetesRoute
@@ -140,7 +190,11 @@ export interface FileRoutesById {
   '/succes': typeof SuccesRoute
   '/jeux/echecs': typeof JeuxEchecsRoute
   '/jeux/memory': typeof JeuxMemoryRoute
+  '/jeux/personnage': typeof JeuxPersonnageRoute
+  '/jeux/potions': typeof JeuxPotionsRoute
+  '/jeux/quidditch': typeof JeuxQuidditchRoute
   '/jeux/quiz': typeof JeuxQuizRoute
+  '/jeux/sorts': typeof JeuxSortsRoute
   '/jeux/': typeof JeuxIndexRoute
 }
 export interface FileRouteTypes {
@@ -150,7 +204,9 @@ export interface FileRouteTypes {
     | '/bibliotheque'
     | '/carte'
     | '/choixpeau'
+    | '/classement'
     | '/coupe'
+    | '/duels'
     | '/inventaire'
     | '/jeux'
     | '/quetes'
@@ -158,7 +214,11 @@ export interface FileRouteTypes {
     | '/succes'
     | '/jeux/echecs'
     | '/jeux/memory'
+    | '/jeux/personnage'
+    | '/jeux/potions'
+    | '/jeux/quidditch'
     | '/jeux/quiz'
+    | '/jeux/sorts'
     | '/jeux/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -166,14 +226,20 @@ export interface FileRouteTypes {
     | '/bibliotheque'
     | '/carte'
     | '/choixpeau'
+    | '/classement'
     | '/coupe'
+    | '/duels'
     | '/inventaire'
     | '/quetes'
     | '/sorcier'
     | '/succes'
     | '/jeux/echecs'
     | '/jeux/memory'
+    | '/jeux/personnage'
+    | '/jeux/potions'
+    | '/jeux/quidditch'
     | '/jeux/quiz'
+    | '/jeux/sorts'
     | '/jeux'
   id:
     | '__root__'
@@ -181,7 +247,9 @@ export interface FileRouteTypes {
     | '/bibliotheque'
     | '/carte'
     | '/choixpeau'
+    | '/classement'
     | '/coupe'
+    | '/duels'
     | '/inventaire'
     | '/jeux'
     | '/quetes'
@@ -189,7 +257,11 @@ export interface FileRouteTypes {
     | '/succes'
     | '/jeux/echecs'
     | '/jeux/memory'
+    | '/jeux/personnage'
+    | '/jeux/potions'
+    | '/jeux/quidditch'
     | '/jeux/quiz'
+    | '/jeux/sorts'
     | '/jeux/'
   fileRoutesById: FileRoutesById
 }
@@ -198,7 +270,9 @@ export interface RootRouteChildren {
   BibliothequeRoute: typeof BibliothequeRoute
   CarteRoute: typeof CarteRoute
   ChoixpeauRoute: typeof ChoixpeauRoute
+  ClassementRoute: typeof ClassementRoute
   CoupeRoute: typeof CoupeRoute
+  DuelsRoute: typeof DuelsRoute
   InventaireRoute: typeof InventaireRoute
   JeuxRoute: typeof JeuxRouteWithChildren
   QuetesRoute: typeof QuetesRoute
@@ -236,11 +310,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChoixpeauRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/classement': {
+      id: '/classement'
+      path: '/classement'
+      fullPath: '/classement'
+      preLoaderRoute: typeof ClassementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coupe': {
       id: '/coupe'
       path: '/coupe'
       fullPath: '/coupe'
       preLoaderRoute: typeof CoupeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/duels': {
+      id: '/duels'
+      path: '/duels'
+      fullPath: '/duels'
+      preLoaderRoute: typeof DuelsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inventaire': {
@@ -299,11 +387,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JeuxMemoryRouteImport
       parentRoute: typeof JeuxRoute
     }
+    '/jeux/personnage': {
+      id: '/jeux/personnage'
+      path: '/personnage'
+      fullPath: '/jeux/personnage'
+      preLoaderRoute: typeof JeuxPersonnageRouteImport
+      parentRoute: typeof JeuxRoute
+    }
+    '/jeux/potions': {
+      id: '/jeux/potions'
+      path: '/potions'
+      fullPath: '/jeux/potions'
+      preLoaderRoute: typeof JeuxPotionsRouteImport
+      parentRoute: typeof JeuxRoute
+    }
+    '/jeux/quidditch': {
+      id: '/jeux/quidditch'
+      path: '/quidditch'
+      fullPath: '/jeux/quidditch'
+      preLoaderRoute: typeof JeuxQuidditchRouteImport
+      parentRoute: typeof JeuxRoute
+    }
     '/jeux/quiz': {
       id: '/jeux/quiz'
       path: '/quiz'
       fullPath: '/jeux/quiz'
       preLoaderRoute: typeof JeuxQuizRouteImport
+      parentRoute: typeof JeuxRoute
+    }
+    '/jeux/sorts': {
+      id: '/jeux/sorts'
+      path: '/sorts'
+      fullPath: '/jeux/sorts'
+      preLoaderRoute: typeof JeuxSortsRouteImport
       parentRoute: typeof JeuxRoute
     }
   }
@@ -312,14 +428,22 @@ declare module '@tanstack/react-router' {
 interface JeuxRouteChildren {
   JeuxEchecsRoute: typeof JeuxEchecsRoute
   JeuxMemoryRoute: typeof JeuxMemoryRoute
+  JeuxPersonnageRoute: typeof JeuxPersonnageRoute
+  JeuxPotionsRoute: typeof JeuxPotionsRoute
+  JeuxQuidditchRoute: typeof JeuxQuidditchRoute
   JeuxQuizRoute: typeof JeuxQuizRoute
+  JeuxSortsRoute: typeof JeuxSortsRoute
   JeuxIndexRoute: typeof JeuxIndexRoute
 }
 
 const JeuxRouteChildren: JeuxRouteChildren = {
   JeuxEchecsRoute: JeuxEchecsRoute,
   JeuxMemoryRoute: JeuxMemoryRoute,
+  JeuxPersonnageRoute: JeuxPersonnageRoute,
+  JeuxPotionsRoute: JeuxPotionsRoute,
+  JeuxQuidditchRoute: JeuxQuidditchRoute,
   JeuxQuizRoute: JeuxQuizRoute,
+  JeuxSortsRoute: JeuxSortsRoute,
   JeuxIndexRoute: JeuxIndexRoute,
 }
 
@@ -330,7 +454,9 @@ const rootRouteChildren: RootRouteChildren = {
   BibliothequeRoute: BibliothequeRoute,
   CarteRoute: CarteRoute,
   ChoixpeauRoute: ChoixpeauRoute,
+  ClassementRoute: ClassementRoute,
   CoupeRoute: CoupeRoute,
+  DuelsRoute: DuelsRoute,
   InventaireRoute: InventaireRoute,
   JeuxRoute: JeuxRouteWithChildren,
   QuetesRoute: QuetesRoute,

@@ -44,6 +44,30 @@ const jeux = [
     image: quizImg,
     alt: "Parchemin de questions, plume et cachet de cire à la lueur d'une bougie",
   },
+  {
+    to: "/jeux/sorts",
+    titre: "Maître des Sorts",
+    texte: "Associez chaque effet à son incantation avant la fin du sablier.",
+    icone: "🪄",
+  },
+  {
+    to: "/jeux/potions",
+    titre: "Laboratoire de Potions",
+    texte: "Mémorisez la recette et versez les ingrédients dans le bon ordre.",
+    icone: "⚗️",
+  },
+  {
+    to: "/jeux/personnage",
+    titre: "Devine le Personnage",
+    texte: "Trois indices, une identité : trouvez le sorcier caché.",
+    icone: "🔍",
+  },
+  {
+    to: "/jeux/quidditch",
+    titre: "Quidditch — Vif d'or",
+    texte: "Attrapez le Vif, marquez au Souafle et esquivez les Cognards.",
+    icone: "🧹",
+  },
 ] as const;
 
 function Jeux() {
@@ -70,14 +94,20 @@ function Jeux() {
               to={j.to}
               className="panel group p-5 transition-transform hover:-translate-y-1"
             >
-              <img
-                src={j.image}
-                alt={j.alt}
-                loading="lazy"
-                width={1024}
-                height={768}
-                className="aspect-[4/3] w-full rounded-[12px] object-cover"
-              />
+              {"image" in j ? (
+                <img
+                  src={j.image}
+                  alt={j.alt}
+                  loading="lazy"
+                  width={1024}
+                  height={768}
+                  className="aspect-[4/3] w-full rounded-[12px] object-cover"
+                />
+              ) : (
+                <div className="flex aspect-[4/3] w-full items-center justify-center rounded-[12px] bg-primary/10 text-6xl">
+                  {j.icone}
+                </div>
+              )}
               <h2 className="mt-4 font-display text-lg font-medium">{j.titre}</h2>
               <p className="mt-2 text-pretty text-sm text-muted-foreground">{j.texte}</p>
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brass-2 transition-transform group-hover:translate-x-1">
