@@ -1,4 +1,5 @@
 import type { Maison } from "./choixpeau";
+import type { Journal, Totaux } from "./progression";
 
 export type Stat = "intelligence" | "courage" | "magie" | "agilite" | "sagesse";
 
@@ -42,6 +43,14 @@ export type Joueur = {
   pointsMaison: number; // points apportés par CE joueur
   stats: Record<Stat, number>;
   creeLe: string;
+  /** Quêtes du jour : compteurs et récompenses réclamées. */
+  journal: Journal;
+  /** Compteurs cumulés sur toute la carrière. */
+  totaux: Totaux;
+  /** Identifiants des succès débloqués. */
+  succes: string[];
+  /** Objets possédés : identifiant -> quantité. */
+  inventaire: Record<string, number>;
 };
 
 export type PointsMaisons = Record<Maison, number>;
@@ -64,6 +73,14 @@ export const joueurVide = (nom = ""): Joueur => ({
   pointsMaison: 0,
   stats: { intelligence: 3, courage: 3, magie: 3, agilite: 3, sagesse: 3 },
   creeLe: new Date().toISOString(),
+  journal: {
+    jour: new Date().toISOString().slice(0, 10),
+    compteurs: { parties: 0, victoires: 0, bonnes: 0, xpJour: 0 },
+    reclamees: [],
+  },
+  totaux: { parties: 0, victoires: 0, bonnes: 0, parfaits: 0 },
+  succes: [],
+  inventaire: {},
 });
 
 /** XP nécessaire pour passer du niveau n au niveau n+1. */
