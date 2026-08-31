@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useJoueur } from "@/lib/joueur-context";
 
 export const Route = createFileRoute("/jeux/quiz")({
   head: () => ({
@@ -65,6 +66,8 @@ function tirer(niveau: Niveau): Question[] {
 }
 
 function Quiz() {
+  const { joueur, gagner } = useJoueur();
+  const recompense = useRef(false);
   const [niveau, setNiveau] = useState<Niveau>("sorcier");
   const conf = niveaux[niveau];
   const [liste, setListe] = useState<Question[]>([]);
@@ -114,6 +117,25 @@ function Quiz() {
     const t = setTimeout(() => setTemps((v) => v - 1), 1000);
     return () => clearTimeout(t);
   }, [temps, fini, choix, conf.chrono, question, suivant]);
+
+  useEffect(() => {
+    if (!fini) {
+      recompense.current = false;
+      return;
+    }
+    if (recompense.current || !joueur || !liste.length) return;
+    recompense.current = true;
+    const mult = niveau === "mage" ? 3 : niveau === "sorcier" ? 2 : 1;
+    gagner(
+      {
+        xp: score * 10 * mult,
+        gallions: score * 4 * mult,
+        points: score * 2 * mult,
+        stat: { cle: "intelligence", valeur: score >= liste.length * 0.8 ? 1 : 0 },
+      },
+      `🧠 Quiz terminé — ${score}/${liste.length}`,
+    );
+  }, [fini, joueur, liste.length, score, niveau, gagner]);
 
   const mention = useMemo(() => {
     const ratio = liste.length ? score / liste.length : 0;

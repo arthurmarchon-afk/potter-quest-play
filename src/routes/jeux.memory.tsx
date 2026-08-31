@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useJoueur } from "@/lib/joueur-context";
 
 export const Route = createFileRoute("/jeux/memory")({
   head: () => ({
@@ -119,6 +120,28 @@ function Memory() {
   }, [retournees, cartes, config.delai]);
 
   const gagne = trouvees.length === config.paires && cartes.length > 0;
+  const recompense = useRef(false);
+  const { joueur, gagner } = useJoueur();
+
+  useEffect(() => {
+    if (!gagne) {
+      recompense.current = false;
+      return;
+    }
+    if (recompense.current || !joueur) return;
+    recompense.current = true;
+    const mult = niveau === "mage" ? 3 : niveau === "sorcier" ? 2 : 1;
+    const bonus = Math.max(0, config.paires * 2 - coups);
+    gagner(
+      {
+        xp: (40 + bonus * 5) * mult,
+        gallions: (15 + bonus * 2) * mult,
+        points: 10 * mult,
+        stat: { cle: "agilite", valeur: 1 },
+      },
+      `🧪 Memory réussi en ${coups} coups`,
+    );
+  }, [gagne, joueur, coups, config.paires, niveau, gagner]);
 
   function cliquer(carte: Carte) {
     if (retournees.length === 2) return;
