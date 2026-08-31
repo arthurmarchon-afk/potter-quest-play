@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChoixpeauRouteImport } from './routes/choixpeau'
 import { Route as CoupeRouteImport } from './routes/coupe'
 import { Route as JeuxRouteImport } from './routes/jeux'
+import { Route as QuetesRouteImport } from './routes/quetes'
 import { Route as SorcierRouteImport } from './routes/sorcier'
 import { Route as JeuxIndexRouteImport } from './routes/jeux.index'
 import { Route as JeuxEchecsRouteImport } from './routes/jeux.echecs'
@@ -37,6 +38,11 @@ const CoupeRoute = CoupeRouteImport.update({
 const JeuxRoute = JeuxRouteImport.update({
   id: '/jeux',
   path: '/jeux',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuetesRoute = QuetesRouteImport.update({
+  id: '/quetes',
+  path: '/quetes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SorcierRoute = SorcierRouteImport.update({
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
   '/jeux': typeof JeuxRouteWithChildren
+  '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
   '/jeux/echecs': typeof JeuxEchecsRoute
   '/jeux/memory': typeof JeuxMemoryRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
+  '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
   '/jeux/echecs': typeof JeuxEchecsRoute
   '/jeux/memory': typeof JeuxMemoryRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/choixpeau': typeof ChoixpeauRoute
   '/coupe': typeof CoupeRoute
   '/jeux': typeof JeuxRouteWithChildren
+  '/quetes': typeof QuetesRoute
   '/sorcier': typeof SorcierRoute
   '/jeux/echecs': typeof JeuxEchecsRoute
   '/jeux/memory': typeof JeuxMemoryRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/choixpeau'
     | '/coupe'
     | '/jeux'
+    | '/quetes'
     | '/sorcier'
     | '/jeux/echecs'
     | '/jeux/memory'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/'
     | '/choixpeau'
     | '/coupe'
+    | '/quetes'
     | '/sorcier'
     | '/jeux/echecs'
     | '/jeux/memory'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/choixpeau'
     | '/coupe'
     | '/jeux'
+    | '/quetes'
     | '/sorcier'
     | '/jeux/echecs'
     | '/jeux/memory'
@@ -138,6 +150,7 @@ export interface RootRouteChildren {
   ChoixpeauRoute: typeof ChoixpeauRoute
   CoupeRoute: typeof CoupeRoute
   JeuxRoute: typeof JeuxRouteWithChildren
+  QuetesRoute: typeof QuetesRoute
   SorcierRoute: typeof SorcierRoute
 }
 
@@ -169,6 +182,13 @@ declare module '@tanstack/react-router' {
       path: '/jeux'
       fullPath: '/jeux'
       preLoaderRoute: typeof JeuxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quetes': {
+      id: '/quetes'
+      path: '/quetes'
+      fullPath: '/quetes'
+      preLoaderRoute: typeof QuetesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sorcier': {
@@ -230,6 +250,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChoixpeauRoute: ChoixpeauRoute,
   CoupeRoute: CoupeRoute,
   JeuxRoute: JeuxRouteWithChildren,
+  QuetesRoute: QuetesRoute,
   SorcierRoute: SorcierRoute,
 }
 export const routeTree = rootRouteImport
