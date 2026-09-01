@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import type { ReactElement, SVGProps } from "react";
+import { useState, type ReactElement, type SVGProps } from "react";
 import { useJoueur } from "@/lib/joueur-context";
+import { useDecouvertes } from "@/lib/decouvertes-context";
+import { ParcheminOuvert } from "@/components/immersif/Curiosite";
 import { objets, progressionQuete, quetesQuotidiennes, type Quete } from "@/lib/progression";
 import { Cadre, EnTetePage, Jauge, Salle, Sceau } from "@/components/immersif/Page";
 import { Reveler } from "@/components/immersif/Reveler";
