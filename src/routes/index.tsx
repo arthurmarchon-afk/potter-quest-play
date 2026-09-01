@@ -23,6 +23,8 @@ import { maisons as infosMaisons } from "@/lib/choixpeau";
 import { ordreMaisons, pointsCoupe, xpRequis } from "@/lib/joueur";
 import { useJoueur } from "@/lib/joueur-context";
 import { echoppes, URL_BOUTIQUE } from "@/lib/boutiques";
+import { Curiosite, CompteurTrouvailles } from "@/components/immersif/Curiosite";
+import { IconeSac, IconePlume, IconeFiole, IconeGoutte } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -291,7 +293,13 @@ function Accueil() {
             </BoutonInterne>
           </div>
         </Reveler>
-        <Reveler delai={760} className="mt-20">
+        <Reveler delai={700} className="mt-12">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Curiosite id="horloge" icone={<IconeSablier />} libelle="L'horloge du quai" />
+            <Curiosite id="hibou" icone={<IconePlume />} libelle="Une cage à hibou entrouverte" />
+          </div>
+        </Reveler>
+        <Reveler delai={820} className="mt-20">
           <div className="flex flex-col items-center gap-3 text-or/55">
             <span className="font-display text-[0.58rem] uppercase tracking-[0.45em]">
               Monter à bord
@@ -322,7 +330,21 @@ function Accueil() {
           <Reveler delai={460}>
             <Note angle={1.1}>« Une question reste à trancher avant les grilles du château. »</Note>
           </Reveler>
-          <Reveler delai={600}>
+          <Reveler delai={560}>
+            <div className="mt-10 border-l border-or/15 pl-5">
+              <p className="font-display text-[0.55rem] uppercase tracking-[0.4em] text-or/55">
+                Dans le compartiment
+              </p>
+              <div className="mt-3 grid gap-1">
+                <Curiosite id="livre-compartiment" icone={<IconeLivre />} libelle="Un manuel abandonné sur la banquette" />
+                <Curiosite id="chariot" icone={<IconeFiole />} libelle="Le chariot de friandises passe" />
+                <Curiosite id="valise" icone={<IconeSac />} libelle="Une valise en cuir bouilli" />
+                <Curiosite id="vitre" icone={<IconeGoutte />} libelle="La buée sur la vitre" />
+              </div>
+              <CompteurTrouvailles className="mt-4" />
+            </div>
+          </Reveler>
+          <Reveler delai={680}>
             <div className="mt-10">
               <BoutonInterne to="/choixpeau" icone={<IconeChoixpeau className="h-4 w-4" />}>
                 Découvrir ma maison
@@ -384,6 +406,28 @@ function Accueil() {
           <p className="mx-auto mt-7 max-w-lg text-balance text-lg italic text-parchemin/70">
             Les tours sortent de la brume, une à une. Personne ne parle dans les barques.
           </p>
+        </Reveler>
+        <Reveler delai={620}>
+          {/* La grande porte : le seul appel à l'action monumental du site. */}
+          <Link
+            to="/chateau"
+            className="group relative mx-auto mt-14 block w-[15rem] overflow-hidden rounded-t-[999px] border border-or/30 bg-[linear-gradient(180deg,oklch(0.16_0.04_60/70%),oklch(0.08_0.02_265/92%))] px-6 pb-9 pt-14 transition-all duration-700 hover:border-or/70 sm:w-[18rem]"
+          >
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-x-6 top-0 h-44 rounded-b-full bg-[oklch(0.85_0.1_85/10%)] blur-2xl transition-all duration-700 group-hover:bg-[oklch(0.85_0.1_85/22%)]"
+            />
+            <span aria-hidden className="absolute inset-y-6 left-1/2 w-px -translate-x-1/2 bg-or/20" />
+            <span className="relative block font-titre text-[0.72rem] uppercase tracking-[0.42em] text-parchemin transition-colors group-hover:text-or">
+              Entrer à
+            </span>
+            <span className="relative mt-1 block font-titre text-2xl uppercase tracking-[0.3em] text-or">
+              Poudlard
+            </span>
+            <span className="relative mt-5 block font-manuscrit text-sm italic text-parchemin/45">
+              les portes cèdent lentement
+            </span>
+          </Link>
         </Reveler>
       </Acte>
 

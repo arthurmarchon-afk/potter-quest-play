@@ -11,6 +11,7 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "@/styles.css?url";
 import { JoueurProvider, useJoueur } from "@/lib/joueur-context";
+import { DecouvertesProvider } from "@/lib/decouvertes-context";
 import { DecorInterieur } from "@/components/immersif/DecorInterieur";
 import {
   IconeChoixpeau,
@@ -136,6 +137,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 const liensPrincipaux = [
   { to: "/", label: "Accueil" },
+  { to: "/chateau", label: "Le château" },
   { to: "/sorcier", label: "Mon Sorcier" },
   { to: "/jeux", label: "Jeux" },
   { to: "/quetes", label: "Quêtes" },
@@ -292,6 +294,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <JoueurProvider>
+        <DecouvertesProvider>
         <div className="relative min-h-screen font-body text-foreground">
           <DecorInterieur />
           <SiteNav />
@@ -303,6 +306,7 @@ function RootComponent() {
           <SiteFooter />
           <RewardPopup />
         </div>
+        </DecouvertesProvider>
       </JoueurProvider>
     </QueryClientProvider>
   );
