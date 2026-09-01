@@ -41,7 +41,9 @@ type Ctx = {
   joueur: Joueur | null;
   pret: boolean;
   creerSorcier: (nom: string) => void;
-  definirMaison: (maison: Maison) => void;
+  definirMaison: (maison: Maison, obscur?: number) => void;
+  definirBaguette: (b: BaguetteJoueur) => void;
+  definirPatronus: (p: PatronusJoueur) => void;
   gagner: (r: Recompense, contexte?: string) => void;
   signalerPartie: (evt: EvenementJeu) => void;
   reclamerQuete: (id: string) => void;
