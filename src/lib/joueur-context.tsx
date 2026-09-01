@@ -16,7 +16,9 @@ import {
   joueurVide,
   sauverJoueur,
   statsInitiales,
+  type BaguetteJoueur,
   type Joueur,
+  type PatronusJoueur,
   type Recompense,
 } from "./joueur";
 import {
