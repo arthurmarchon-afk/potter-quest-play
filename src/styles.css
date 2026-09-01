@@ -57,7 +57,7 @@
   --color-serpentard: var(--serpentard);
   --color-serdaigle: var(--serdaigle);
   --color-poufsouffle: var(--poufsouffle);
-  --font-display: "Cinzel", serif;
+  --font-display: "MedievalSharp", "Cinzel", serif;
   --font-body: "EB Garamond", serif;
 }
 
@@ -221,10 +221,10 @@
 
   &:hover {
     color: oklch(0.96 0.05 88);
-    border-color: color-mix(in oklab, var(--or) 85%, transparent);
+    border-color: color-mix(in oklab, var(--or) 80%, transparent);
     box-shadow:
-      inset 0 0 26px color-mix(in oklab, var(--or) 20%, transparent),
-      0 0 34px -6px color-mix(in oklab, var(--or) 55%, transparent);
+      inset 0 0 20px color-mix(in oklab, var(--or) 14%, transparent),
+      0 0 20px -8px color-mix(in oklab, var(--or) 40%, transparent);
     transform: translateY(-1px);
   }
 }
@@ -323,21 +323,21 @@
   --color-bronze: var(--bronze);
   --color-sylve-profonde: var(--sylve-profonde);
   --color-encre-nuit: var(--encre-nuit);
-  --font-titre: "Cinzel Decorative", "Cinzel", serif;
+  --font-titre: "Pirata One", "MedievalSharp", serif;
   --font-manuscrit: "IM Fell English", "EB Garamond", serif;
 }
 
 /* Titre monumental gravé dans la pierre */
 @utility titre-monument {
   font-family: var(--font-titre);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  line-height: 0.95;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1;
   color: var(--parchemin);
   text-shadow:
-    0 1px 0 oklch(0 0 0 / 60%),
-    0 3px 40px oklch(0 0 0 / 80%),
-    0 0 90px color-mix(in oklab, var(--or) 22%, transparent);
+    0 1px 0 oklch(0 0 0 / 55%),
+    0 2px 18px oklch(0 0 0 / 65%),
+    0 0 32px color-mix(in oklab, var(--or) 12%, transparent);
 }
 
 /* Annotation manuscrite à l'encre */
@@ -350,7 +350,8 @@
 
 /* Chiffres d'apparat */
 @utility chiffre {
-  font-family: var(--font-titre);
+  font-family: var(--font-body);
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
   color: var(--or);
