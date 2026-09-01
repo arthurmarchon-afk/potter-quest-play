@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BaguetteRouteImport } from './routes/baguette'
 import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
 import { Route as CarteRouteImport } from './routes/carte'
 import { Route as ChateauRouteImport } from './routes/chateau'
@@ -34,6 +35,11 @@ import { Route as JeuxSortsRouteImport } from './routes/jeux.sorts'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BaguetteRoute = BaguetteRouteImport.update({
+  id: '/baguette',
+  path: '/baguette',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BibliothequeRoute = BibliothequeRouteImport.update({
@@ -139,6 +145,7 @@ const JeuxSortsRoute = JeuxSortsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/baguette': typeof BaguetteRoute
   '/bibliotheque': typeof BibliothequeRoute
   '/carte': typeof CarteRoute
   '/chateau': typeof ChateauRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/baguette': typeof BaguetteRoute
   '/bibliotheque': typeof BibliothequeRoute
   '/carte': typeof CarteRoute
   '/chateau': typeof ChateauRoute
@@ -185,6 +193,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/baguette': typeof BaguetteRoute
   '/bibliotheque': typeof BibliothequeRoute
   '/carte': typeof CarteRoute
   '/chateau': typeof ChateauRoute
@@ -210,6 +219,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/baguette'
     | '/bibliotheque'
     | '/carte'
     | '/chateau'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/baguette'
     | '/bibliotheque'
     | '/carte'
     | '/chateau'
@@ -255,6 +266,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/baguette'
     | '/bibliotheque'
     | '/carte'
     | '/chateau'
@@ -279,6 +291,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BaguetteRoute: typeof BaguetteRoute
   BibliothequeRoute: typeof BibliothequeRoute
   CarteRoute: typeof CarteRoute
   ChateauRoute: typeof ChateauRoute
@@ -300,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/baguette': {
+      id: '/baguette'
+      path: '/baguette'
+      fullPath: '/baguette'
+      preLoaderRoute: typeof BaguetteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bibliotheque': {
@@ -471,6 +491,7 @@ const JeuxRouteWithChildren = JeuxRoute._addFileChildren(JeuxRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BaguetteRoute: BaguetteRoute,
   BibliothequeRoute: BibliothequeRoute,
   CarteRoute: CarteRoute,
   ChateauRoute: ChateauRoute,
