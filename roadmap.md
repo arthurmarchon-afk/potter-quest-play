@@ -47,3 +47,15 @@
 - [x] Phase 2 — Home cinématographique en 8 actes (King's Cross → train → campagne → arrivée → Poudlard → intérieur → forêt → Pré-au-Lard)
 - [ ] Phase 3 — Mon Sorcier (bureau/parchemin)
 - [ ] Phase 4 à 9 — Jeux, Quêtes, Encyclopédie, Grimoire, Coupe, Inventaire/Exploration/Duels
+
+## Refonte immersive « le monde est l'interface »
+- [x] Couche curiosité : objets observables (quai, compartiment, couloirs) → parchemin « Le saviez-vous ? »
+- [x] Compteur de trouvailles « n / ??? » (total volontairement inconnu)
+- [x] Grande porte « Entrer à Poudlard » → hub /chateau (6 zones-scènes)
+- [x] « Que s'est-il passé à Poudlard aujourd'hui ? » (fait du jour + faveur de maison)
+- [x] Secret du serment des Maraudeurs (voix + plume) → mode Maraudeur global
+- [ ] Choixpeau en cérémonie illustrée (scènes/dilemmes, points invisibles)
+- [ ] Sélection de baguette narrative, puis Patronus
+- [ ] Quiz par catégories et niveaux (Moldu → Maître), défi express 3 questions
+- [ ] Panneau d'affichage de quêtes en parchemins ; secret « côté obscur »
+- [ ] Ambiances sonores avec contrôle global
