@@ -1,276 +1,297 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { calculerMaison, maisons, questionsChoixpeau, type Maison } from "@/lib/choixpeau";
-import { HouseBadge } from "@/components/jeu/HouseBadge";
-import { StatLine } from "@/components/jeu/PlayerSummary";
-import { statsInitiales, statsMeta, type Stat } from "@/lib/joueur";
+
+import { maisons } from "@/lib/choixpeau";
+import { scenesCeremonie, verdict, type OptionScene } from "@/lib/ceremonie";
 import { useJoueur } from "@/lib/joueur-context";
-import { Salle, EnTetePage, Jauge, Sceau } from "@/components/immersif/Page";
+import { statsInitiales, statsMeta, type Stat } from "@/lib/joueur";
+import { Salle, Cadre, SeparateurOrne, Jauge } from "@/components/immersif/Page";
 import { Reveler } from "@/components/immersif/Reveler";
-import { IconeChoixpeau, IconeEtoile } from "@/components/immersif/Icones";
+import { HouseBadge } from "@/components/jeu/HouseBadge";
+import { IconeChoixpeau, IconeChandelle, Ornement } from "@/components/immersif/Icones";
 
 export const Route = createFileRoute("/choixpeau")({
   head: () => ({
     meta: [
-      { title: "Le Choixpeau — Découvrez votre maison de Poudlard" },
+      { title: "La Cérémonie de Répartition — Le Choixpeau vous écoute" },
       {
         name: "description",
         content:
-          "Huit questions et le Choixpeau rend son verdict : Gryffondor, Serpentard, Serdaigle ou Poufsouffle, puis votre maison est scellée dans votre profil.",
+          "Une cérémonie en huit scènes : le quai, le train, le lac noir, le miroir. Vos gestes parlent pour vous et le Choixpeau tranche.",
       },
-      { property: "og:title", content: "Le Choixpeau — Découvrez votre maison" },
+      { property: "og:title", content: "La Cérémonie de Répartition" },
       {
         property: "og:description",
-        content: "Répondez à l'interrogatoire du Choixpeau et recevez votre blason.",
+        content: "Vivez la répartition comme une soirée à Poudlard, pas comme un questionnaire.",
       },
     ],
   }),
-  component: Choixpeau,
+  component: Ceremonie,
 });
 
-const murmures = ["Hmm…", "Je vois en toi…", "Du caractère, oui… mais surtout…"];
+const murmures = [
+  "Hmm…",
+  "Difficile. Très difficile.",
+  "Du talent, oui… et une soif de te prouver quelque chose…",
+  "Alors ce sera…",
+];
 
-function Choixpeau() {
+function Ceremonie() {
   const { joueur, creerSorcier, definirMaison } = useJoueur();
-  const [index, setIndex] = useState(0);
-  const [choix, setChoix] = useState<Maison[]>([]);
-  const [selection, setSelection] = useState<Maison | null>(null);
-  const [etapeReveal, setEtapeReveal] = useState(-1);
   const [nom, setNom] = useState("");
+  const [index, setIndex] = useState(0);
+  const [choix, setChoix] = useState<OptionScene[]>([]);
+  const [echo, setEcho] = useState<OptionScene | null>(null);
+  const [murmure, setMurmure] = useState(-1);
   const scelle = useRef(false);
 
-  const termine = index >= questionsChoixpeau.length;
-  const question = questionsChoixpeau[index];
-  const maisonCle = termine ? calculerMaison(choix) : null;
-  const maison = maisonCle ? maisons[maisonCle] : null;
-  const revele = etapeReveal >= murmures.length;
+  const scene = scenesCeremonie[index];
+  const termine = index >= scenesCeremonie.length;
+  const v = termine ? verdict(choix) : null;
+  const revele = murmure >= murmures.length;
+  const maison = v ? maisons[v.maison] : null;
 
   useEffect(() => {
-    if (!termine || etapeReveal < 0 || revele) return;
-    const t = setTimeout(() => setEtapeReveal((e) => e + 1), 1300);
+    if (!termine || murmure < 0 || revele) return;
+    const t = setTimeout(() => setMurmure((m) => m + 1), 1500);
     return () => clearTimeout(t);
-  }, [termine, etapeReveal, revele]);
+  }, [termine, murmure, revele]);
 
   useEffect(() => {
-    if (revele && maisonCle && joueur && !scelle.current) {
+    if (revele && v && !scelle.current) {
       scelle.current = true;
-      definirMaison(maisonCle);
+      definirMaison(v.maison, v.obscur);
     }
-  }, [revele, maisonCle, joueur, definirMaison]);
+  }, [revele, v, definirMaison]);
 
-  function valider() {
-    if (!selection) return;
-    const suivant = index + 1;
-    setChoix((c) => [...c, selection]);
-    setSelection(null);
-    setIndex(suivant);
-    if (suivant >= questionsChoixpeau.length) setEtapeReveal(0);
+  function choisir(o: OptionScene) {
+    setEcho(o);
+    setTimeout(() => {
+      setEcho(null);
+      const suivant = index + 1;
+      setChoix((c) => [...c, o]);
+      setIndex(suivant);
+      if (suivant >= scenesCeremonie.length) setMurmure(0);
+    }, 1700);
   }
 
   function recommencer() {
     setChoix([]);
-    setSelection(null);
     setIndex(0);
-    setEtapeReveal(-1);
+    setMurmure(-1);
+    setEcho(null);
     scelle.current = false;
   }
 
-  const progression = Math.round((index / questionsChoixpeau.length) * 100);
+  const progression = Math.round((index / scenesCeremonie.length) * 100);
   const stats = Object.keys(statsMeta) as Stat[];
 
+  /* ------------------------------------------------------- pas de sorcier */
+  if (!joueur) {
+    return (
+      <Salle>
+        <Reveler>
+          <Cadre ton="parchemin" className="mx-auto max-w-xl text-center">
+            <p className="font-display text-[0.55rem] uppercase tracking-[0.45em] text-[oklch(0.4_0.08_60)]">
+              Registre des élèves
+            </p>
+            <h1 className="mt-4 font-titre text-3xl text-[oklch(0.2_0.04_40)]">
+              « Votre nom, je vous prie. »
+            </h1>
+            <p className="mt-4 text-[oklch(0.3_0.03_50)]">
+              La plume attend au-dessus du parchemin. Rien ne vous oblige à signer : on peut visiter
+              le château sans être élève.
+            </p>
+            <form
+              className="mt-8 flex flex-col items-center gap-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                creerSorcier(nom);
+              }}
+            >
+              <input
+                value={nom}
+                onChange={(e) => setNom(e.target.value)}
+                placeholder="Écrire à la plume…"
+                className="w-full max-w-xs border-b border-[oklch(0.45_0.08_60)] bg-transparent pb-2 text-center font-titre text-xl text-[oklch(0.2_0.04_40)] outline-none placeholder:text-[oklch(0.5_0.03_60)]"
+              />
+              <button
+                type="submit"
+                className="font-display text-[0.62rem] uppercase tracking-[0.35em] text-[oklch(0.25_0.05_40)] underline decoration-[oklch(0.55_0.1_70)] underline-offset-8"
+              >
+                Signer le registre
+              </button>
+            </form>
+            <SeparateurOrne className="my-6" />
+            <Link
+              to="/chateau"
+              className="font-display text-[0.58rem] uppercase tracking-[0.3em] text-[oklch(0.35_0.03_50)]"
+            >
+              Visiter sans signer
+            </Link>
+          </Cadre>
+        </Reveler>
+      </Salle>
+    );
+  }
+
+  /* ------------------------------------------------------------- l'écho */
+  if (echo) {
+    return (
+      <Salle>
+        <div className="flex min-h-[46vh] flex-col items-center justify-center text-center">
+          <Reveler>
+            <p className="annotation max-w-xl text-lg leading-relaxed">« {echo.geste} »</p>
+            <SeparateurOrne className="my-8 mx-auto max-w-[12rem]" />
+            <p className="titre-monument max-w-2xl text-2xl sm:text-3xl">{echo.murmure}</p>
+          </Reveler>
+        </div>
+      </Salle>
+    );
+  }
+
+  /* ------------------------------------------------------------ la scène */
+  if (!termine && scene) {
+    return (
+      <Salle large>
+        <Reveler>
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="font-display text-[0.55rem] uppercase tracking-[0.45em] text-or/70">
+                {scene.lieu}
+              </p>
+              <p className="annotation mt-2 max-w-[46ch] text-base">{scene.tableau}</p>
+            </div>
+            <div className="flex items-center gap-3 text-or/60">
+              <IconeChandelle className="chandelle h-5 w-5" />
+              <span className="font-display text-[0.55rem] uppercase tracking-[0.3em]">
+                Scène {index + 1} / {scenesCeremonie.length}
+              </span>
+            </div>
+          </div>
+          <Jauge valeur={progression} className="mb-10" />
+
+          <h1 className="titre-monument max-w-[26ch] text-3xl sm:text-4xl">{scene.situation}</h1>
+          <SeparateurOrne className="my-8 max-w-sm" />
+
+          <div className="grid gap-3">
+            {scene.options.map((o) => (
+              <button
+                key={o.id}
+                type="button"
+                onClick={() => choisir(o)}
+                className="group flex items-center gap-4 rounded-[2px] border-l border-or/20 bg-black/25 px-5 py-4 text-left transition-all duration-500 hover:border-or/70 hover:bg-black/40"
+              >
+                <Ornement className="h-2 w-2 shrink-0 text-or/35 transition-colors group-hover:text-or" />
+                <span className="text-base text-parchemin/70 transition-colors group-hover:text-parchemin">
+                  {o.geste}
+                </span>
+              </button>
+            ))}
+          </div>
+          <p className="annotation mt-8 text-sm text-parchemin/40">
+            Le Choixpeau ne compte pas de points. Il écoute.
+          </p>
+        </Reveler>
+      </Salle>
+    );
+  }
+
+  /* --------------------------------------------------------- le verdict */
   return (
     <Salle large>
-      <EnTetePage
-        surtitre="Cérémonie de répartition"
-        titre="La voix du Choixpeau"
-        icone={<IconeChoixpeau />}
-      />
-
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="plaque p-6 sm:p-8">
-          {!termine && question ? (
-            <>
-              <div className="mb-4 flex items-center justify-between">
-                <span className="font-display text-[0.6rem] uppercase tracking-[0.3em] text-or">
-                  Question {String(index + 1).padStart(2, "0")} /{" "}
-                  {String(questionsChoixpeau.length).padStart(2, "0")}
-                </span>
-                <span className="annotation text-xs">Répondez avec honnêteté</span>
-              </div>
-              <Jauge valeur={progression} className="mb-6" />
-              <h2 className="titre-monument text-xl">{question.question}</h2>
-              <div className="mt-6 grid gap-3">
-                {question.reponses.map((r) => (
-                  <label
-                    key={r.texte}
-                    className={`flex cursor-pointer items-center gap-4 rounded-[3px] px-4 py-3 ring-1 transition-transform hover:-translate-y-0.5 ${
-                      selection === r.maison
-                        ? "bg-or/15 ring-or/50"
-                        : "bg-foreground/5 ring-border"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name={`q${index}`}
-                      checked={selection === r.maison}
-                      onChange={() => setSelection(r.maison)}
-                      className="size-4 shrink-0 accent-primary"
-                    />
-                    <span className="text-sm text-foreground/80">{r.texte}</span>
-                  </label>
-                ))}
-              </div>
-              <button
-                onClick={valider}
-                disabled={!selection}
-                className="bouton-magique mt-6 px-5 py-2.5 text-[0.6rem] disabled:opacity-40"
-              >
-                {index === questionsChoixpeau.length - 1 ? "Rendre le verdict" : "Continuer"}
-              </button>
-            </>
-          ) : (
-            <>
-              <h2 className="titre-monument text-xl">
-                {revele ? "Le Choixpeau a tranché." : "Le Choixpeau réfléchit…"}
-              </h2>
-
-              {!revele && (
-                <div className="relative mt-8 grid place-items-center">
-                  <span
-                    aria-hidden
-                    className="chandelle absolute h-40 w-40 rounded-full bg-[oklch(0.85_0.1_85/25%)] blur-3xl"
-                  />
-                  <span className="relative sceau h-16 w-16 [&>svg]:h-6 [&>svg]:w-6">
-                    <IconeChoixpeau />
-                  </span>
-                </div>
-              )}
-
-              <div className="mt-6 space-y-3">
-                {murmures.slice(0, Math.max(0, etapeReveal + 1)).map((m) => (
-                  <Reveler key={m} as="p">
-                    <p className="annotation text-lg">« {m} »</p>
-                  </Reveler>
-                ))}
-              </div>
-
-              {revele && maisonCle && (
-                <div className="mt-8 space-y-4">
-                  {!joueur ? (
-                    <form
-                      className="rounded-[3px] bg-foreground/5 p-4 ring-1 ring-border"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        if (!nom.trim()) return;
-                        creerSorcier(nom);
-                        definirMaison(maisonCle);
-                        scelle.current = true;
-                      }}
-                    >
-                      <p className="text-sm text-foreground/80">
-                        Inscrivez votre nom pour sceller cette maison dans votre profil.
-                      </p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <input
-                          value={nom}
-                          onChange={(e) => setNom(e.target.value)}
-                          maxLength={24}
-                          placeholder="Nom du sorcier"
-                          className="min-w-[180px] flex-1 rounded-[3px] bg-background/60 px-4 py-2.5 outline-none ring-1 ring-border focus:ring-primary"
-                        />
-                        <button
-                          type="submit"
-                          disabled={!nom.trim()}
-                          className="bouton-magique px-5 py-2.5 text-[0.6rem] disabled:opacity-40"
-                        >
-                          Sceller
-                        </button>
-                      </div>
-                    </form>
-                  ) : (
-                    <p className="text-sm text-or">
-                      Maison scellée dans le profil de {joueur.nom}.
-                    </p>
-                  )}
-
-                  <div className="flex flex-wrap gap-3">
-                    <Link to="/sorcier" className="bouton-magique px-5 py-2.5 text-[0.6rem]">
-                      Voir mon sorcier
-                    </Link>
-                    <Link
-                      to="/jeux"
-                      className="inline-flex items-center rounded-[3px] px-4 py-2 text-sm font-medium text-foreground/80 ring-1 ring-border transition-transform hover:-translate-y-0.5"
-                    >
-                      Aller aux mini-jeux
-                    </Link>
-                    <button
-                      onClick={recommencer}
-                      className="inline-flex items-center rounded-[3px] px-4 py-2 text-sm font-medium text-parchemin/60 ring-1 ring-border transition-transform hover:-translate-y-0.5"
-                    >
-                      Repasser l'épreuve
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        <div className="plaque p-6 sm:p-8">
-          <p className="font-display text-[0.6rem] uppercase tracking-[0.3em] text-or">
-            Votre verdict
+      {!revele ? (
+        <div className="flex min-h-[52vh] flex-col items-center justify-center text-center">
+          <IconeChoixpeau className="h-14 w-14 text-or/60" />
+          <p className="titre-monument mt-10 text-3xl sm:text-4xl">
+            {murmures[Math.max(0, murmure)]}
           </p>
-          <h2 className="titre-monument mt-3 text-2xl">
-            {revele && maison ? `Poudlard · ${maison.nom}` : "Poudlard · en attente"}
-          </h2>
-          <div className="my-6 grid place-items-center rounded-[3px] bg-black/40 py-10 ring-1 ring-border">
-            {revele && maisonCle ? (
-              <div className="relative text-center">
-                <span
-                  aria-hidden
-                  className="scintille absolute -inset-6 rounded-full bg-[oklch(0.82_0.1_82/35%)] blur-2xl"
-                />
-                <div className="relative">
-                  <HouseBadge maison={maisonCle} taille="lg" />
-                  <p className="mt-4 font-display text-lg uppercase tracking-[0.25em] text-candle">
-                    {maisons[maisonCle].nom}
-                  </p>
-                </div>
-                <span className="sceau absolute -bottom-3 -right-3 h-9 w-9 [&>svg]:h-3.5 [&>svg]:w-3.5">
-                  <IconeEtoile />
-                </span>
-              </div>
-            ) : (
-              <span className="sceau h-20 w-20 [&>svg]:h-8 [&>svg]:w-8">
-                <IconeChoixpeau />
-              </span>
-            )}
+        </div>
+      ) : v && maison ? (
+        <Reveler>
+          <div className="text-center">
+            <p className="font-display text-[0.55rem] uppercase tracking-[0.5em] text-or/70">
+              Le Choixpeau a tranché
+            </p>
+            <h1
+              className="titre-monument mt-4 text-5xl sm:text-7xl"
+              style={{ color: maison.couleur }}
+            >
+              {maison.nom.toUpperCase()} !
+            </h1>
+            <p className="annotation mt-4 text-lg">{maison.devise}</p>
+            <div className="mt-8 flex justify-center">
+              <HouseBadge maison={v.maison} />
+            </div>
           </div>
-          {revele && maison && maisonCle ? (
-            <>
-              <p className="annotation mb-3 text-base">{maison.devise}</p>
-              <ul className="space-y-2 text-pretty text-sm text-parchemin/60">
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_1fr]">
+            <Cadre>
+              <h2 className="font-titre text-xl text-parchemin">Ce que le chapeau a vu</h2>
+              <SeparateurOrne className="my-4 max-w-[10rem]" />
+              <ul className="space-y-3">
                 {maison.traits.map((t) => (
-                  <li key={t} className="flex items-start gap-2">
-                    <span className="text-or">✦</span>
-                    {t}
+                  <li key={t} className="flex items-start gap-3 text-parchemin/70">
+                    <Ornement className="mt-2 h-2 w-2 shrink-0 text-or/50" />
+                    <span>{t}</span>
                   </li>
                 ))}
               </ul>
-              <h3 className="mt-6 font-display text-base">Statistiques initiales</h3>
-              <div className="mt-3 space-y-3">
+              {v.hesitation ? (
+                <p className="annotation mt-5 text-sm">
+                  « J'ai hésité, vous savez. {maisons[v.hesitation].nom} vous aurait très bien
+                  convenu. »
+                </p>
+              ) : null}
+              {v.obscur >= 7 ? (
+                <p className="annotation mt-3 text-sm text-[oklch(0.6_0.12_20)]">
+                  « Et il y a autre chose, en vous. Nous en reparlerons. »
+                </p>
+              ) : null}
+            </Cadre>
+
+            <Cadre>
+              <h2 className="font-titre text-xl text-parchemin">Aptitudes de départ</h2>
+              <SeparateurOrne className="my-4 max-w-[10rem]" />
+              <div className="space-y-3">
                 {stats.map((s) => (
-                  <StatLine key={s} cle={s} valeur={statsInitiales[maisonCle][s]} />
+                  <div key={s}>
+                    <div className="mb-1 flex justify-between text-sm">
+                      <span className="text-parchemin/70">{statsMeta[s].nom}</span>
+                      <span className="tabular-nums text-or/80">
+                        {statsInitiales[v.maison][s]}
+                      </span>
+                    </div>
+                    <Jauge valeur={statsInitiales[v.maison][s] * 10} />
+                  </div>
                 ))}
               </div>
-            </>
-          ) : (
-            <p className="text-sm text-parchemin/60">
-              Répondez aux {questionsChoixpeau.length} questions pour que le Choixpeau tranche.
-            </p>
-          )}
-        </div>
-      </div>
+            </Cadre>
+          </div>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-6">
+            <Link
+              to="/baguette"
+              className="font-display text-[0.62rem] uppercase tracking-[0.32em] text-or hover:text-parchemin"
+            >
+              Aller chez Ollivander
+            </Link>
+            <Link
+              to="/chateau"
+              className="font-display text-[0.62rem] uppercase tracking-[0.32em] text-parchemin/55 hover:text-or"
+            >
+              Entrer au château
+            </Link>
+            <button
+              type="button"
+              onClick={recommencer}
+              className="font-display text-[0.62rem] uppercase tracking-[0.32em] text-parchemin/40 hover:text-or"
+            >
+              Revivre la cérémonie
+            </button>
+          </div>
+        </Reveler>
+      ) : null}
     </Salle>
   );
 }
