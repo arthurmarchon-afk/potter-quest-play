@@ -86,13 +86,14 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
   );
 
   const definirMaison = useCallback(
-    (maison: Maison) => {
+    (maison: Maison, obscur?: number) => {
       setJoueur((prev) => {
         const base = prev ?? joueurVide("Sorcier");
         const j: Joueur = {
           ...base,
           maison,
           stats: { ...statsInitiales[maison] },
+          ...(obscur !== undefined ? { obscur } : {}),
         };
         const { joueur: final } = verifierSucces(j);
         sauverJoueur(final);
