@@ -313,6 +313,38 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
     [pousser],
   );
 
+  const definirBaguette = useCallback(
+    (b: BaguetteJoueur) => {
+      setJoueur((prev) => {
+        const base = prev ?? joueurVide("Sorcier");
+        const { joueur: avec } = appliquerRecompense(
+          { ...base, baguette: b },
+          prev?.baguette ? {} : { xp: 60, stat: { cle: "magie", valeur: 1 } },
+        );
+        sauverJoueur(avec);
+        return avec;
+      });
+      pousser(["La baguette vous a choisi."]);
+    },
+    [pousser],
+  );
+
+  const definirPatronus = useCallback(
+    (p: PatronusJoueur) => {
+      setJoueur((prev) => {
+        const base = prev ?? joueurVide("Sorcier");
+        const { joueur: avec } = appliquerRecompense(
+          { ...base, patronus: p },
+          prev?.patronus ? {} : { xp: 90, points: 10, stat: { cle: "sagesse", valeur: 1 } },
+        );
+        sauverJoueur(avec);
+        return avec;
+      });
+      pousser([`Spero Patronum — ${p.nom}`]);
+    },
+    [pousser],
+  );
+
   const reinitialiser = useCallback(() => {
     effacerJoueur();
     setJoueur(null);
