@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
 import { Route as CarteRouteImport } from './routes/carte'
+import { Route as ChateauRouteImport } from './routes/chateau'
 import { Route as ChoixpeauRouteImport } from './routes/choixpeau'
 import { Route as ClassementRouteImport } from './routes/classement'
 import { Route as CoupeRouteImport } from './routes/coupe'
@@ -43,6 +44,11 @@ const BibliothequeRoute = BibliothequeRouteImport.update({
 const CarteRoute = CarteRouteImport.update({
   id: '/carte',
   path: '/carte',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChateauRoute = ChateauRouteImport.update({
+  id: '/chateau',
+  path: '/chateau',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChoixpeauRoute = ChoixpeauRouteImport.update({
@@ -135,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bibliotheque': typeof BibliothequeRoute
   '/carte': typeof CarteRoute
+  '/chateau': typeof ChateauRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/classement': typeof ClassementRoute
   '/coupe': typeof CoupeRoute
@@ -157,6 +164,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bibliotheque': typeof BibliothequeRoute
   '/carte': typeof CarteRoute
+  '/chateau': typeof ChateauRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/classement': typeof ClassementRoute
   '/coupe': typeof CoupeRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/bibliotheque': typeof BibliothequeRoute
   '/carte': typeof CarteRoute
+  '/chateau': typeof ChateauRoute
   '/choixpeau': typeof ChoixpeauRoute
   '/classement': typeof ClassementRoute
   '/coupe': typeof CoupeRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bibliotheque'
     | '/carte'
+    | '/chateau'
     | '/choixpeau'
     | '/classement'
     | '/coupe'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bibliotheque'
     | '/carte'
+    | '/chateau'
     | '/choixpeau'
     | '/classement'
     | '/coupe'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bibliotheque'
     | '/carte'
+    | '/chateau'
     | '/choixpeau'
     | '/classement'
     | '/coupe'
@@ -269,6 +281,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BibliothequeRoute: typeof BibliothequeRoute
   CarteRoute: typeof CarteRoute
+  ChateauRoute: typeof ChateauRoute
   ChoixpeauRoute: typeof ChoixpeauRoute
   ClassementRoute: typeof ClassementRoute
   CoupeRoute: typeof CoupeRoute
@@ -301,6 +314,13 @@ declare module '@tanstack/react-router' {
       path: '/carte'
       fullPath: '/carte'
       preLoaderRoute: typeof CarteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chateau': {
+      id: '/chateau'
+      path: '/chateau'
+      fullPath: '/chateau'
+      preLoaderRoute: typeof ChateauRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/choixpeau': {
@@ -453,6 +473,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BibliothequeRoute: BibliothequeRoute,
   CarteRoute: CarteRoute,
+  ChateauRoute: ChateauRoute,
   ChoixpeauRoute: ChoixpeauRoute,
   ClassementRoute: ClassementRoute,
   CoupeRoute: CoupeRoute,

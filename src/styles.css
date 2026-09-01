@@ -437,3 +437,18 @@ h2 {
     animation: none !important;
   }
 }
+
+/* Mode Maraudeur : le site prend la teinte encre-et-vélin de la carte. */
+.maraudeur body {
+  background-color: oklch(0.1 0.02 60);
+}
+.maraudeur .plaque,
+.maraudeur .panel {
+  border-color: color-mix(in oklab, var(--or) 30%, transparent);
+}
+.maraudeur main {
+  filter: sepia(0.18) contrast(1.03);
+}
+@media (prefers-reduced-motion: reduce) {
+  .maraudeur main { filter: none; }
+}
