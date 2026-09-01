@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import type { ReactElement, SVGProps } from "react";
+import { useState, type ReactElement, type SVGProps } from "react";
 import { useJoueur } from "@/lib/joueur-context";
+import { useDecouvertes } from "@/lib/decouvertes-context";
+import { ParcheminOuvert } from "@/components/immersif/Curiosite";
 import { objets, progressionQuete, quetesQuotidiennes, type Quete } from "@/lib/progression";
 import { Cadre, EnTetePage, Jauge, Salle, Sceau } from "@/components/immersif/Page";
 import { Reveler } from "@/components/immersif/Reveler";
@@ -149,6 +151,8 @@ function Quetes() {
             );
           })}
 
+          <LettreSansSignature />
+
           <Cadre className="p-6">
             <p className="annotation text-base">
               Les compteurs avancent en jouant dans la salle des mini-jeux.
@@ -163,5 +167,53 @@ function Quetes() {
         </div>
       )}
     </Salle>
+  );
+}
+
+/* Secret « côté obscur » : une lettre scellée de cire noire glissée sous les
+   parchemins du tableau. Elle n'apparaît que pour ceux dont la cérémonie a
+   laissé une ombre — et personne n'est prévenu de son existence. */
+function LettreSansSignature() {
+  const { joueur } = useJoueur();
+  const { secretTrouve, revelerSecret } = useDecouvertes();
+  const [ouverte, setOuverte] = useState(false);
+  const ombre = (joueur?.obscur ?? 0) >= 6;
+  const deja = secretTrouve("obscur");
+
+  if (!ombre && !deja) return null;
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          setOuverte(true);
+          revelerSecret("obscur");
+        }}
+        aria-label="Une lettre scellée de cire noire, glissée sous les parchemins"
+        className="group flex w-full items-center gap-4 rounded-[2px] border border-[oklch(0.35_0.09_20/45%)] bg-black/50 px-5 py-4 text-left transition-colors hover:border-[oklch(0.5_0.14_20)]"
+      >
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-[oklch(0.2_0.06_20)] text-[oklch(0.62_0.14_20)]">
+          <IconeParchemin className="h-4 w-4" />
+        </span>
+        <span className="annotation text-sm text-parchemin/55 group-hover:text-[oklch(0.7_0.1_25)]">
+          {deja
+            ? "La lettre à la cire noire, relue une fois de plus."
+            : "Quelque chose dépasse sous le dernier parchemin. La cire est noire."}
+        </span>
+      </button>
+
+      {ouverte ? (
+        <ParcheminOuvert
+          titre="Une invitation sans signature"
+          sur="Cire noire, aucun sceau reconnaissable"
+          onFermer={() => setOuverte(false)}
+        >
+          Vous avez été remarqué. Ce que le Choixpeau a tu, d'autres l'ont entendu. Descendez au
+          troisième cachot après le couvre-feu ; frappez trois fois, puis une. On ne vous demandera
+          rien que vous n'ayez déjà envisagé.
+        </ParcheminOuvert>
+      ) : null}
+    </>
   );
 }

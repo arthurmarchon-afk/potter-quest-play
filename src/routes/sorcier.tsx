@@ -122,6 +122,66 @@ function MonSorcier() {
         </Reveler>
       </div>
 
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Reveler delai={140}>
+          <Cadre className="h-full p-6 sm:p-7">
+            <h2 className="titre-monument text-xl">Ma baguette</h2>
+            <SeparateurOrne className="mt-3" />
+            {joueur.baguette ? (
+              <>
+                <p className="mt-5 font-titre text-xl text-parchemin">
+                  {joueur.baguette.bois}, {joueur.baguette.coeur.toLowerCase()}
+                </p>
+                <p className="annotation mt-2 text-sm">
+                  {joueur.baguette.longueur} centimètres — {joueur.baguette.souplesse}
+                </p>
+                <p className="annotation mt-4 text-sm leading-relaxed">
+                  « {joueur.baguette.verdict} »
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="annotation mt-5 text-sm leading-relaxed">
+                  Aucune baguette enregistrée. L'échoppe d'Ollivander vous attend, poussiéreuse et
+                  patiente.
+                </p>
+                <Link
+                  to="/baguette"
+                  className="mt-5 inline-flex font-display text-[0.6rem] uppercase tracking-[0.3em] text-or hover:text-parchemin"
+                >
+                  Aller chez Ollivander
+                </Link>
+              </>
+            )}
+          </Cadre>
+        </Reveler>
+
+        <Reveler delai={180}>
+          <Cadre className="h-full p-6 sm:p-7">
+            <h2 className="titre-monument text-xl">Mon Patronus</h2>
+            <SeparateurOrne className="mt-3" />
+            {joueur.patronus ? (
+              <>
+                <p className="mt-5 font-titre text-xl text-parchemin">{joueur.patronus.nom}</p>
+                <p className="annotation mt-3 text-sm leading-relaxed">{joueur.patronus.texte}</p>
+              </>
+            ) : (
+              <>
+                <p className="annotation mt-5 text-sm leading-relaxed">
+                  Le sortilège n'a pas encore pris forme. Il faut trois souvenirs — les bons.
+                </p>
+                <Link
+                  to="/patronus"
+                  className="mt-5 inline-flex font-display text-[0.6rem] uppercase tracking-[0.3em] text-or hover:text-parchemin"
+                >
+                  Tenter Spero Patronum
+                </Link>
+              </>
+            )}
+          </Cadre>
+        </Reveler>
+      </div>
+
       <Reveler className="mt-8 flex flex-wrap gap-3">
         {!joueur.maison && (
           <Link to="/choixpeau" className="bouton-magique px-6 py-3 text-[0.6rem]">

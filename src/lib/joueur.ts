@@ -55,6 +55,26 @@ export type Joueur = {
   decouvertes: string[];
   /** Lieux de Poudlard déjà explorés. */
   lieuxVisites: string[];
+  /** Baguette choisie chez Ollivander (rituel narratif). */
+  baguette?: BaguetteJoueur;
+  /** Forme du Patronus, une fois le sortilège réussi. */
+  patronus?: PatronusJoueur;
+  /** Penchant pour les arts sombres, mesuré en silence. */
+  obscur?: number;
+};
+
+export type BaguetteJoueur = {
+  bois: string;
+  coeur: string;
+  longueur: number;
+  souplesse: string;
+  verdict: string;
+};
+
+export type PatronusJoueur = {
+  forme: string;
+  nom: string;
+  texte: string;
 };
 
 export type PointsMaisons = Record<Maison, number>;

@@ -12,9 +12,11 @@ import { useEffect, useState, type ReactNode } from "react";
 import appCss from "@/styles.css?url";
 import { JoueurProvider, useJoueur } from "@/lib/joueur-context";
 import { DecouvertesProvider } from "@/lib/decouvertes-context";
+import { AmbianceProvider, useAmbiance } from "@/lib/ambiance";
 import { DecorInterieur } from "@/components/immersif/DecorInterieur";
 import {
   IconeChoixpeau,
+  IconeBaguette,
   IconeEpees,
   IconeCarte,
   IconeEtoile,
@@ -146,6 +148,8 @@ const liensPrincipaux = [
 
 const liensSecondaires = [
   { to: "/choixpeau", label: "Choixpeau", Icone: IconeChoixpeau },
+  { to: "/baguette", label: "Ollivander", Icone: IconeBaguette },
+  { to: "/patronus", label: "Patronus", Icone: IconeEtoile },
   { to: "/duels", label: "Duels", Icone: IconeEpees },
   { to: "/carte", label: "Carte", Icone: IconeCarte },
   { to: "/succes", label: "Succès", Icone: IconeEtoile },
@@ -177,6 +181,22 @@ function BandeauJoueur() {
         </div>
       </div>
     </div>
+  );
+}
+
+function BoutonAmbiance() {
+  const { actif, basculer } = useAmbiance();
+  return (
+    <button
+      type="button"
+      onClick={basculer}
+      aria-pressed={actif}
+      title={actif ? "Éteindre les chandelles sonores" : "Allumer l'ambiance du château"}
+      className="ml-1 grid h-8 w-8 place-items-center rounded-full border border-or/20 text-or/45 transition-colors hover:border-or/60 hover:text-or"
+    >
+      <IconeChandelle className={`h-4 w-4 ${actif ? "chandelle text-or" : ""}`} />
+      <span className="sr-only">Ambiance sonore</span>
+    </button>
   );
 }
 
@@ -226,6 +246,7 @@ function SiteNav() {
               </span>
             ))}
             <Ornement className="mx-1 h-2 w-2 text-or/30" />
+            <BoutonAmbiance />
             <button
               type="button"
               onClick={() => setOuvert((o) => !o)}
@@ -295,6 +316,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <JoueurProvider>
         <DecouvertesProvider>
+        <AmbianceProvider>
         <div className="relative min-h-screen font-body text-foreground">
           <DecorInterieur />
           <SiteNav />
@@ -306,6 +328,7 @@ function RootComponent() {
           <SiteFooter />
           <RewardPopup />
         </div>
+        </AmbianceProvider>
         </DecouvertesProvider>
       </JoueurProvider>
     </QueryClientProvider>

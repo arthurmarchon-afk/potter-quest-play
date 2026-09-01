@@ -16,7 +16,9 @@ import {
   joueurVide,
   sauverJoueur,
   statsInitiales,
+  type BaguetteJoueur,
   type Joueur,
+  type PatronusJoueur,
   type Recompense,
 } from "./joueur";
 import {
@@ -41,7 +43,9 @@ type Ctx = {
   joueur: Joueur | null;
   pret: boolean;
   creerSorcier: (nom: string) => void;
-  definirMaison: (maison: Maison) => void;
+  definirMaison: (maison: Maison, obscur?: number) => void;
+  definirBaguette: (b: BaguetteJoueur) => void;
+  definirPatronus: (p: PatronusJoueur) => void;
   gagner: (r: Recompense, contexte?: string) => void;
   signalerPartie: (evt: EvenementJeu) => void;
   reclamerQuete: (id: string) => void;
@@ -86,13 +90,14 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
   );
 
   const definirMaison = useCallback(
-    (maison: Maison) => {
+    (maison: Maison, obscur?: number) => {
       setJoueur((prev) => {
         const base = prev ?? joueurVide("Sorcier");
         const j: Joueur = {
           ...base,
           maison,
           stats: { ...statsInitiales[maison] },
+          ...(obscur !== undefined ? { obscur } : {}),
         };
         const { joueur: final } = verifierSucces(j);
         sauverJoueur(final);
@@ -308,6 +313,38 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
     [pousser],
   );
 
+  const definirBaguette = useCallback(
+    (b: BaguetteJoueur) => {
+      setJoueur((prev) => {
+        const base = prev ?? joueurVide("Sorcier");
+        const { joueur: avec } = appliquerRecompense(
+          { ...base, baguette: b },
+          prev?.baguette ? {} : { xp: 60, stat: { cle: "magie", valeur: 1 } },
+        );
+        sauverJoueur(avec);
+        return avec;
+      });
+      pousser(["La baguette vous a choisi."]);
+    },
+    [pousser],
+  );
+
+  const definirPatronus = useCallback(
+    (p: PatronusJoueur) => {
+      setJoueur((prev) => {
+        const base = prev ?? joueurVide("Sorcier");
+        const { joueur: avec } = appliquerRecompense(
+          { ...base, patronus: p },
+          prev?.patronus ? {} : { xp: 90, points: 10, stat: { cle: "sagesse", valeur: 1 } },
+        );
+        sauverJoueur(avec);
+        return avec;
+      });
+      pousser([`Spero Patronum — ${p.nom}`]);
+    },
+    [pousser],
+  );
+
   const reinitialiser = useCallback(() => {
     effacerJoueur();
     setJoueur(null);
@@ -319,6 +356,8 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
       pret,
       creerSorcier,
       definirMaison,
+      definirBaguette,
+      definirPatronus,
       gagner,
       signalerPartie,
       reclamerQuete,
@@ -333,6 +372,8 @@ export function JoueurProvider({ children }: { children: ReactNode }) {
       pret,
       creerSorcier,
       definirMaison,
+      definirBaguette,
+      definirPatronus,
       gagner,
       signalerPartie,
       reclamerQuete,
